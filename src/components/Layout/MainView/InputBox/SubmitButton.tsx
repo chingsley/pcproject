@@ -7,7 +7,7 @@ const Button = styled.button`
   width: ${SPACING.SUBMIT_BUTTON_WIDTH};
   height: ${SPACING.SUBMIT_BUTTON_HEIGHT};
   border-radius: ${SPACING.RADIUS_PILL};
-  border: none;
+  border: 1px solid ${COLORS.BORDER_SUBTLE};
   background-color: ${COLORS.ACTION_BUTTON_BG};
   color: ${COLORS.ACTION_BUTTON_TEXT};
   cursor: pointer;

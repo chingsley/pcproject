@@ -12,4 +12,9 @@ export const SPACING = {
   UPLOAD_BUTTON_SIZE: '2.5rem', // 40px - circular upload button
   SUBMIT_BUTTON_WIDTH: '6.25rem', // 100px
   SUBMIT_BUTTON_HEIGHT: '2.5rem', // 40px
+  SHORTCUT_KEY_RADIUS: '0.25rem', // 4px – rounded square for ⌘ K
+  SHORTCUT_KEY_PADDING_X: '0.375rem', // 6px
+  SHORTCUT_KEY_PADDING_Y: '0.25rem', // 4px
+  SHORTCUT_KEY_GAP: '0.25rem', // 4px between ⌘ and K
+  SHORTCUT_KEY_SIZE: '1.25rem', // 20px min height for ⌘ K keys
 } as const;

@@ -1,0 +1,31 @@
+---
+description: Icons and images must be imported via constants; never from assets directly
+alwaysApply: true
+---
+
+# Assets and Icons Rule
+
+All icon and image assets must be imported in the constants layer and used from there. No component or file may import directly from `src/assets/`.
+
+## Icons
+
+- **File:** `src/constants/icons.constants.ts`
+- **Scope:** Any asset used as an icon (e.g. all `*-icon.png` files in `assets/`).
+- **Rule:** Import every icon from `src/assets/` (or `src/assets/icons/` if you use a subfolder) into `icons.constants.ts` and export it on the `ICONS` object. Use a clear UPPER_SNAKE_CASE name (e.g. `CROSS_ICON`).
+- **Usage:** In components, import from `constants/icons.constants` and use the exported value (e.g. `ICONS.CROSS_ICON`). Do not import from `assets/` or `assets/icons/` in components.
+
+## Images
+
+- **File:** `src/constants/images.constants.ts`
+- **Scope:** All other images (e.g. photos, illustrations, logos that are not icon-only) in `src/assets/`.
+- **Rule:** Import every such image from `src/assets/` into `images.constants.ts` and export it on the `IMAGES` object. Use a clear UPPER_SNAKE_CASE name.
+- **Usage:** In components, import from `constants/images.constants` and use the exported value (e.g. `IMAGES.HERO`). Do not import from `assets/` in components.
+
+## Summary
+
+| Asset type | Constants file           | Export object | Example usage in code        |
+|-----------|--------------------------|---------------|------------------------------|
+| Icons     | `icons.constants.ts`     | `ICONS`       | `import { ICONS } from '...'; <img src={ICONS.CROSS_ICON} />` |
+| Images    | `images.constants.ts`    | `IMAGES`      | `import { IMAGES } from '...'; <img src={IMAGES.HERO} />`     |
+
+When adding a new icon or image: add it to the correct constants file first, then use the exported constant everywhere. Never use a path like `@/assets/...` or `../assets/...` in components.

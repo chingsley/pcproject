@@ -11,8 +11,12 @@ export const COLORS = {
   MUTED_WHITE: '#C0C7D0', // placeholder & icon
 
   // Action buttons (upload, submit)
-  ACTION_BUTTON_BG: '#45556C',
+  ACTION_BUTTON_BG: '#2C3547',
   ACTION_BUTTON_TEXT: '#C0C7D0',
+
+  // New chat button (sidebar)
+  NEW_CHAT_BUTTON_BG: '#3A3E42',
+  SHORTCUT_KEY_BG: '#4A4E52', // slightly lighter than button, for ⌘ K labels
 
   // Surfaces / overlays (buttons, hover states)
   SURFACE_OVERLAY_LIGHT: 'rgba(255, 255, 255, 0.1)',

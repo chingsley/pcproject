@@ -9,7 +9,7 @@ All layout dimensions, spacing, and typography must be responsive. Use rem-based
 
 ## Rules
 
-1. **Use rem for dimensions**: Define sizes in `layout.constants.ts`, `spacing.constants.ts`, and `fonts.constants.ts` using **rem** (e.g. `1.25rem`, `16.25rem`). Do not add new px values for width, height, padding, margin, font-size, or border-radius in components.
+1. **Use rem for dimensions**: Define sizes in `layout.constants.ts`, `spacing.constants.ts`, and `fonts.constants.ts` using **rem** (e.g. `1.25rem`, `16.25rem`).
 2. **Reuse constants**: Before adding a size, check if it exists in `layout.constants.ts`, `spacing.constants.ts`, or `fonts.constants.ts`. Reuse existing constants. If it does not exist, add it to the appropriate constants file (with a comment showing px equivalent at 16px base), then use it.
 3. **Breakpoints**: Use `LAYOUT.BREAKPOINTS` from `layout.constants.ts` for media queries (e.g. `@media (max-width: ${LAYOUT.BREAKPOINTS.LARGE})`). Do not hardcode breakpoint values in components.
 4. **No inline px**: Do not write `10px`, `20px`, `260px`, etc. in styled-components or CSS. Use constants (rem-based) or relative units (%, vw, vh, em) where constants are not suitable.
@@ -17,8 +17,8 @@ All layout dimensions, spacing, and typography must be responsive. Use rem-based
 ## Where constants live
 
 - **layout.constants.ts**: SIDEBAR_WIDTH, PANEL_PADDING, BREAKPOINTS
-- **spacing.constants.ts**: BORDER_WIDTH, RADIUS_*, BUTTON_PADDING_*, FIXED_OFFSET
-- **fonts.constants.ts**: SIZE.* (all in rem)
+- **spacing.constants.ts**: BORDER*WIDTH, RADIUS*_, BUTTON*PADDING*_, FIXED_OFFSET
+- **fonts.constants.ts**: SIZE.\* (all in rem)
 
 ## Example
 
@@ -28,7 +28,9 @@ const Box = styled.div`
   padding: 20px;
   width: 260px;
   border-radius: 6px;
-  @media (max-width: 1024px) { width: 100%; }
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
 `;
 
 // ✅ GOOD – rem-based constants

@@ -45,7 +45,7 @@ const PlaceholderContent = styled.div`
 
 const ToggleButton = styled.button`
   position: fixed;
-  top: ${SPACING.FIXED_OFFSET};
+  top: ${LAYOUT.SIDEBAR_TOGGLE_TOP};
   left: ${SPACING.FIXED_OFFSET};
   background: ${COLORS.SURFACE_OVERLAY_LIGHT};
   border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
