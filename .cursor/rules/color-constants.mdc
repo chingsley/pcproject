@@ -1,0 +1,56 @@
+---
+description: Use only colors from colors.constants.ts; reuse existing, add new ones there first
+alwaysApply: true
+---
+
+# Color Constants Rule
+
+All color values must come from `src/constants/colors.constants.ts`. No hardcoded colors (hex, rgb, rgba, named) in components or styles.
+
+## Rules
+
+1. **Reuse first**: Before using any color, check if an equivalent already exists in `colors.constants.ts`. If it does, import and use that constant (e.g. `COLORS.TEXT_PRIMARY`, `COLORS.BORDER_SUBTLE`).
+2. **Add then use**: If the color does not exist, add it to `colors.constants.ts` with a clear, semantic name, then import and use it. Do not use the color in a component until it is defined in the constants file.
+3. **No exceptions**: Do not add inline color values in styled-components, CSS, or JSX (e.g. no `color: '#fff'`, `rgba(255,255,255,0.9)`, or `backgroundColor: 'red'` in component files).
+
+## Current constants (reference)
+
+Source of truth is `src/constants/colors.constants.ts`; this list may be outdated.
+
+- Layout: `SIDEBAR_BG`, `MAIN_BG`
+- Text: `TEXT_PRIMARY`
+- Surfaces: `SURFACE_OVERLAY_LIGHT`, `SURFACE_OVERLAY_MEDIUM`
+- Borders: `BORDER_SUBTLE`, `BORDER_SUBTLE_HOVER`
+
+When adding new constants, group them (e.g. under a comment like `// Text` or `// Borders`) and use semantic names.
+
+## Examples
+
+```ts
+// ❌ BAD – hardcoded in component
+const Box = styled.div`
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+`;
+
+// ✅ GOOD – reuse from constants (use SPACING.BORDER_WIDTH for borders)
+import { COLORS } from '../../../constants/colors.constants';
+import { SPACING } from '../../../constants/spacing.constants';
+const Box = styled.div`
+  color: ${COLORS.TEXT_PRIMARY};
+  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+`;
+```
+
+```ts
+// ❌ BAD – new color used before adding to constants
+const Card = styled.div`
+  background: #2a2a2a;  // not in constants
+`;
+
+// ✅ GOOD – add to colors.constants.ts first, then use
+// In colors.constants.ts: CARD_BG: '#2a2a2a',
+const Card = styled.div`
+  background: ${COLORS.CARD_BG};
+`;
+```
