@@ -7,7 +7,7 @@ interface PointsState {
 }
 
 const initialState: PointsState = {
-  percentage: 78,
+  percentage: 20,
 };
 
 const pointsSlice = createSlice({

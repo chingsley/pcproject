@@ -25,4 +25,7 @@ export const COLORS = {
   // Borders
   BORDER_SUBTLE: 'rgba(255, 255, 255, 0.2)',
   BORDER_SUBTLE_HOVER: 'rgba(255, 255, 255, 0.3)',
+
+  // Points loader ring
+  LOADER_FILL: '#14B8A6',
 } as const;

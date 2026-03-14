@@ -15,6 +15,8 @@ export const LAYOUT = {
   NEW_CHAT_BUTTON_HEIGHT: '2.875rem', // 46px
   NEW_CHAT_BUTTON_RADIUS: '1.4375rem', // 23px, pill (half of height)
   SIDEBAR_POINTS_HEIGHT: '12rem', // 192px
+  POINTS_LOADER_SIZE: '7rem',
+  POINTS_LOADER_GAP: '1rem', // space between loader ring and inner circle
   SIDEBAR_HISTORY_MIN_HEIGHT: '12rem', // 192px
   SIDEBAR_FOOTER_HEIGHT: '6rem', // 96px
   INPUT_BOX_WIDTH: '48rem', // 768px
