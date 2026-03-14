@@ -17,7 +17,7 @@ export const LAYOUT = {
   SIDEBAR_POINTS_HEIGHT: '12rem', // 192px
   POINTS_LOADER_SIZE: '7rem',
   POINTS_LOADER_GAP: '1rem', // space between loader ring and inner circle
-  SIDEBAR_HISTORY_MIN_HEIGHT: '12rem', // 192px
+  SIDEBAR_HISTORY_HEIGHT: '18rem', // 192px
   SIDEBAR_FOOTER_HEIGHT: '6rem', // 96px
   INPUT_BOX_WIDTH: '48rem', // 768px
   INPUT_BOX_HEIGHT: '9.125rem', // 146px

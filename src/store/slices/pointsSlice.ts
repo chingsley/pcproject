@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
+/** Game points progress (0–100). Used for the sidebar ring; game logic to be implemented later. */
 interface PointsState {
-  /** Points progress shown in sidebar (0–100). Updates as user earns points. */
   percentage: number;
 }
 

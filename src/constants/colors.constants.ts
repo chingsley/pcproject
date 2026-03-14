@@ -28,4 +28,19 @@ export const COLORS = {
 
   // Points loader ring
   LOADER_FILL: '#14B8A6',
+
+  // History item points badge – dynamic by tier (see HistoryItem)
+  GLASS_GREEN: 'rgba(6, 95, 70, 0.5)', // #065F46, points > 80
+  HISTORY_ITEM_POINTS_TEXT: '#6EE7B7', // green text
+  GLASS_AMBER: 'rgba(180, 83, 9, 0.45)', // amber, points > 60
+  HISTORY_ITEM_POINTS_AMBER_TEXT: '#FCD34D', // amber text
+  POINTS_NEUTRAL_BG: '#334155', // points > 0 and <= 60
+  POINTS_NEUTRAL_TEXT: '#94A3B8', // slate-400
+  GLASS_RED: 'rgba(127, 29, 29, 0.5)', // red, points === 0
+  HISTORY_ITEM_POINTS_RED_TEXT: '#FCA5A5', // red text
+
+  // History item row states
+  // HISTORY_ITEM_HOVER_BG: 'rgba(59, 130, 246, 0.25)', // glassy blue on hover
+  HISTORY_ITEM_HOVER_BG: 'rgba(56, 56, 77, 0.5)', // glassy blue on hover
+  HISTORY_ITEM_ACTIVE_BG: '#38384D', // selected item
 } as const;

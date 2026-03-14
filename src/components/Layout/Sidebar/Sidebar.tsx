@@ -4,8 +4,11 @@ import { FONTS } from '../../../constants/fonts.constants';
 import { ICONS } from '../../../constants/icons.constants';
 import { LAYOUT } from '../../../constants/layout.constants';
 import { SPACING } from '../../../constants/spacing.constants';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { setSelectedHistoryId } from '../../../store/slices/uiSlice';
 import SidebarToggle from './SidebarToggle';
 import Points from './PointsRing/Points';
+import HistorySection from './History/HistorySection';
 
 const SidebarContainer = styled.div<{ $isOpen: boolean; }>`
   position: fixed;
@@ -178,10 +181,6 @@ const SidebarPoints = styled.div`
   height: ${LAYOUT.SIDEBAR_POINTS_HEIGHT};
   border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
 `;
-const SidebarHistory = styled.div`
-  min-height: ${LAYOUT.SIDEBAR_HISTORY_MIN_HEIGHT};
-  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
-`;
 const SidebarFooter = styled.div`
   height: ${LAYOUT.SIDEBAR_FOOTER_HEIGHT};
   border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
@@ -192,6 +191,10 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isOpen }: SidebarProps) => {
+  const historyItems = useAppSelector((state) => state.history.items);
+  const selectedHistoryId = useAppSelector((state) => state.ui.selectedHistoryId);
+  const dispatch = useAppDispatch();
+
   return (
     <SidebarContainer $isOpen={isOpen}>
       <SidebarContent>
@@ -225,7 +228,11 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
         <MiddleSection />
 
         <BottomSection>
-          <SidebarHistory />
+          <HistorySection
+            items={historyItems}
+            selectedId={selectedHistoryId}
+            onSelectItem={(id) => dispatch(setSelectedHistoryId(id))}
+          />
           <SidebarFooter />
         </BottomSection>
       </SidebarContent>

@@ -84,6 +84,22 @@ This project is a web desktop AI chat interface built with modern web technologi
 
 ---
 
+### Points & gamification (state)
+
+**Status:** Implemented (state-based; earn logic to be added in chat/game stage)
+
+**Scope (separation of concerns):**
+- **Game progress (`pointsSlice`):** `percentage` (0–100) for the sidebar points ring. Game logic to be implemented later. Action: `setPointsPercentage`. Read by `Points` (ring) component.
+- **Chat history (`historySlice`):** `items` — one entry per chat (`id`, `title`, `points`). Each item’s points are what the user accumulated in that chat. Actions: `setHistoryItemPoints`, `addHistoryItemPoints`. Type `HistoryItemEntry` exported. Read by Sidebar → HistorySection → HistoryList; when adding “earned points” in a chat, dispatch `addHistoryItemPoints({ id: currentChatId, delta })` (or `setHistoryItemPoints`).
+
+**Deliverables:**
+- ✅ `pointsSlice`: `percentage` only; action `setPointsPercentage`
+- ✅ `historySlice`: `items` (HistoryItemEntry[]); actions `setHistoryItemPoints`, `addHistoryItemPoints`; type `HistoryItemEntry` exported
+- ✅ `HistoryItem` receives `title` and `points` as props (no Redux inside the item)
+- ✅ Sidebar reads `state.history.items` and passes data into HistorySection
+
+---
+
 ### Stage 3: Main Window Content (Planned)
 
 **Status:** To be defined
