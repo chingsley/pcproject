@@ -18,7 +18,6 @@ const SidebarHistoryItemWrapper = styled.button<{ $active?: boolean; }>`
   cursor: pointer;
   text-align: left;
   border-radius: ${SPACING.RADIUS_SMALLER};
-  // border: 1px solid red;
 
   &:hover {
     background: ${(props) =>

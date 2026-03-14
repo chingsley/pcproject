@@ -7,6 +7,8 @@ import lightbulbIcon from '../assets/lightbulb.icon.png';
 import sidebarToggleIcon from '../assets/sidbartoggle.icon.png';
 import newChatIcon from '../assets/newchat.icon.png';
 import historyCaptionIcon from '../assets/historycpation.icon.png';
+import settingsIcon from '../assets/settings.icon.png';
+import profile from '../assets/profile.icon.png';
 
 export const ICONS = {
   CROSS_ICON: crossIcon,
@@ -14,4 +16,6 @@ export const ICONS = {
   SIDEBAR_TOGGLE_ICON: sidebarToggleIcon,
   NEW_CHAT_ICON: newChatIcon,
   HISTORY_CAPTION_ICON: historyCaptionIcon,
+  SETTINGS_ICON: settingsIcon,
+  PROFILE_ICON: profile,
 } as const;

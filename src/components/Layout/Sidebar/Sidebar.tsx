@@ -9,6 +9,8 @@ import { setSelectedHistoryId } from '../../../store/slices/uiSlice';
 import SidebarToggle from './SidebarToggle';
 import Points from './PointsRing/Points';
 import HistorySection from './History/HistorySection';
+import SidebarFooter from './Footer/SidebarFooter';
+import { drawBorder } from '../../../utils/playground';
 
 const SidebarContainer = styled.div<{ $isOpen: boolean; }>`
   position: fixed;
@@ -41,24 +43,23 @@ const SidebarContent = styled.div`
 const TopSection = styled.div`
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
 `;
 
 const MiddleSection = styled.div`
   flex: 1;
-  min-height: 0;
-  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+  // border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
 `;
 
 const BottomSection = styled.div`
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
+  justify-content: space-between;
+  min-height: 28rem;
+  border: ${drawBorder('red')};
 `;
 
 const SidebarHeader = styled.div`
   height: ${LAYOUT.SIDEBAR_HEADER_HEIGHT};
-  // border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,7 +70,6 @@ const SidebarNewChat = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  // border: 1px solid red;
 `;
 
 const NewChatButton = styled.button`
@@ -146,7 +146,6 @@ const HeaderRow = styled.div`
   align-items: flex-end;
   justify-content: space-between;
   gap: ${SPACING.BUTTON_PADDING_X};
-  // border: 1px solid red;
 `;
 
 const HeaderLeft = styled.div`
@@ -179,12 +178,9 @@ const HeaderTitle = styled.span`
 `;
 const SidebarPoints = styled.div`
   height: ${LAYOUT.SIDEBAR_POINTS_HEIGHT};
-  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+  border-bottom: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
 `;
-const SidebarFooter = styled.div`
-  height: ${LAYOUT.SIDEBAR_FOOTER_HEIGHT};
-  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
-`;
+
 
 interface SidebarProps {
   isOpen: boolean;

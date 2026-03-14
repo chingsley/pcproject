@@ -62,7 +62,7 @@ const PercentSign = styled.span`
 
 const VIEWBOX_SIZE = 100;
 const CENTER = VIEWBOX_SIZE / 2;
-const RING_STROKE = 2;
+const RING_STROKE = 4;
 const RING_RADIUS = 50 - RING_STROKE / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 

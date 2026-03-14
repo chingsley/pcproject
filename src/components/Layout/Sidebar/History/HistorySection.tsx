@@ -2,17 +2,16 @@ import styled from 'styled-components';
 import { COLORS } from '../../../../constants/colors.constants';
 import { FONTS } from '../../../../constants/fonts.constants';
 import { ICONS } from '../../../../constants/icons.constants';
-import { LAYOUT } from '../../../../constants/layout.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
 import type { HistoryItemEntry } from '../../../../store/slices/historySlice';
 import HistoryList from './HistoryList';
+import { drawBorder } from '../../../../utils/playground.ts';
 
 const SectionWrapper = styled.div`
-  height: ${LAYOUT.SIDEBAR_HISTORY_HEIGHT};
+  height: 21rem;
   display: flex;
   flex-direction: column;
-  min-height: 0;
-  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+  // border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
 `;
 
 const CaptionWrapper = styled.div`
@@ -20,6 +19,8 @@ const CaptionWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: ${SPACING.BUTTON_PADDING_X};
+  border: ${drawBorder('white')};
+  margin-bottom: 0.5rem;
 `;
 
 const CaptionLeft = styled.div`

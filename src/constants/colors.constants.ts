@@ -40,7 +40,13 @@ export const COLORS = {
   HISTORY_ITEM_POINTS_RED_TEXT: '#FCA5A5', // red text
 
   // History item row states
-  // HISTORY_ITEM_HOVER_BG: 'rgba(59, 130, 246, 0.25)', // glassy blue on hover
   HISTORY_ITEM_HOVER_BG: 'rgba(56, 56, 77, 0.5)', // glassy blue on hover
   HISTORY_ITEM_ACTIVE_BG: '#38384D', // selected item
+
+  // Sidebar footer
+  FOOTER_BG: '#2B2A31',
+  FOOTER_SETTINGS_TEXT: '#C0C7D0', // light grey for Settings label
+  PROFILE_PILL_BG: '#38383D', // dark grey rounded container
+  PROFILE_PILL_BORDER: 'rgba(255, 255, 255, 0.12)',
+  PROFILE_AVATAR_GRADIENT: 'linear-gradient(180deg, #A78BFA 0%, #7C3AED 100%)', // purple
 } as const;

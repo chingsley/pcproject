@@ -1,13 +1,15 @@
 import styled from 'styled-components';
 import type { HistoryItemEntry } from '../../../../store/slices/historySlice';
 import HistoryItem from './HistoryItem';
+import { drawBorder } from '../../../../utils/playground';
 
 const List = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 0;
+  height: 100%;
   overflow-y: auto;
+  border: ${drawBorder('blue')};
 `;
 
 export interface HistoryListProps {
