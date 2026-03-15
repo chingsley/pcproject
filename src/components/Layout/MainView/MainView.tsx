@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { toggleSidebar } from '../../../store/slices/uiSlice';
 import InputBox from './InputBox/InputBox';
 import MessageList from './MessageList/MessageList';
+import { drawBorder } from '../../../utils/playground';
 
 const MainContainer = styled.div<{ $sidebarOpen: boolean; }>`
   margin-left: ${(props) => (props.$sidebarOpen ? LAYOUT.SIDEBAR_WIDTH : '0')};
@@ -19,10 +20,15 @@ const MainContainer = styled.div<{ $sidebarOpen: boolean; }>`
   padding: ${LAYOUT.PANEL_PADDING};
   display: flex;
   flex-direction: column;
+  border: ${drawBorder('red')};
 
   @media (max-width: ${LAYOUT.BREAKPOINTS.LARGE}) {
     margin-left: 0;
   }
+`;
+
+const HeaderContainer = styled.div`
+  border: ${drawBorder('blue')};
 `;
 
 const PlaceholderContent = styled.div`
@@ -106,6 +112,9 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
 
   return (
     <MainContainer $sidebarOpen={sidebarOpen}>
+      <HeaderContainer>
+        <h1>Header</h1>
+      </HeaderContainer>
       <ToggleButton onClick={handleToggle}>☰</ToggleButton>
       {!activeChatId ? (
         <PlaceholderContent>
