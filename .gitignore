@@ -26,3 +26,4 @@ dist-ssr
 # Environment variables
 .env
 # Note: .env.example should be tracked to provide template
+pending_tasks.md

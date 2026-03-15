@@ -17,4 +17,5 @@ export const SPACING = {
   SHORTCUT_KEY_PADDING_Y: '0.25rem', // 4px
   SHORTCUT_KEY_GAP: '0.25rem', // 4px between ⌘ and K
   SHORTCUT_KEY_SIZE: '1.25rem', // 20px min height for ⌘ K keys
+  TYPING_DOT_SIZE: '0.5rem', // 8px – typing loader dots
 } as const;

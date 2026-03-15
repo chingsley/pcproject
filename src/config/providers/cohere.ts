@@ -87,6 +87,8 @@ Respond ONLY with the JSON object, no additional text.`;
       parsed.modelId = 'command-r-plus';
     }
 
+    console.log('\n>>>>>>>>: parsed', parsed, '\n<<<<<<<<<<<');
+
     return parsed;
   },
 };

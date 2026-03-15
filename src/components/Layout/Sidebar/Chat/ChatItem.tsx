@@ -3,7 +3,7 @@ import { COLORS } from "../../../../constants/colors.constants";
 import { FONTS } from "../../../../constants/fonts.constants";
 import { SPACING } from "../../../../constants/spacing.constants";
 
-const ChatItemWrapper = styled.button<{ $active?: boolean }>`
+const ChatItemWrapper = styled.button<{ $active?: boolean; }>`
   width: 100%;
   height: 2rem;
   display: flex;
@@ -21,7 +21,7 @@ const ChatItemWrapper = styled.button<{ $active?: boolean }>`
 
   &:hover {
     background: ${(props) =>
-      props.$active ? COLORS.HISTORY_ITEM_ACTIVE_BG : COLORS.HISTORY_ITEM_HOVER_BG};
+    props.$active ? COLORS.HISTORY_ITEM_ACTIVE_BG : COLORS.HISTORY_ITEM_HOVER_BG};
   }
 `;
 
@@ -36,7 +36,7 @@ const ChatItemTitle = styled.p`
   min-width: 0;
 `;
 
-const ChatItemPoints = styled.span<{ $bg: string; $textColor: string }>`
+const ChatItemPoints = styled.span<{ $bg: string; $textColor: string; }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -55,11 +55,11 @@ export interface ChatItemProps {
   onClick?: () => void;
 }
 
-function getPointsBadgeStyle(points: number): { bg: string; textColor: string } {
-  if (points > 80) {
+function getPointsBadgeStyle(points: number): { bg: string; textColor: string; } {
+  if (points > 10) {
     return { bg: COLORS.GLASS_GREEN, textColor: COLORS.HISTORY_ITEM_POINTS_TEXT };
   }
-  if (points > 60) {
+  if (points > 5) {
     return { bg: COLORS.GLASS_AMBER, textColor: COLORS.HISTORY_ITEM_POINTS_AMBER_TEXT };
   }
   if (points > 0) {

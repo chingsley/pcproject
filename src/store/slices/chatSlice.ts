@@ -12,6 +12,8 @@ interface ChatState {
   activeChatId: string | null;
   sendingMessageChatId: string | null;
   sendError: string | null;
+  /** ID of the assistant message that should animate with typewriter (only when newly returned from API) */
+  lastAddedAssistantMessageId: string | null;
 }
 
 /** Get the chat id with the latest createdAt (most recent chat). */
@@ -37,45 +39,52 @@ const initialState: ChatState = {
   ),
   sendingMessageChatId: null,
   sendError: null,
+  lastAddedAssistantMessageId: null,
 };
 
 export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
   async (
     payload: { content: string; chatId?: string },
-    { rejectWithValue }
+    { dispatch, rejectWithValue }
   ) => {
+    const { content, chatId } = payload;
+
+    let currentChatId = chatId;
+    let isNewChat = false;
+
+    if (!currentChatId) {
+      currentChatId = `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      isNewChat = true;
+    }
+
+    const userMessageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const userMessage: Message = {
+      id: userMessageId,
+      chatId: currentChatId,
+      role: 'user',
+      content,
+      timestamp: new Date().toISOString(),
+    };
+
+    // Optimistic update: show user message immediately before API response
+    dispatch(
+      addOptimisticUserMessage({
+        chatId: currentChatId,
+        isNewChat,
+        userMessage,
+      })
+    );
+
     try {
-      const { content, chatId } = payload;
-
-      let currentChatId = chatId;
-      let isNewChat = false;
-
-      // Generate chat ID if needed
-      if (!currentChatId) {
-        currentChatId = `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        isNewChat = true;
-      }
-
-      // Generate user message ID
-      const userMessageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-      // Call API
       const apiResponse = await generateChatResponse(content);
 
-      // Generate assistant message ID
       const assistantMessageId = `msg_${Date.now() + 1}_${Math.random().toString(36).substr(2, 9)}`;
 
       return {
         chatId: currentChatId,
         isNewChat,
-        userMessage: {
-          id: userMessageId,
-          chatId: currentChatId,
-          role: 'user' as const,
-          content,
-          timestamp: new Date().toISOString(),
-        },
+        userMessage,
         assistantMessage: {
           id: assistantMessageId,
           chatId: currentChatId,
@@ -92,6 +101,14 @@ export const sendMessage = createAsyncThunk(
         promptPoint: apiResponse.promptPoint,
       };
     } catch (error) {
+      // Rollback optimistic update on failure
+      dispatch(
+        removeOptimisticUserMessage({
+          chatId: currentChatId,
+          userMessageId,
+          isNewChat,
+        })
+      );
       // Extract user-friendly error message
       let errorMessage = 'Failed to send message';
       
@@ -130,11 +147,65 @@ const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
+    addOptimisticUserMessage: (
+      state,
+      action: PayloadAction<{
+        chatId: string;
+        isNewChat: boolean;
+        userMessage: Message;
+      }>
+    ) => {
+      const { chatId, isNewChat, userMessage } = action.payload;
+
+      if (isNewChat) {
+        state.chatsById[chatId] = {
+          id: chatId,
+          title: userMessage.content.substring(0, 30),
+          points: 0,
+          createdAt: new Date().toISOString(),
+        };
+        state.chatIds.unshift(chatId);
+        state.messageIdsByChatId[chatId] = [];
+        state.activeChatId = chatId;
+      }
+
+      if (!state.messageIdsByChatId[chatId]) {
+        state.messageIdsByChatId[chatId] = [];
+      }
+      state.messagesById[userMessage.id] = userMessage;
+      state.messageIdsByChatId[chatId].push(userMessage.id);
+    },
+    removeOptimisticUserMessage: (
+      state,
+      action: PayloadAction<{
+        chatId: string;
+        userMessageId: string;
+        isNewChat: boolean;
+      }>
+    ) => {
+      const { chatId, userMessageId, isNewChat } = action.payload;
+      delete state.messagesById[userMessageId];
+      if (state.messageIdsByChatId[chatId]) {
+        state.messageIdsByChatId[chatId] = state.messageIdsByChatId[chatId].filter(
+          (id) => id !== userMessageId
+        );
+      }
+      if (isNewChat) {
+        delete state.chatsById[chatId];
+        state.chatIds = state.chatIds.filter((id) => id !== chatId);
+        state.activeChatId = getMostRecentChatId(state.chatsById, state.chatIds);
+      }
+    },
     setActiveChatId: (state, action: PayloadAction<string | null>) => {
       state.activeChatId = action.payload;
+      state.lastAddedAssistantMessageId = null;
     },
     clearActiveChatId: (state) => {
       state.activeChatId = null;
+      state.lastAddedAssistantMessageId = null;
+    },
+    clearLastAddedAssistantMessageId: (state) => {
+      state.lastAddedAssistantMessageId = null;
     },
   },
   extraReducers: (builder) => {
@@ -143,45 +214,29 @@ const chatSlice = createSlice({
         const chatId = action.meta.arg.chatId || 'new';
         state.sendingMessageChatId = chatId;
         state.sendError = null;
+        state.lastAddedAssistantMessageId = null;
       })
       .addCase(sendMessage.fulfilled, (state, action) => {
         const {
           chatId,
           isNewChat,
-          userMessage,
           assistantMessage,
           chatTitle,
           promptPoint,
         } = action.payload;
 
-        // Add or update chat
-        if (isNewChat) {
-          state.chatsById[chatId] = {
-            id: chatId,
-            title: chatTitle.substring(0, 30), // Truncate to 30 chars
-            points: promptPoint,
-            createdAt: new Date().toISOString(),
-          };
-          state.chatIds.unshift(chatId); // Prepend to beginning
-          state.activeChatId = chatId;
-          state.messageIdsByChatId[chatId] = [];
-        } else {
-          // Update existing chat
-          if (state.chatsById[chatId]) {
-            state.chatsById[chatId].title = chatTitle.substring(0, 30);
-            state.chatsById[chatId].points += promptPoint;
-          }
+        // Update chat (user message and chat already added optimistically)
+        if (isNewChat && state.chatsById[chatId]) {
+          state.chatsById[chatId].title = chatTitle.substring(0, 30);
+          state.chatsById[chatId].points = promptPoint;
+        } else if (!isNewChat && state.chatsById[chatId]) {
+          state.chatsById[chatId].title = chatTitle.substring(0, 30);
+          state.chatsById[chatId].points += promptPoint;
         }
 
-        // Add messages
-        state.messagesById[userMessage.id] = userMessage;
         state.messagesById[assistantMessage.id] = assistantMessage;
-
-        // Add message IDs to chat
-        if (!state.messageIdsByChatId[chatId]) {
-          state.messageIdsByChatId[chatId] = [];
-        }
-        state.messageIdsByChatId[chatId].push(userMessage.id, assistantMessage.id);
+        state.messageIdsByChatId[chatId].push(assistantMessage.id);
+        state.lastAddedAssistantMessageId = assistantMessage.id;
 
         state.sendingMessageChatId = null;
       })
@@ -192,5 +247,11 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setActiveChatId, clearActiveChatId } = chatSlice.actions;
+export const {
+  addOptimisticUserMessage,
+  removeOptimisticUserMessage,
+  setActiveChatId,
+  clearActiveChatId,
+  clearLastAddedAssistantMessageId,
+} = chatSlice.actions;
 export default chatSlice.reducer;

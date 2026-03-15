@@ -1,9 +1,11 @@
+import { useCallback, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { COLORS } from '../../../constants/colors.constants';
 import { FONTS } from '../../../constants/fonts.constants';
 import { LAYOUT } from '../../../constants/layout.constants';
 import { SPACING } from '../../../constants/spacing.constants';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { clearLastAddedAssistantMessageId } from '../../../store/slices/chatSlice';
 import { toggleSidebar } from '../../../store/slices/uiSlice';
 import InputBox from './InputBox/InputBox';
 import MessageList from './MessageList/MessageList';
@@ -133,10 +135,30 @@ interface MainViewProps {
 const MainView = ({ sidebarOpen }: MainViewProps) => {
   const dispatch = useAppDispatch();
   const activeChatId = useAppSelector((state) => state.chat.activeChatId);
+  const messageIds = useAppSelector((state) =>
+    activeChatId ? state.chat.messageIdsByChatId[activeChatId] ?? [] : []
+  );
+  const chatContentRef = useRef<HTMLDivElement>(null);
 
   const handleToggle = () => {
     dispatch(toggleSidebar());
   };
+
+  const scrollToBottom = useCallback(() => {
+    const el = chatContentRef.current;
+    if (el) el.scrollTop = el.scrollHeight - el.clientHeight;
+  }, []);
+
+  const handleAnimationComplete = useCallback(() => {
+    dispatch(clearLastAddedAssistantMessageId());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (messageIds.length > 0 && chatContentRef.current) {
+      const el = chatContentRef.current;
+      el.scrollTop = el.scrollHeight - el.clientHeight;
+    }
+  }, [messageIds.length, activeChatId]);
 
   return (
     <MainContainer $sidebarOpen={sidebarOpen}>
@@ -157,8 +179,11 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
         </PlaceholderContent>
       ) : (
         <>
-          <ChatContent>
-            <MessageList />
+          <ChatContent ref={chatContentRef}>
+            <MessageList
+              onScrollToBottom={scrollToBottom}
+              onAnimationComplete={handleAnimationComplete}
+            />
           </ChatContent>
           <InputBoxWrapper>
             <InputBox />

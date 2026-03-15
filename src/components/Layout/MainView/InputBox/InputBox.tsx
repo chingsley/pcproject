@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import styled from 'styled-components';
 import { COLORS } from '../../../../constants/colors.constants';
 import { FONTS } from '../../../../constants/fonts.constants';
@@ -106,6 +106,14 @@ const InputBox = () => {
   const activeChatId = useAppSelector((state) => state.chat.activeChatId);
   const isSending = useAppSelector((state) => state.chat.sendingMessageChatId !== null);
   const sendError = useAppSelector((state) => state.chat.sendError);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      formRef.current?.requestSubmit();
+    }
+  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -134,7 +142,7 @@ const InputBox = () => {
 
   return (
     <Wrapper>
-      <Box as="form" onSubmit={handleSubmit}>
+      <Box as="form" ref={formRef} onSubmit={handleSubmit}>
         <InputRow>
           <SearchIcon />
           <TextArea
@@ -143,6 +151,7 @@ const InputBox = () => {
             aria-label="Ask anything"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
             disabled={isSending}
           />
         </InputRow>

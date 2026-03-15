@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FiCopy, FiShare2 } from 'react-icons/fi';
 import { COLORS } from '../../../../constants/colors.constants';
@@ -56,12 +57,54 @@ const ActionIcon = styled.span`
   line-height: 1;
 `;
 
+const TYPEWRITER_MS_PER_CHAR = 5;
+
 export interface AssistantMessageProps {
   content: string;
   answer?: string;
+  shouldAnimate?: boolean;
+  onScrollToBottom?: () => void;
+  onAnimationComplete?: () => void;
 }
 
-const AssistantMessage = ({ content, answer }: AssistantMessageProps) => {
+const AssistantMessage = ({
+  content,
+  answer,
+  shouldAnimate = false,
+  onScrollToBottom,
+  onAnimationComplete,
+}: AssistantMessageProps) => {
+  const [visibleContent, setVisibleContent] = useState(() =>
+    shouldAnimate ? '' : content
+  );
+
+  useEffect(() => {
+    if (!shouldAnimate) {
+      setVisibleContent(content);
+      return;
+    }
+    setVisibleContent('');
+    let index = 0;
+    const fullText = content;
+    const interval = setInterval(() => {
+      index += 1;
+      if (index >= fullText.length) {
+        setVisibleContent(fullText);
+        clearInterval(interval);
+        onAnimationComplete?.();
+        return;
+      }
+      setVisibleContent(fullText.slice(0, index));
+    }, TYPEWRITER_MS_PER_CHAR);
+    return () => clearInterval(interval);
+  }, [content, shouldAnimate, onAnimationComplete]);
+
+  useEffect(() => {
+    if (shouldAnimate && visibleContent && onScrollToBottom) {
+      const id = requestAnimationFrame(() => onScrollToBottom());
+      return () => cancelAnimationFrame(id);
+    }
+  }, [shouldAnimate, visibleContent, onScrollToBottom]);
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(answer || content);
@@ -88,7 +131,7 @@ const AssistantMessage = ({ content, answer }: AssistantMessageProps) => {
   return (
     <CanvaWrapper>
       <div>
-        <Canva>{content}</Canva>
+        <Canva>{visibleContent}</Canva>
         <Actions>
           <ActionButton onClick={handleCopy} aria-label="Copy message" title="Copy">
             <ActionIcon>

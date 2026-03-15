@@ -29,13 +29,28 @@ export const COLORS = {
   // Points loader ring
   LOADER_FILL: '#14B8A6',
 
-  // History item points badge – dynamic by tier (see HistoryItem)
+  // Typing loader dots (oscillating)
+  TYPING_DOT_GREEN: '#14B8A6', // teal, matches LOADER_FILL
+  TYPING_DOT_AMBER: '#FCD34D', // amber
+  TYPING_DOT_BLUE: '#60A5FA', // soft blue
+
+  // glassy green
   GLASS_GREEN: 'rgba(6, 95, 70, 0.5)', // #065F46, points > 80
   HISTORY_ITEM_POINTS_TEXT: '#6EE7B7', // green text
+
+  // glassy amber
   GLASS_AMBER: 'rgba(180, 83, 9, 0.45)', // amber, points > 60
   HISTORY_ITEM_POINTS_AMBER_TEXT: '#FCD34D', // amber text
+
+  // glassy neutral (try chainging it to glassy blue)
   POINTS_NEUTRAL_BG: '#334155', // points > 0 and <= 60
   POINTS_NEUTRAL_TEXT: '#94A3B8', // slate-400
+
+  // glassy blue
+  // POINTS_BLUE_BG: '#214276', // points > 0 and <= 60
+  // POINTS_BLUE_TEXT: '#2B7FFF', // slate-400
+
+  // glassy red
   GLASS_RED: 'rgba(127, 29, 29, 0.5)', // red, points === 0
   HISTORY_ITEM_POINTS_RED_TEXT: '#FCA5A5', // red text
 

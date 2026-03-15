@@ -1,14 +1,16 @@
 import type { ApiChatResponse, ChatApiProvider } from '../types/chat';
 import { geminiProvider } from './providers/gemini';
 import { cohereProvider } from './providers/cohere';
+import { simulatedAIChatProvider } from './providers/simulation';
 
 const PROVIDER_MAP: Record<string, ChatApiProvider> = {
   gemini: geminiProvider,
   cohere: cohereProvider,
+  simulation: simulatedAIChatProvider,
 };
 
 function getProvider(): ChatApiProvider {
-  const providerName = import.meta.env.VITE_CHAT_PROVIDER || 'gemini';
+  const providerName = import.meta.env.VITE_CHAT_PROVIDER || 'cohere';
   const provider = PROVIDER_MAP[providerName];
 
   if (!provider) {
