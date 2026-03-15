@@ -5,8 +5,10 @@ import { ICONS } from '../../../constants/icons.constants';
 import { LAYOUT } from '../../../constants/layout.constants';
 
 const ToggleButton = styled.button`
-  width: ${LAYOUT.SIDEBAR_TOGGLE_ICON_SIZE};
-  height: ${LAYOUT.SIDEBAR_TOGGLE_ICON_SIZE};
+  // width: ${LAYOUT.SIDEBAR_TOGGLE_ICON_SIZE};
+  // height: ${LAYOUT.SIDEBAR_TOGGLE_ICON_SIZE};
+  height: 1.5625rem;
+  width: auto;
   padding: 0;
   background: transparent;
   border: none;

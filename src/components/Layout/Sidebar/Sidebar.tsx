@@ -6,7 +6,7 @@ import { LAYOUT } from '../../../constants/layout.constants';
 import { SPACING } from '../../../constants/spacing.constants';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { setActiveChatId, clearActiveChatId } from '../../../store/slices/chatSlice';
-import SidebarToggle from './SidebarToggle';
+import SidebarHeader from './Header';
 import Points from './PointsRing/Points';
 import ChatSection from './Chat/ChatSection';
 import SidebarFooter from './Footer/SidebarFooter';
@@ -38,11 +38,13 @@ const SidebarContent = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 0;
+  border: ${drawBorder('green')};
 `;
 
 const TopSection = styled.div`
   display: flex;
   flex-direction: column;
+  border: ${drawBorder('yellow')};
 `;
 
 const MiddleSection = styled.div`
@@ -55,14 +57,7 @@ const BottomSection = styled.div`
   flex-direction: column;
   justify-content: space-between;
   min-height: 28rem;
-  border: ${drawBorder('red')};
-`;
-
-const SidebarHeader = styled.div`
-  height: ${LAYOUT.SIDEBAR_HEADER_HEIGHT};
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: ${drawBorder('yellow')};
 `;
 
 const SidebarNewChat = styled.div`
@@ -139,43 +134,6 @@ const ShortcutKey = styled.span`
   line-height: 1;
 `;
 
-const HeaderRow = styled.div`
-  height: ${LAYOUT.SIDEBAR_HEADER_ROW_HEIGHT};
-  width: 100%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: ${SPACING.BUTTON_PADDING_X};
-`;
-
-const HeaderLeft = styled.div`
-  display: flex;
-  align-items: flex-end;
-  gap: 0.175rem;;
-  min-width: 0;
-`;
-
-const LightbulbIcon = styled.img`
-  height: ${LAYOUT.LIGHTBULB_ICON_HEIGHT};
-  width: auto;
-  object-fit: contain;
-  object-position: bottom;
-  flex-shrink: 0;
-  display: block;
-  vertical-align: bottom;
-`;
-
-const HeaderTitle = styled.span`
-  font-family: ${FONTS.FAMILY.PRIMARY};
-  font-size: ${FONTS.SIZE.XLARGEPLUS};
-  font-weight: ${FONTS.WEIGHT.NORMAL};
-  color: ${COLORS.TEXT_PRIMARY};
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1;
-  display: inline-block;
-`;
 const SidebarPoints = styled.div`
   height: ${LAYOUT.SIDEBAR_POINTS_HEIGHT};
   border-bottom: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
@@ -207,15 +165,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
     <SidebarContainer $isOpen={isOpen}>
       <SidebarContent>
         <TopSection>
-          <SidebarHeader>
-            <HeaderRow>
-              <HeaderLeft>
-                <LightbulbIcon src={ICONS.LIGHTBULB_ICON} alt="" />
-                <HeaderTitle>AR | Mode</HeaderTitle>
-              </HeaderLeft>
-              <SidebarToggle />
-            </HeaderRow>
-          </SidebarHeader>
+          <SidebarHeader />
           <SidebarNewChat>
             <NewChatButton type="button" onClick={handleNewChat}>
               <NewChatButtonLeft>

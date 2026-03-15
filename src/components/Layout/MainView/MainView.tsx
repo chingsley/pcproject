@@ -8,6 +8,8 @@ import { toggleSidebar } from '../../../store/slices/uiSlice';
 import InputBox from './InputBox/InputBox';
 import MessageList from './MessageList/MessageList';
 import { drawBorder } from '../../../utils/playground';
+import { FiShare } from "react-icons/fi";
+
 
 const MainContainer = styled.div<{ $sidebarOpen: boolean; }>`
   margin-left: ${(props) => (props.$sidebarOpen ? LAYOUT.SIDEBAR_WIDTH : '0')};
@@ -28,7 +30,23 @@ const MainContainer = styled.div<{ $sidebarOpen: boolean; }>`
 `;
 
 const HeaderContainer = styled.div`
+  height: ${LAYOUT.HEADER_ROW_HEIGHT};
   border: ${drawBorder('blue')};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const HeaderTitle = styled.span`
+  font-family: ${FONTS.FAMILY.PRIMARY};
+  font-size: ${FONTS.SIZE.XLARGEPLUS};
+  font-weight: ${FONTS.WEIGHT.NORMAL};
+  color: ${COLORS.TEXT_PRIMARY};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+  display: inline-block;
 `;
 
 const PlaceholderContent = styled.div`
@@ -98,6 +116,16 @@ const ToggleButton = styled.button`
   }
 `;
 
+const ShareButton = styled.div`
+  background: transparent;
+  border: ${drawBorder('green')};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+`;
+
 interface MainViewProps {
   sidebarOpen: boolean;
 }
@@ -113,7 +141,10 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
   return (
     <MainContainer $sidebarOpen={sidebarOpen}>
       <HeaderContainer>
-        <h1>Header</h1>
+        <HeaderTitle>Active Research</HeaderTitle>
+        <ShareButton>
+          <FiShare />
+        </ShareButton>
       </HeaderContainer>
       <ToggleButton onClick={handleToggle}>☰</ToggleButton>
       {!activeChatId ? (

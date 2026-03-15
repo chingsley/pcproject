@@ -6,7 +6,7 @@ export const LAYOUT = {
   SIDEBAR_WIDTH: '20.25rem', // 260px at 16px base
   PANEL_PADDING: '1.25rem', // 20px at 16px base
   SIDEBAR_HEADER_HEIGHT: '6rem', // 96px
-  SIDEBAR_HEADER_ROW_HEIGHT: '3.125rem', // 50px – header row (lightbulb + title | toggle)
+  HEADER_ROW_HEIGHT: '2.2rem', // 50px – header row (lightbulb + title | toggle)
   /** Vertical position of sidebar toggle / main view hamburger (same horizontal level) */
   SIDEBAR_TOGGLE_TOP: '4.25rem', // padding + (header - row)/2 + row - toggle height
   LIGHTBULB_ICON_HEIGHT: '3.125rem', // 50px
