@@ -12,7 +12,9 @@ const BubbleWrapper = styled.div`
 const Bubble = styled.div`
   max-width: 70%;
   padding: ${SPACING.BUTTON_PADDING_X};
-  background: ${COLORS.ACTION_BUTTON_BG};
+  // background: ${COLORS.ACTION_BUTTON_BG};
+  // background: #2f3e5c;
+  background: #2f325c69;
   border-radius: ${SPACING.RADIUS_SMALL};
   color: ${COLORS.TEXT_PRIMARY};
   font-family: ${FONTS.FAMILY.PRIMARY};

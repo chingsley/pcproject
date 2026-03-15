@@ -1,22 +1,21 @@
 import styled from 'styled-components';
+import { FiCopy, FiShare2 } from 'react-icons/fi';
 import { COLORS } from '../../../../constants/colors.constants';
 import { FONTS } from '../../../../constants/fonts.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
 
-const BubbleWrapper = styled.div`
+const CanvaWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   margin-bottom: ${SPACING.BUTTON_PADDING_X};
 `;
 
-const Bubble = styled.div`
-  max-width: 70%;
-  padding: ${SPACING.BUTTON_PADDING_X};
-  background: ${COLORS.INPUT_BG};
+const Canva = styled.div`
+  width: 100%;
   border-radius: ${SPACING.RADIUS_SMALL};
-  color: ${COLORS.TEXT_PRIMARY};
   font-family: ${FONTS.FAMILY.PRIMARY};
-  font-size: ${FONTS.SIZE.MEDIUM};
+  font-size: ${FONTS.SIZE.LARGE};
+  color: ${COLORS.MUTED_WHITE};
   line-height: 1.5;
 `;
 
@@ -27,13 +26,16 @@ const Actions = styled.div`
 `;
 
 const ActionButton = styled.button`
-  padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
+  width: ${SPACING.UPLOAD_BUTTON_SIZE};
+  height: ${SPACING.UPLOAD_BUTTON_SIZE};
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: ${COLORS.ACTION_BUTTON_BG};
   border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
   border-radius: ${SPACING.RADIUS_SMALLER};
   color: ${COLORS.ACTION_BUTTON_TEXT};
-  font-family: ${FONTS.FAMILY.PRIMARY};
-  font-size: ${FONTS.SIZE.SMALL};
+  padding: 0;
   cursor: pointer;
   transition: opacity 0.2s ease;
 
@@ -44,6 +46,14 @@ const ActionButton = styled.button`
   &:active {
     transform: scale(0.98);
   }
+`;
+
+const ActionIcon = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: ${FONTS.SIZE.LARGE};
+  line-height: 1;
 `;
 
 export interface AssistantMessageProps {
@@ -76,15 +86,23 @@ const AssistantMessage = ({ content, answer }: AssistantMessageProps) => {
   };
 
   return (
-    <BubbleWrapper>
+    <CanvaWrapper>
       <div>
-        <Bubble>{content}</Bubble>
+        <Canva>{content}</Canva>
         <Actions>
-          <ActionButton onClick={handleCopy}>Copy</ActionButton>
-          <ActionButton onClick={handleShare}>Share</ActionButton>
+          <ActionButton onClick={handleCopy} aria-label="Copy message" title="Copy">
+            <ActionIcon>
+              <FiCopy />
+            </ActionIcon>
+          </ActionButton>
+          <ActionButton onClick={handleShare} aria-label="Share message" title="Share">
+            <ActionIcon>
+              <FiShare2 />
+            </ActionIcon>
+          </ActionButton>
         </Actions>
       </div>
-    </BubbleWrapper>
+    </CanvaWrapper>
   );
 };
 

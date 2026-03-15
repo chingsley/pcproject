@@ -4,12 +4,13 @@ import { COLORS } from '../../../../constants/colors.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
 import UserMessage from './UserMessage';
 import AssistantMessage from './AssistantMessage';
+import { LAYOUT } from '../../../../constants/layout.constants';
 
 const ListContainer = styled.div`
-  flex: 1;
-  overflow-y: auto;
   padding: ${SPACING.FIXED_OFFSET};
-  min-height: 0;
+  width: 100%;
+  max-width: ${LAYOUT.INPUT_BOX_WIDTH};
+  margin: 0 auto;
 `;
 
 const EmptyState = styled.div`

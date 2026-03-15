@@ -8,9 +8,12 @@ import { toggleSidebar } from '../../../store/slices/uiSlice';
 import InputBox from './InputBox/InputBox';
 import MessageList from './MessageList/MessageList';
 
-const MainContainer = styled.div<{ $sidebarOpen: boolean }>`
+const MainContainer = styled.div<{ $sidebarOpen: boolean; }>`
   margin-left: ${(props) => (props.$sidebarOpen ? LAYOUT.SIDEBAR_WIDTH : '0')};
+  height: 100vh;
   min-height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
   background-color: ${COLORS.MAIN_BG};
   transition: margin-left 0.3s ease-in-out;
   padding: ${LAYOUT.PANEL_PADDING};
@@ -47,6 +50,15 @@ const ChatContent = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 const InputBoxWrapper = styled.div`
