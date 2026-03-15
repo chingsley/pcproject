@@ -86,21 +86,66 @@ This project is a web desktop AI chat interface built with modern web technologi
 
 ### Points & gamification (state)
 
-**Status:** Implemented (state-based; earn logic to be added in chat/game stage)
+**Status:** Implemented (state-based; earn logic integrated via chat flow)
 
 **Scope (separation of concerns):**
 - **Game progress (`pointsSlice`):** `percentage` (0–100) for the sidebar points ring. Game logic to be implemented later. Action: `setPointsPercentage`. Read by `Points` (ring) component.
-- **Chat history (`historySlice`):** `items` — one entry per chat (`id`, `title`, `points`). Each item’s points are what the user accumulated in that chat. Actions: `setHistoryItemPoints`, `addHistoryItemPoints`. Type `HistoryItemEntry` exported. Read by Sidebar → HistorySection → HistoryList; when adding “earned points” in a chat, dispatch `addHistoryItemPoints({ id: currentChatId, delta })` (or `setHistoryItemPoints`).
+- **Chat data (`chatSlice`):** Single source of truth for chats and messages. Each chat has `points` that accumulate from API `promptPoint` (5 per message). Actions: `setActiveChatId`, `clearActiveChatId`; thunk `sendMessage`. Types exported in `src/types/chat.ts`. Read by Sidebar ChatSection.
 
 **Deliverables:**
 - ✅ `pointsSlice`: `percentage` only; action `setPointsPercentage`
-- ✅ `historySlice`: `items` (HistoryItemEntry[]); actions `setHistoryItemPoints`, `addHistoryItemPoints`; type `HistoryItemEntry` exported
-- ✅ `HistoryItem` receives `title` and `points` as props (no Redux inside the item)
-- ✅ Sidebar reads `state.history.items` and passes data into HistorySection
+- ✅ `chatSlice`: `chatsById` (with title + points), `chatIds`, messages, `activeChatId`; actions `setActiveChatId`, `clearActiveChatId`; thunk `sendMessage`; type `Chat`, `Message` exported (in `src/types/chat.ts`)
+- ✅ `ChatItem` receives `title` and `points` as props (no Redux inside the item)
+- ✅ Sidebar reads `state.chat.chatIds` and `chatsById` and passes data into ChatSection
 
 ---
 
-### Stage 3: Main Window Content (Planned)
+### Stage 3: AI Chat Interface ✅
+
+**Status:** Implemented
+
+**Scope:**
+- Full AI chat flow with Redux chat/message state and API thunk
+- Centered-to-bottom input transition on first message
+- Sidebar chat list driven by new sessions with API chatTitle
+- Message list with user (right) / AI (left) layout and Copy/Share actions
+- Modular, model-switchable API layer (provider pattern)
+- Single source of truth for all data (chat slice only, no historySlice)
+
+**Data Schema:**
+- **API Response (required):** `chatTitle`, `msgResponse`, `promptPoint`, `messageId`, `question`, `answer` (+ optional `timestamp`, `modelId`)
+- **Normalized Client State:**
+  - `chatsById: Record<string, Chat>` — id, title, points, createdAt
+  - `chatIds: string[]` — order for sidebar (newest first)
+  - `messagesById: Record<string, Message>` — all messages
+  - `messageIdsByChatId: Record<string, string[]>` — message order per chat
+  - `activeChatId: string | null` — current conversation
+
+**Deliverables:**
+- ✅ `src/types/chat.ts` — API response type, Message, Chat, ChatApiProvider interface
+- ✅ `src/config/chatApi.ts` — Single entry point for chat API (provider pattern)
+- ✅ `src/config/providers/gemini.ts` — Gemini provider implementation (swappable)
+- ✅ `.env.example` — Vite environment variable documentation
+- ✅ `src/store/slices/chatSlice.ts` — Normalized state, `sendMessage` thunk, actions for activeChatId
+- ✅ Removed `historySlice.ts` — Single source of truth in chat slice
+- ✅ Updated `src/store/index.ts` — Registered chat reducer, removed history reducer
+- ✅ `src/components/Layout/Sidebar/Chat/` — Renamed from History (ChatSection, ChatList, ChatItem)
+- ✅ Updated Sidebar — Reads from `state.chat`, New Chat clears activeChatId, selecting chat sets activeChatId
+- ✅ `src/components/Layout/MainView/MessageList/` — MessageList, UserMessage, AssistantMessage with Copy/Share
+- ✅ Updated MainView — Conditional layout (centered placeholder vs message list + fixed bottom input)
+- ✅ Updated InputBox — Controlled input, submit dispatches sendMessage thunk, loading state
+
+**Key Features:**
+- **Provider pattern:** Easy to switch between AI models (Gemini, OpenAI, etc.) via env config
+- **State-based sidebar:** Chat list and points come from `state.chat.chatsById` and `chatIds` (newest first)
+- **Per-chat points:** Each chat accumulates points from `promptPoint` (5 per message)
+- **Dynamic point badges:** Color-coded by value (green >80, amber >60, neutral >0, red =0)
+- **Centered-to-bottom transition:** Input starts centered (empty state), moves to bottom after first message
+- **Copy/Share actions:** Assistant messages have Copy (clipboard) and Share (native share API with fallback)
+
+---
+
+### Stage 4: Main Window Content (Planned)
 
 **Status:** To be defined
 

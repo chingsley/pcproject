@@ -3,15 +3,13 @@ import { COLORS } from '../../../../constants/colors.constants';
 import { FONTS } from '../../../../constants/fonts.constants';
 import { ICONS } from '../../../../constants/icons.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
-import type { HistoryItemEntry } from '../../../../store/slices/historySlice';
-import HistoryList from './HistoryList';
-import { drawBorder } from '../../../../utils/playground.ts';
+import type { Chat } from '../../../../types/chat';
+import ChatList from './ChatList';
 
 const SectionWrapper = styled.div`
   height: 21rem;
   display: flex;
   flex-direction: column;
-  // border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
 `;
 
 const CaptionWrapper = styled.div`
@@ -19,7 +17,6 @@ const CaptionWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: ${SPACING.BUTTON_PADDING_X};
-  border: ${drawBorder('white')};
   margin-bottom: 0.5rem;
 `;
 
@@ -75,14 +72,14 @@ const TotalValue = styled.span`
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2) inset;
 `;
 
-export interface HistorySectionProps {
-  items: HistoryItemEntry[];
-  selectedId: string | null;
-  onSelectItem: (id: string) => void;
+export interface ChatSectionProps {
+  chats: Chat[];
+  activeChatId: string | null;
+  onSelectChat: (id: string) => void;
 }
 
-const HistorySection = ({ items, selectedId, onSelectItem }: HistorySectionProps) => {
-  const totalPoints = items.reduce((sum, item) => sum + item.points, 0);
+const ChatSection = ({ chats, activeChatId, onSelectChat }: ChatSectionProps) => {
+  const totalPoints = chats.reduce((sum, chat) => sum + chat.points, 0);
 
   return (
     <SectionWrapper>
@@ -96,13 +93,13 @@ const HistorySection = ({ items, selectedId, onSelectItem }: HistorySectionProps
           <TotalValue>{totalPoints}</TotalValue>
         </CaptionRight>
       </CaptionWrapper>
-      <HistoryList
-        items={items}
-        selectedId={selectedId}
-        onSelectItem={onSelectItem}
+      <ChatList
+        chats={chats}
+        activeChatId={activeChatId}
+        onSelectChat={onSelectChat}
       />
     </SectionWrapper>
   );
 };
 
-export default HistorySection;
+export default ChatSection;

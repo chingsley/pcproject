@@ -5,10 +5,10 @@ import { ICONS } from '../../../constants/icons.constants';
 import { LAYOUT } from '../../../constants/layout.constants';
 import { SPACING } from '../../../constants/spacing.constants';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { setSelectedHistoryId } from '../../../store/slices/uiSlice';
+import { setActiveChatId, clearActiveChatId } from '../../../store/slices/chatSlice';
 import SidebarToggle from './SidebarToggle';
 import Points from './PointsRing/Points';
-import HistorySection from './History/HistorySection';
+import ChatSection from './Chat/ChatSection';
 import SidebarFooter from './Footer/SidebarFooter';
 import { drawBorder } from '../../../utils/playground';
 
@@ -187,9 +187,21 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isOpen }: SidebarProps) => {
-  const historyItems = useAppSelector((state) => state.history.items);
-  const selectedHistoryId = useAppSelector((state) => state.ui.selectedHistoryId);
   const dispatch = useAppDispatch();
+  const chatIds = useAppSelector((state) => state.chat.chatIds);
+  const chatsById = useAppSelector((state) => state.chat.chatsById);
+  const activeChatId = useAppSelector((state) => state.chat.activeChatId);
+
+  // Convert to Chat array for ChatSection
+  const chats = chatIds.map((id) => chatsById[id]);
+
+  const handleNewChat = () => {
+    dispatch(clearActiveChatId());
+  };
+
+  const handleSelectChat = (chatId: string) => {
+    dispatch(setActiveChatId(chatId));
+  };
 
   return (
     <SidebarContainer $isOpen={isOpen}>
@@ -205,7 +217,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
             </HeaderRow>
           </SidebarHeader>
           <SidebarNewChat>
-            <NewChatButton type="button">
+            <NewChatButton type="button" onClick={handleNewChat}>
               <NewChatButtonLeft>
                 <NewChatButtonIcon src={ICONS.NEW_CHAT_ICON} alt="" />
                 New Chat
@@ -224,10 +236,10 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
         <MiddleSection />
 
         <BottomSection>
-          <HistorySection
-            items={historyItems}
-            selectedId={selectedHistoryId}
-            onSelectItem={(id) => dispatch(setSelectedHistoryId(id))}
+          <ChatSection
+            chats={chats}
+            activeChatId={activeChatId}
+            onSelectChat={handleSelectChat}
           />
           <SidebarFooter />
         </BottomSection>

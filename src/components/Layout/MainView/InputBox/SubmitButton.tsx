@@ -16,15 +16,24 @@ const Button = styled.button`
   font-weight: ${FONTS.WEIGHT.MEDIUM};
   transition: opacity 0.2s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     opacity: 0.9;
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 
-const SubmitButton = () => <Button type="submit">Submit</Button>;
+const SubmitButton = ({ disabled }: { disabled?: boolean }) => (
+  <Button type="submit" disabled={disabled}>
+    Submit
+  </Button>
+);
 
 export default SubmitButton;

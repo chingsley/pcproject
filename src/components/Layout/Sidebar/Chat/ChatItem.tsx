@@ -3,7 +3,7 @@ import { COLORS } from "../../../../constants/colors.constants";
 import { FONTS } from "../../../../constants/fonts.constants";
 import { SPACING } from "../../../../constants/spacing.constants";
 
-const SidebarHistoryItemWrapper = styled.button<{ $active?: boolean; }>`
+const ChatItemWrapper = styled.button<{ $active?: boolean }>`
   width: 100%;
   height: 2rem;
   display: flex;
@@ -21,11 +21,11 @@ const SidebarHistoryItemWrapper = styled.button<{ $active?: boolean; }>`
 
   &:hover {
     background: ${(props) =>
-    props.$active ? COLORS.HISTORY_ITEM_ACTIVE_BG : COLORS.HISTORY_ITEM_HOVER_BG};
+      props.$active ? COLORS.HISTORY_ITEM_ACTIVE_BG : COLORS.HISTORY_ITEM_HOVER_BG};
   }
 `;
 
-const HistoryItemTitle = styled.p`
+const ChatItemTitle = styled.p`
   font-size: ${FONTS.SIZE.LARGE};
   font-weight: ${FONTS.WEIGHT.THIN};
   color: ${COLORS.TEXT_PRIMARY};
@@ -35,7 +35,8 @@ const HistoryItemTitle = styled.p`
   white-space: nowrap;
   min-width: 0;
 `;
-const HistoryItemPoints = styled.span<{ $bg: string; $textColor: string; }>`
+
+const ChatItemPoints = styled.span<{ $bg: string; $textColor: string }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -47,14 +48,14 @@ const HistoryItemPoints = styled.span<{ $bg: string; $textColor: string; }>`
   border-radius: 0.8rem;
 `;
 
-export interface HistoryItemProps {
+export interface ChatItemProps {
   title: string;
   points: number;
   active?: boolean;
   onClick?: () => void;
 }
 
-function getPointsBadgeStyle(points: number): { bg: string; textColor: string; } {
+function getPointsBadgeStyle(points: number): { bg: string; textColor: string } {
   if (points > 80) {
     return { bg: COLORS.GLASS_GREEN, textColor: COLORS.HISTORY_ITEM_POINTS_TEXT };
   }
@@ -67,17 +68,17 @@ function getPointsBadgeStyle(points: number): { bg: string; textColor: string; }
   return { bg: COLORS.GLASS_RED, textColor: COLORS.HISTORY_ITEM_POINTS_RED_TEXT };
 }
 
-const HistoryItem = ({ title, points, active, onClick }: HistoryItemProps) => {
+const ChatItem = ({ title, points, active, onClick }: ChatItemProps) => {
   const { bg, textColor } = getPointsBadgeStyle(points);
 
   return (
-    <SidebarHistoryItemWrapper type="button" $active={active} onClick={onClick}>
-      <HistoryItemTitle>{title}</HistoryItemTitle>
-      <HistoryItemPoints $bg={bg} $textColor={textColor}>
+    <ChatItemWrapper type="button" $active={active} onClick={onClick}>
+      <ChatItemTitle>{title}</ChatItemTitle>
+      <ChatItemPoints $bg={bg} $textColor={textColor}>
         {points}
-      </HistoryItemPoints>
-    </SidebarHistoryItemWrapper>
+      </ChatItemPoints>
+    </ChatItemWrapper>
   );
 };
 
-export default HistoryItem;
+export default ChatItem;

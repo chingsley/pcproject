@@ -3,11 +3,12 @@ import { COLORS } from '../../../constants/colors.constants';
 import { FONTS } from '../../../constants/fonts.constants';
 import { LAYOUT } from '../../../constants/layout.constants';
 import { SPACING } from '../../../constants/spacing.constants';
-import { useAppDispatch } from '../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { toggleSidebar } from '../../../store/slices/uiSlice';
 import InputBox from './InputBox/InputBox';
+import MessageList from './MessageList/MessageList';
 
-const MainContainer = styled.div<{ $sidebarOpen: boolean; }>`
+const MainContainer = styled.div<{ $sidebarOpen: boolean }>`
   margin-left: ${(props) => (props.$sidebarOpen ? LAYOUT.SIDEBAR_WIDTH : '0')};
   min-height: 100vh;
   background-color: ${COLORS.MAIN_BG};
@@ -15,7 +16,6 @@ const MainContainer = styled.div<{ $sidebarOpen: boolean; }>`
   padding: ${LAYOUT.PANEL_PADDING};
   display: flex;
   flex-direction: column;
-  // border: 1px solid white;
 
   @media (max-width: ${LAYOUT.BREAKPOINTS.LARGE}) {
     margin-left: 0;
@@ -33,7 +33,6 @@ const PlaceholderContent = styled.div`
   align-items: center;
   justify-content: center;
   min-height: 0;
-  // border: 1px solid red;
 
   .header {
     font-size: ${FONTS.SIZE.XXLARGE};
@@ -41,6 +40,18 @@ const PlaceholderContent = styled.div`
   .subheader {
     color: ${COLORS.MUTED_WHITE};
   }
+`;
+
+const ChatContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+`;
+
+const InputBoxWrapper = styled.div`
+  flex-shrink: 0;
+  margin-top: auto;
 `;
 
 const ToggleButton = styled.button`
@@ -75,6 +86,7 @@ interface MainViewProps {
 
 const MainView = ({ sidebarOpen }: MainViewProps) => {
   const dispatch = useAppDispatch();
+  const activeChatId = useAppSelector((state) => state.chat.activeChatId);
 
   const handleToggle = () => {
     dispatch(toggleSidebar());
@@ -83,13 +95,24 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
   return (
     <MainContainer $sidebarOpen={sidebarOpen}>
       <ToggleButton onClick={handleToggle}>☰</ToggleButton>
-      <PlaceholderContent>
-        <h1 className="header">Where knowledge begins</h1>
-        <p className="subheader">
-          Ask anything. Get instant answers, comprehensive summaries
-        </p>
-        <InputBox />
-      </PlaceholderContent>
+      {!activeChatId ? (
+        <PlaceholderContent>
+          <h1 className="header">Where knowledge begins</h1>
+          <p className="subheader">
+            Ask anything. Get instant answers, comprehensive summaries
+          </p>
+          <InputBox />
+        </PlaceholderContent>
+      ) : (
+        <>
+          <ChatContent>
+            <MessageList />
+          </ChatContent>
+          <InputBoxWrapper>
+            <InputBox />
+          </InputBoxWrapper>
+        </>
+      )}
     </MainContainer>
   );
 };
