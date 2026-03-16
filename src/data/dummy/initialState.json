@@ -39,11 +39,7 @@
         "role": "assistant",
         "content": "React is a JavaScript library for building user interfaces, particularly single-page applications. You should use it for component-based UIs, strong ecosystem, and React Native for mobile.",
         "timestamp": "2025-03-10T10:00:15.000Z",
-        "msgResponse": "React is a JavaScript library for building user interfaces, particularly single-page applications. You should use it for component-based UIs, strong ecosystem, and React Native for mobile.",
-        "promptPoint": 5,
-        "question": "What is React and why should I use it?",
-        "answer": "React is a JavaScript library for building user interfaces.",
-        "modelId": "dummy"
+        "promptPoint": 5
       },
       "msg_dummy_2_user": {
         "id": "msg_dummy_2_user",
@@ -58,11 +54,7 @@
         "role": "assistant",
         "content": "You can create a component with a function: `function MyComponent() { return <div>Hello</div>; }` or as an arrow function. Export it and use it as `<MyComponent />`.",
         "timestamp": "2025-03-10T10:01:20.000Z",
-        "msgResponse": "You can create a component with a function: `function MyComponent() { return <div>Hello</div>; }` or as an arrow function. Export it and use it as `<MyComponent />`.",
-        "promptPoint": 5,
-        "question": "How do I create a new React component?",
-        "answer": "You can create a component with a function.",
-        "modelId": "dummy"
+        "promptPoint": 5
       },
       "msg_dummy_3_user": {
         "id": "msg_dummy_3_user",
@@ -77,11 +69,7 @@
         "role": "assistant",
         "content": "React state is local to a component (useState) and passed down via props. Redux is a global store: one place for app state, predictable updates with actions/reducers, and easy to access from any component.",
         "timestamp": "2025-03-11T14:30:25.000Z",
-        "msgResponse": "React state is local to a component (useState) and passed down via props. Redux is a global store: one place for app state, predictable updates with actions/reducers, and easy to access from any component.",
-        "promptPoint": 5,
-        "question": "What is the difference between Redux and React state?",
-        "answer": "React state is local; Redux is a global store.",
-        "modelId": "dummy"
+        "promptPoint": 5
       },
       "msg_dummy_4_user": {
         "id": "msg_dummy_4_user",
@@ -96,11 +84,7 @@
         "role": "assistant",
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Use createSlice from Redux Toolkit.",
         "timestamp": "2025-03-11T14:31:18.000Z",
-        "msgResponse": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Use createSlice from Redux Toolkit.",
-        "promptPoint": 5,
-        "question": "How do I add a new slice in Redux Toolkit?",
-        "answer": "Use createSlice from Redux Toolkit.",
-        "modelId": "dummy"
+        "promptPoint": 5
       }
     },
     "messageIdsByChatId": {

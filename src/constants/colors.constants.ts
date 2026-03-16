@@ -1,4 +1,6 @@
 export const COLORS = {
+  TRANSPARENT: 'transparent',
+
   // Layout backgrounds
   SIDEBAR_BG: '#303030',
   MAIN_BG: '#1A1A1A',

@@ -13,23 +13,17 @@ export const cohereProvider: ChatApiProvider = {
     const { temperature = 0.7 } = options;
 
     // System message for structured JSON response
-    const systemMessage = `You are a helpful AI assistant. You must respond with a JSON object in the following format:
+    const systemMessage = `You are a helpful AI assistant. Respond with a JSON object in this exact format:
 {
   "chatTitle": "A brief 3-5 word summary of the user's question",
-  "msgResponse": "Your detailed, helpful response to the user's question",
-  "promptPoint": 5,
-  "messageId": 1,
-  "question": "The exact user question",
-  "answer": "Your response text"
+  "content": "Your detailed, helpful response to the user's question",
+  "promptPoint": 5
 }
 
 Rules:
 - chatTitle should be concise (max 30 characters)
-- msgResponse should be well-formatted and helpful
+- content should be well-formatted and helpful
 - promptPoint is always 5
-- messageId can be any positive integer
-- question should echo the user's input
-- answer is the same as msgResponse
 
 Respond ONLY with the JSON object, no additional text.`;
 
@@ -79,15 +73,10 @@ Respond ONLY with the JSON object, no additional text.`;
 
     const parsed = JSON.parse(jsonText) as ApiChatResponse;
 
-    // Add timestamp and modelId if not provided by API
+    // Add timestamp if not provided by API
     if (!parsed.timestamp) {
       parsed.timestamp = new Date().toISOString();
     }
-    if (!parsed.modelId) {
-      parsed.modelId = 'command-r-plus';
-    }
-
-    console.log('\n>>>>>>>>: parsed', parsed, '\n<<<<<<<<<<<');
 
     return parsed;
   },

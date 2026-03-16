@@ -30,16 +30,21 @@ const Bubble = styled.div`
 const MessagePoint = styled.span<{
   $backgroundColor: string;
   $color: string;
+  $isPending: boolean;
 }>`
   margin-top: ${SPACING.BUTTON_PADDING_Y};
   padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
   border-radius: ${SPACING.RADIUS_SMALLER};
   background-color: ${(p) => p.$backgroundColor};
   color: ${(p) => p.$color};
+  border: ${SPACING.BORDER_WIDTH} solid
+    ${(p) => (p.$isPending ? COLORS.BORDER_SUBTLE : COLORS.TRANSPARENT)};
   font-family: ${FONTS.FAMILY.PRIMARY};
   font-size: ${FONTS.SIZE.SMALL};
   font-weight: ${FONTS.WEIGHT.MEDIUM};
   line-height: 1;
+  min-width: ${SPACING.SUBMIT_BUTTON_WIDTH};
+  text-align: center;
 `;
 
 function getMessagePointColors(
@@ -74,15 +79,28 @@ export interface UserMessageProps {
   promptPoint?: number;
 }
 
-const UserMessage = ({ content, promptPoint = 0 }: UserMessageProps) => {
-  const { backgroundColor, color } = getMessagePointColors(promptPoint);
+const UserMessage = ({ content, promptPoint }: UserMessageProps) => {
+  const isPending = promptPoint === undefined;
+  const resolvedPoints = promptPoint ?? 0;
+  const { backgroundColor, color } = isPending
+    ? {
+        backgroundColor: COLORS.SURFACE_OVERLAY_LIGHT,
+        color: COLORS.TRANSPARENT,
+      }
+    : getMessagePointColors(resolvedPoints);
+  const pointLabel = `${resolvedPoints} ${resolvedPoints === 1 ? 'point' : 'points'}`;
 
   return (
     <BubbleWrapper>
       <MessageAndPointWrapper>
         <Bubble>{content}</Bubble>
-        <MessagePoint $backgroundColor={backgroundColor} $color={color}>
-          {promptPoint} {promptPoint === 1 ? 'point' : 'points'}
+        <MessagePoint
+          $backgroundColor={backgroundColor}
+          $color={color}
+          $isPending={isPending}
+          aria-label={isPending ? 'Awaiting prompt points' : pointLabel}
+        >
+          {pointLabel}
         </MessagePoint>
       </MessageAndPointWrapper>
     </BubbleWrapper>

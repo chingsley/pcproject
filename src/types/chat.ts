@@ -2,20 +2,12 @@
 export interface ApiChatResponse {
   /** Short summary for sidebar (truncate to 30 chars in UI) */
   chatTitle: string;
-  /** Formatted AI text for display */
-  msgResponse: string;
+  /** AI text for display */
+  content: string;
   /** Points earned (fixed at 5) */
   promptPoint: number;
-  /** Message ID from API */
-  messageId: number;
-  /** Original user text */
-  question: string;
-  /** Raw AI response text */
-  answer: string;
   /** ISO timestamp */
   timestamp?: string;
-  /** Model identifier (e.g., "gemini-2.0-flash") */
-  modelId?: string;
 }
 
 /** Client-side message representation */
@@ -25,12 +17,8 @@ export interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: string;
-  /** Additional API fields for assistant messages */
-  msgResponse?: string;
+  /** Additional API field for assistant messages */
   promptPoint?: number;
-  question?: string;
-  answer?: string;
-  modelId?: string;
 }
 
 /** Client-side chat representation */

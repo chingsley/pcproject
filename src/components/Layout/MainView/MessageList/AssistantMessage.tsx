@@ -61,7 +61,6 @@ const TYPEWRITER_MS_PER_CHAR = 5;
 
 export interface AssistantMessageProps {
   content: string;
-  answer?: string;
   shouldAnimate?: boolean;
   onScrollToBottom?: () => void;
   onAnimationComplete?: () => void;
@@ -69,7 +68,6 @@ export interface AssistantMessageProps {
 
 const AssistantMessage = ({
   content,
-  answer,
   shouldAnimate = false,
   onScrollToBottom,
   onAnimationComplete,
@@ -107,7 +105,7 @@ const AssistantMessage = ({
   }, [shouldAnimate, visibleContent, onScrollToBottom]);
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(answer || content);
+      await navigator.clipboard.writeText(content);
     } catch (err) {
       console.error('Failed to copy:', err);
     }
@@ -117,7 +115,7 @@ const AssistantMessage = ({
     if (navigator.share) {
       try {
         await navigator.share({
-          text: answer || content,
+          text: content,
         });
       } catch (err) {
         console.error('Failed to share:', err);
