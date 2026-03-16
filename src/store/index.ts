@@ -3,13 +3,17 @@ import uiReducer from './slices/uiSlice';
 import pointsReducer from './slices/pointsSlice';
 import chatReducer from './slices/chatSlice';
 
-export const store = configureStore({
-  reducer: {
-    ui: uiReducer,
-    points: pointsReducer,
-    chat: chatReducer,
-  },
-});
+export function createStore(preloadedState?: object) {
+  return configureStore({
+    reducer: {
+      ui: uiReducer,
+      points: pointsReducer,
+      chat: chatReducer,
+    },
+    preloadedState,
+  });
+}
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<ReturnType<typeof createStore>['getState']>;
+export type AppStore = ReturnType<typeof createStore>;
+export type AppDispatch = AppStore['dispatch'];
