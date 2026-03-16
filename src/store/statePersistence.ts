@@ -9,6 +9,7 @@ export function toPersistedState(state: RootState) {
   return {
     ui: state.ui,
     points: state.points,
+    user: state.user,
     chat: {
       ...state.chat,
       activeChatId: null,

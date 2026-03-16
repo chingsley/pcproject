@@ -67,7 +67,7 @@ const RING_RADIUS = 50 - RING_STROKE / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
 const Points = () => {
-  const percentage = useAppSelector((state) => state.points.percentage);
+  const percentage = useAppSelector((state) => state.user.ringPercentage);
   const strokeDashoffset = CIRCUMFERENCE * (1 - percentage / 100);
 
   return (

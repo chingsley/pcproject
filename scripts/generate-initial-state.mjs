@@ -13,10 +13,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, '..');
 const outputPath = join(projectRoot, 'src/data/dummy/initialState.json');
 
-// Initial state matching dummy/data.ts + ui + points
+// Initial state matching dummy/data.ts + ui + points + user
 const initialState = {
   ui: { sidebarOpen: true, selectedHistoryId: null },
   points: { percentage: 20 },
+  user: {
+    totalPoints: 25,
+    starsCount: 0,
+    ringPercentage: 25,
+    nextStarTarget: 100,
+  },
   chat: {
     chatsById: {
       chat_dummy_001: {

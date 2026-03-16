@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import uiReducer from './slices/uiSlice';
 import pointsReducer from './slices/pointsSlice';
 import chatReducer from './slices/chatSlice';
+import userReducer from './slices/userSlice';
 
 export function createStore(preloadedState?: object) {
   return configureStore({
@@ -9,6 +10,7 @@ export function createStore(preloadedState?: object) {
       ui: uiReducer,
       points: pointsReducer,
       chat: chatReducer,
+      user: userReducer,
     },
     preloadedState,
   });

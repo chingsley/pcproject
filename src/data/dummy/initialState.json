@@ -6,6 +6,12 @@
   "points": {
     "percentage": 20
   },
+  "user": {
+    "totalPoints": 25,
+    "starsCount": 0,
+    "ringPercentage": 25,
+    "nextStarTarget": 100
+  },
   "chat": {
     "chatsById": {
       "chat_dummy_001": {

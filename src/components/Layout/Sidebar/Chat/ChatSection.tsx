@@ -3,6 +3,7 @@ import { COLORS } from '../../../../constants/colors.constants';
 import { FONTS } from '../../../../constants/fonts.constants';
 import { ICONS } from '../../../../constants/icons.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
+import { useAppSelector } from '../../../../store/hooks';
 import type { Chat } from '../../../../types/chat';
 import ChatList from './ChatList';
 
@@ -79,7 +80,7 @@ export interface ChatSectionProps {
 }
 
 const ChatSection = ({ chats, activeChatId, onSelectChat }: ChatSectionProps) => {
-  const totalPoints = chats.reduce((sum, chat) => sum + chat.points, 0);
+  const totalPoints = useAppSelector((state) => state.user.totalPoints);
 
   return (
     <SectionWrapper>
