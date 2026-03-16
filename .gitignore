@@ -30,3 +30,5 @@ pending_tasks.md
 
 # Persisted state (generated at runtime, reset via npm run clear-current-storage)
 src/data/dummy/currentState.json
+theory
+keeps

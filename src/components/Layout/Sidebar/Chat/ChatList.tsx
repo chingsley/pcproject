@@ -8,6 +8,11 @@ const List = styled.div`
   flex: 1;
   height: 100%;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export interface ChatListProps {

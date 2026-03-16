@@ -100,6 +100,27 @@ This project is a web desktop AI chat interface built with modern web technologi
 
 ---
 
+### Game Points & Stars Logic ✅
+
+**Status:** Implemented
+
+**Scope:**
+- The % value in the points ring reflects the fraction of total points earned compared to the points required for the next star.
+- First star at 100 total points, second at 200, third at 300, etc.
+- When the user earns 100 points, the ring shows 100% and the user earns their first star.
+- After earning a star, the ring resets to 0% and increments as total points increase until the next star threshold.
+- Scalable: easy to change thresholds (e.g. 200 per star, 400 for 2 stars) via a single constant.
+- TODO: Multi-user support later; system assumes one user for now.
+
+**Deliverables:**
+- ✅ `src/utils/gamePoints.ts` — `POINTS_PER_STAR` (100), `getGameProgress(totalPoints)` returns `starsCount`, `ringPercentage`, `nextStarTarget`
+- ✅ `src/store/slices/userSlice.ts` — `totalPoints`, `starsCount`, `ringPercentage`, `nextStarTarget`; `setTotalPoints` updates from chat totals via `getGameProgress`
+- ✅ Sidebar syncs total points from chats via `useEffect`; Points ring uses `user.ringPercentage`
+- ✅ `StarsProgress` component — Displays stars earned and motivating message ("You are X points away from earning your first/next star")
+- ✅ `COLORS.STAR_ACCENT` in `colors.constants.ts` for star display styling
+
+---
+
 ### Stage 3: AI Chat Interface ✅
 
 **Status:** Implemented

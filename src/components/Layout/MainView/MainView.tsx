@@ -64,10 +64,13 @@ const PlaceholderContent = styled.div`
   min-height: 0;
 
   .header {
-    font-size: ${FONTS.SIZE.XXLARGE};
+    font-size: 2.5rem;
+    border: ${drawBorder('purple')};
+    margin-bottom: 1rem;
   }
   .subheader {
     color: ${COLORS.MUTED_WHITE};
+    border: ${drawBorder('white')};
   }
 `;
 
@@ -171,9 +174,9 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
       <ToggleButton onClick={handleToggle}>☰</ToggleButton>
       {!activeChatId ? (
         <PlaceholderContent>
-          <h1 className="header">Where knowledge begins</h1>
+          <h1 className="header">Think clearly. Argue carefully. Stay in charge.</h1>
           <p className="subheader">
-            Ask anything. Get instant answers, comprehensive summaries
+            Produce work that remains recognisably and confidently your own.
           </p>
           <InputBox />
         </PlaceholderContent>
