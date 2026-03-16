@@ -31,6 +31,9 @@ export const COLORS = {
   // Points loader ring
   LOADER_FILL: '#14B8A6',
 
+  // Stars / achievements
+  STAR_ACCENT: '#FCD34D', // amber-gold for star display
+
   // Typing loader dots (oscillating)
   TYPING_DOT_GREEN: '#14B8A6', // teal, matches LOADER_FILL
   TYPING_DOT_AMBER: '#FCD34D', // amber

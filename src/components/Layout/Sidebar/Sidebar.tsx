@@ -9,6 +9,7 @@ import { setTotalPoints } from '../../../store/slices/userSlice';
 import Header from './Header';
 import { NewChat, NewChatV2 } from './NewChat';
 import Points from './PointsRing/Points';
+import StarsProgress from './StarsProgress/StarsProgress';
 import ChatSection from './Chat/ChatSection';
 import SidebarFooter from './Footer/SidebarFooter';
 import { drawBorder } from '../../../utils/playground';
@@ -50,7 +51,12 @@ const TopSection = styled.div`
 
 const MiddleSection = styled.div`
   flex: 1;
-  // border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: ${LAYOUT.PANEL_PADDING};
+  text-align: center;
 `;
 
 const BottomSection = styled.div`
@@ -76,7 +82,6 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
   const chatIds = useAppSelector((state) => state.chat.chatIds);
   const chatsById = useAppSelector((state) => state.chat.chatsById);
   const activeChatId = useAppSelector((state) => state.chat.activeChatId);
-
   // Convert to Chat array for ChatSection
   const chats = chatIds.map((id) => chatsById[id]);
   const totalPoints = chats.reduce((sum, chat) => sum + chat.points, 0);
@@ -104,7 +109,9 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
           </SidebarPoints>
         </TopSection>
 
-        <MiddleSection />
+        <MiddleSection>
+          <StarsProgress />
+        </MiddleSection>
 
         <BottomSection>
           <ChatSection
