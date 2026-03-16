@@ -11,6 +11,7 @@ export function toPersistedState(state: RootState) {
     points: state.points,
     chat: {
       ...state.chat,
+      activeChatId: null,
       sendingMessageChatId: null,
       sendError: null,
       lastAddedAssistantMessageId: null,
