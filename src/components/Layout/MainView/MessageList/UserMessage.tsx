@@ -70,7 +70,11 @@ const InfoIconButton = styled.button<{
   }
 `;
 
-const FeedbackPanel = styled.div`
+const FeedbackPanel = styled.div<{
+  $backgroundColor: string;
+  $color: string;
+  $isPending: boolean;
+}>`
   position: absolute;
   right: calc(100% + ${SPACING.BUTTON_PADDING_Y});
   top: 50%;
@@ -79,10 +83,11 @@ const FeedbackPanel = styled.div`
   width: 18rem;
   max-width: 45vw;
   padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
-  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+  border: ${SPACING.BORDER_WIDTH} solid
+    ${(p) => (p.$isPending ? COLORS.BORDER_SUBTLE : p.$color)};
   border-radius: ${SPACING.RADIUS_SMALLER};
-  background: ${COLORS.FEEDBACK_PANEL_BG};
-  color: ${COLORS.TEXT_PRIMARY};
+  background: ${(p) => p.$backgroundColor};
+  color: ${(p) => (p.$isPending ? COLORS.TEXT_PRIMARY : p.$color)};
   font-size: ${FONTS.SIZE.SMALL};
   font-family: ${FONTS.FAMILY.PRIMARY};
   line-height: 1.4;
@@ -183,7 +188,14 @@ const UserMessage = ({ content, promptPoint, promptFeedback }: UserMessageProps)
             >
               <FiInfo />
             </InfoIconButton>
-            <FeedbackPanel role='tooltip'>{feedbackText}</FeedbackPanel>
+            <FeedbackPanel
+              role='tooltip'
+              $backgroundColor={backgroundColor}
+              $color={color}
+              $isPending={isPending}
+            >
+              {feedbackText}
+            </FeedbackPanel>
           </InfoTrigger>
           <MessagePoint
             $backgroundColor={backgroundColor}

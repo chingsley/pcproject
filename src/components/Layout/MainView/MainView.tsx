@@ -32,7 +32,7 @@ const MainContainer = styled.div<{ $sidebarOpen: boolean; }>`
 `;
 
 const HeaderContainer = styled.div`
-  height: ${LAYOUT.HEADER_ROW_HEIGHT};
+  min-height: ${LAYOUT.HEADER_ROW_HEIGHT};
   border: ${drawBorder('blue')};
   display: flex;
   align-items: center;
@@ -123,12 +123,16 @@ const ToggleButton = styled.button`
 
 const ShareButton = styled.div`
   background: transparent;
-  border: ${drawBorder('green')};
+  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
   cursor: pointer;
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  font-size: 2.2rem;
+  gap: 0.5rem;
+  font-size: 1rem;
+  padding: 0.75rem;
+  border-radius: ${SPACING.RADIUS_SMALLER};
 `;
 
 interface MainViewProps {
@@ -169,6 +173,7 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
         <HeaderTitle>Active Research</HeaderTitle>
         <ShareButton>
           <FiShare />
+          Share
         </ShareButton>
       </HeaderContainer>
       <ToggleButton onClick={handleToggle}>☰</ToggleButton>
@@ -176,7 +181,7 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
         <PlaceholderContent>
           <h1 className="header">Think clearly. Engage deeply. Stay in charge.</h1>
           <p className="subheader">
-            Produce work that remains recognisably and confidently your own. Every point counts!
+            Produce work that remains recognisably and confidently your own. Every prompt counts!
           </p>
           <InputBox />
         </PlaceholderContent>
