@@ -17,13 +17,25 @@ export const geminiProvider: ChatApiProvider = {
 {
   "chatTitle": "A brief 3-5 word summary of the user's question",
   "content": "Your detailed, helpful response to the user's question",
-  "promptPoint": 5
+  "promptPoint": 0,
+  "promptCategory": "passive|low|moderate|active",
+  "promptFeedback": "One short coaching sentence (max 120 chars)"
 }
 
 Rules:
 - chatTitle should be concise (max 30 characters)
 - content should be well-formatted and helpful
-- promptPoint is always 5
+- Score promptPoint from 0 to 5 based on user prompt quality:
+  - 0: asks you to do the thinking/writing for them (substitution)
+  - 1-2: basic informational prompt with low engagement
+  - 3: asks for structure/clarity on user's own ideas
+  - 4-5: asks to analyse, critique, question assumptions, evidence, or alignment
+- promptCategory must match promptPoint:
+  - 0 => passive
+  - 1-2 => low
+  - 3 => moderate
+  - 4-5 => active
+- promptFeedback should be constructive and specific to the prompt style
 
 User question: ${prompt}
 
@@ -40,11 +52,11 @@ Respond ONLY with the JSON object, no additional text.`;
     });
 
     const text = response.text;
-    
+
     if (!text) {
       throw new Error('No response text from API');
     }
-    
+
     const parsed = JSON.parse(text) as ApiChatResponse;
 
     // Add timestamp if not provided by API

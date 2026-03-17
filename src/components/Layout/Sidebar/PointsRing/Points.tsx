@@ -3,6 +3,7 @@ import { COLORS } from '../../../../constants/colors.constants';
 import { FONTS } from '../../../../constants/fonts.constants';
 import { LAYOUT } from '../../../../constants/layout.constants';
 import { useAppSelector } from '../../../../store/hooks';
+import { selectGameProgress } from '../../../../store/selectors/chatSelectors';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -67,7 +68,7 @@ const RING_RADIUS = 50 - RING_STROKE / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
 const Points = () => {
-  const percentage = useAppSelector((state) => state.user.ringPercentage);
+  const { ringPercentage: percentage } = useAppSelector(selectGameProgress);
   const strokeDashoffset = CIRCUMFERENCE * (1 - percentage / 100);
 
   return (

@@ -4,7 +4,10 @@ import { FONTS } from '../../../../constants/fonts.constants';
 import { ICONS } from '../../../../constants/icons.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
 import { useAppSelector } from '../../../../store/hooks';
-import type { Chat } from '../../../../types/chat';
+import {
+  selectTotalPoints,
+  type ChatWithPoints,
+} from '../../../../store/selectors/chatSelectors';
 import ChatList from './ChatList';
 
 const SectionWrapper = styled.div`
@@ -74,13 +77,13 @@ const TotalValue = styled.span`
 `;
 
 export interface ChatSectionProps {
-  chats: Chat[];
+  chats: ChatWithPoints[];
   activeChatId: string | null;
   onSelectChat: (id: string) => void;
 }
 
 const ChatSection = ({ chats, activeChatId, onSelectChat }: ChatSectionProps) => {
-  const totalPoints = useAppSelector((state) => state.user.totalPoints);
+  const totalPoints = useAppSelector(selectTotalPoints);
 
   return (
     <SectionWrapper>

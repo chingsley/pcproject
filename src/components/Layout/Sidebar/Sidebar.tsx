@@ -1,13 +1,12 @@
-import { useEffect } from 'react';
 import styled from 'styled-components';
 import { COLORS } from '../../../constants/colors.constants';
 import { LAYOUT } from '../../../constants/layout.constants';
 import { SPACING } from '../../../constants/spacing.constants';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { setActiveChatId, clearActiveChatId } from '../../../store/slices/chatSlice';
-import { setTotalPoints } from '../../../store/slices/userSlice';
+import { selectChatsWithPoints } from '../../../store/selectors/chatSelectors';
 import Header from './Header';
-import { NewChat, NewChatV2 } from './NewChat';
+import { NewChat } from './NewChat';
 import Points from './PointsRing/Points';
 import StarsProgress from './StarsProgress/StarsProgress';
 import ChatSection from './Chat/ChatSection';
@@ -79,16 +78,8 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen }: SidebarProps) => {
   const dispatch = useAppDispatch();
-  const chatIds = useAppSelector((state) => state.chat.chatIds);
-  const chatsById = useAppSelector((state) => state.chat.chatsById);
+  const chats = useAppSelector(selectChatsWithPoints);
   const activeChatId = useAppSelector((state) => state.chat.activeChatId);
-  // Convert to Chat array for ChatSection
-  const chats = chatIds.map((id) => chatsById[id]);
-  const totalPoints = chats.reduce((sum, chat) => sum + chat.points, 0);
-
-  useEffect(() => {
-    dispatch(setTotalPoints(totalPoints));
-  }, [dispatch, totalPoints]);
 
   const handleNewChat = () => {
     dispatch(clearActiveChatId());

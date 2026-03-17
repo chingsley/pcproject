@@ -174,9 +174,9 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
       <ToggleButton onClick={handleToggle}>☰</ToggleButton>
       {!activeChatId ? (
         <PlaceholderContent>
-          <h1 className="header">Think clearly. Argue carefully. Stay in charge.</h1>
+          <h1 className="header">Think clearly. Engage deeply. Stay in charge.</h1>
           <p className="subheader">
-            Produce work that remains recognisably and confidently your own.
+            Produce work that remains recognisably and confidently your own. Every point counts!
           </p>
           <InputBox />
         </PlaceholderContent>

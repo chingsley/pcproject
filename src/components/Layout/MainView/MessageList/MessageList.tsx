@@ -65,11 +65,10 @@ const MessageList = ({ onScrollToBottom, onAnimationComplete }: MessageListProps
           <UserMessage
             key={message.id}
             content={message.content}
-            promptPoint={
-              messages[index + 1]?.role === 'assistant'
-                ? messages[index + 1].promptPoint
-                : undefined
-            }
+            promptPoint={(() => {
+              const next = messages[index + 1];
+              return next?.role === 'assistant' ? next.promptPoint : undefined;
+            })()}
           />
         ) : (
           <AssistantMessage

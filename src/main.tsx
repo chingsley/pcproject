@@ -15,7 +15,6 @@ async function bootstrap() {
 
   if (import.meta.env.DEV) {
     let previousUiRef = store.getState().ui;
-    let previousPointsRef = store.getState().points;
     let previousChatRef = store.getState().chat;
     let lastSavedPayload = '';
     let pendingPayload: string | null = null;
@@ -49,15 +48,10 @@ async function bootstrap() {
 
     store.subscribe(() => {
       const state = store.getState();
-      if (
-        state.ui === previousUiRef &&
-        state.points === previousPointsRef &&
-        state.chat === previousChatRef
-      ) {
+      if (state.ui === previousUiRef && state.chat === previousChatRef) {
         return;
       }
       previousUiRef = state.ui;
-      previousPointsRef = state.points;
       previousChatRef = state.chat;
 
       const payload = serializePersistedState(state);

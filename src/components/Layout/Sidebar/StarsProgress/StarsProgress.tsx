@@ -3,6 +3,10 @@ import { COLORS } from '../../../../constants/colors.constants';
 import { FONTS } from '../../../../constants/fonts.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
 import { useAppSelector } from '../../../../store/hooks';
+import {
+  selectGameProgress,
+  selectTotalPoints,
+} from '../../../../store/selectors/chatSelectors';
 
 const StarsDisplay = styled.div`
   display: flex;
@@ -35,7 +39,8 @@ const MotivatingText = styled.p`
 `;
 
 const StarsProgress = () => {
-  const { starsCount, nextStarTarget, totalPoints } = useAppSelector((state) => state.user);
+  const { starsCount, nextStarTarget } = useAppSelector(selectGameProgress);
+  const totalPoints = useAppSelector(selectTotalPoints);
   const pointsAway = nextStarTarget - totalPoints;
 
   return (

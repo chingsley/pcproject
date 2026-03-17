@@ -15,13 +15,11 @@ const chatsById: Record<string, Chat> = {
   [chat1Id]: {
     id: chat1Id,
     title: 'Getting started with React',
-    points: 15,
     createdAt: '2025-03-10T10:00:00.000Z',
   },
   [chat2Id]: {
     id: chat2Id,
     title: 'Understanding Redux state',
-    points: 10,
     createdAt: '2025-03-11T14:30:00.000Z',
   },
 };
@@ -53,6 +51,8 @@ const messagesById: Record<string, Message> = {
       'React is a JavaScript library for building user interfaces, particularly single-page applications. You should use it for component-based UIs, strong ecosystem, and React Native for mobile.',
     timestamp: '2025-03-10T10:00:15.000Z',
     promptPoint: 5,
+    promptCategory: 'active' as const,
+    promptFeedback: 'Strong prompt: you are using AI as a thinking partner.',
   },
   [msg2u]: {
     id: msg2u,
@@ -69,6 +69,8 @@ const messagesById: Record<string, Message> = {
       'You can create a component with a function: `function MyComponent() { return <div>Hello</div>; }` or as an arrow function. Export it and use it as `<MyComponent />`.',
     timestamp: '2025-03-10T10:01:20.000Z',
     promptPoint: 5,
+    promptCategory: 'active' as const,
+    promptFeedback: 'Strong prompt: you are using AI as a thinking partner.',
   },
   [msg3u]: {
     id: msg3u,
@@ -85,6 +87,8 @@ const messagesById: Record<string, Message> = {
       'React state is local to a component (useState) and passed down via props. Redux is a global store: one place for app state, predictable updates with actions/reducers, and easy to access from any component.',
     timestamp: '2025-03-11T14:30:25.000Z',
     promptPoint: 5,
+    promptCategory: 'active' as const,
+    promptFeedback: 'Strong prompt: you are using AI as a thinking partner.',
   },
   [msg4u]: {
     id: msg4u,
@@ -97,8 +101,7 @@ const messagesById: Record<string, Message> = {
     id: msg4a,
     chatId: chat2Id,
     role: 'assistant',
-    content:
-      `
+    content: `
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in urna ut libero pellentesque tincidunt at quis arcu. Mauris lobortis ullamcorper tellus, a varius sapien posuere eget. Fusce ultricies ante condimentum sem dapibus, eget finibus nunc sollicitudin. Sed sit amet mauris viverra, cursus ante a, semper orci. Cras suscipit eu arcu id egestas. Sed commodo elit eget erat tempus lobortis. Phasellus vitae sollicitudin turpis, placerat sagittis odio. Praesent egestas placerat risus, id dignissim tortor placerat in. Sed sagittis massa eu hendrerit mattis.
 
 Duis pretium pulvinar lectus id fermentum. Nunc in elit placerat, blandit risus in, fermentum purus. Phasellus vestibulum libero et diam congue rutrum. Pellentesque erat justo, mollis sed imperdiet non, rutrum tincidunt enim. Donec laoreet mi id placerat mollis. Aliquam erat volutpat. Nam rhoncus diam ut erat fringilla mollis. Proin condimentum non neque eu consectetur. Vestibulum at turpis dui. Curabitur tempor mollis ultrices. In justo neque, congue at mauris eu, fringilla efficitur ex. In nec enim a nisi mollis scelerisque ut eget ipsum. Nunc ornare mollis molestie. Morbi elementum maximus mauris sollicitudin maximus. Sed at urna nec risus commodo elementum. Cras a facilisis enim, sit amet ullamcorper lorem.
@@ -111,6 +114,8 @@ Suspendisse sed quam non odio commodo ultrices. Cras eu suscipit dolor, nec ultr
       `,
     timestamp: '2025-03-11T14:31:18.000Z',
     promptPoint: 5,
+    promptCategory: 'active' as const,
+    promptFeedback: 'Strong prompt: you are using AI as a thinking partner.',
   },
 };
 

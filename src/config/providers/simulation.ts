@@ -1,16 +1,22 @@
 import type { ApiChatResponse, ChatApiProvider } from '../../types/chat';
-import { getRandomValue } from '../../utils/randomUtils';
+import { normalizePromptScoring } from '../../utils/promptScoring';
 
 export const simulatedAIChatProvider: ChatApiProvider = {
-  async generateChatResponse(): Promise<ApiChatResponse> {
+  async generateChatResponse(prompt: string): Promise<ApiChatResponse> {
     return new Promise<ApiChatResponse>((resolve) => {
       setTimeout(() => {
+        const scoring = normalizePromptScoring({
+          promptText: prompt,
+        });
+
         resolve({
-          chatTitle: "AI's Passive Use Impact",
+          chatTitle: 'Theory-driven prompt review',
           content:
-            "The passive use of AI, such as relying on AI-driven tools for tasks like navigation, translation, or decision-making, can have both positive and negative effects on human cognitive capacity. On the positive side, it can free up mental resources by automating routine tasks, allowing individuals to focus on more complex or creative activities. However, over-reliance on AI may lead to cognitive atrophy in specific areas, such as memory or problem-solving skills, as these abilities are less frequently exercised. Additionally, it can reduce opportunities for critical thinking and learning from mistakes. Balancing AI usage with active engagement in cognitive tasks is key to maintaining and enhancing mental abilities.",
-          promptPoint: getRandomValue(0, 5),
-          timestamp: "2026-03-16T06:19:43.105Z",
+            'Simulation mode: this response mirrors production scoring behavior. Use critique-focused prompts to earn higher engagement points.',
+          promptPoint: scoring.promptPoint,
+          promptCategory: scoring.promptCategory,
+          promptFeedback: scoring.promptFeedback,
+          timestamp: new Date().toISOString(),
         });
       }, 2000); // simulate ~2s API latency
     });

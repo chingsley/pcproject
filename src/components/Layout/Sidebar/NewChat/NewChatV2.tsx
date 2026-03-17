@@ -62,28 +62,6 @@ const ButtonIcon = styled.img`
   flex-shrink: 0;
 `;
 
-const ShortcutKeys = styled.span`
-  display: flex;
-  align-items: center;
-  gap: ${SPACING.SHORTCUT_KEY_GAP};
-  flex-shrink: 0;
-`;
-
-const ShortcutKey = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: ${SPACING.SHORTCUT_KEY_SIZE};
-  height: ${SPACING.SHORTCUT_KEY_SIZE};
-  padding: ${SPACING.SHORTCUT_KEY_PADDING_Y} ${SPACING.SHORTCUT_KEY_PADDING_X};
-  background: ${COLORS.SHORTCUT_KEY_BG};
-  border-radius: ${SPACING.SHORTCUT_KEY_RADIUS};
-  font-family: ${FONTS.FAMILY.PRIMARY};
-  font-size: ${FONTS.SIZE.SMALL};
-  color: ${COLORS.TEXT_PRIMARY};
-  line-height: 1;
-`;
-
 interface NewChatProps {
   onClick: () => void;
 }

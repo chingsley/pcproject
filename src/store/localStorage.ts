@@ -21,7 +21,6 @@ export const saveState = (state: any) => {
   try {
     const serializedState = JSON.stringify({
       chat: state.chat,
-      points: state.points,
     });
     localStorage.setItem(STORAGE_KEY, serializedState);
   } catch (err) {

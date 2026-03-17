@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import type { Chat } from '../../../../types/chat';
+import type { ChatWithPoints } from '../../../../store/selectors/chatSelectors';
 import ChatItem from './ChatItem';
 
 const List = styled.div`
@@ -16,7 +16,7 @@ const List = styled.div`
 `;
 
 export interface ChatListProps {
-  chats: Chat[];
+  chats: ChatWithPoints[];
   activeChatId: string | null;
   onSelectChat: (id: string) => void;
 }

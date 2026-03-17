@@ -1,9 +1,6 @@
 /**
- * Generates initialState.json from the app's initialState.
- * Run with: node --experimental-vm-modules scripts/generate-initial-state.mjs
- * Or use: npx tsx scripts/generate-initial-state.ts (if tsx is installed)
- *
- * Simpler: we inline the state structure from data.ts
+ * Generates initialState.json in a simplified persisted shape.
+ * Run with: node scripts/generate-initial-state.mjs
  */
 import { writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -13,41 +10,31 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, '..');
 const outputPath = join(projectRoot, 'src/data/dummy/initialState.json');
 
-// Initial state matching dummy/data.ts + ui + points + user
+// Persisted state shape: ui + chat{chats[], messages[]}
 const initialState = {
   ui: { sidebarOpen: true, selectedHistoryId: null },
-  points: { percentage: 20 },
-  user: {
-    totalPoints: 25,
-    starsCount: 0,
-    ringPercentage: 25,
-    nextStarTarget: 100,
-  },
   chat: {
-    chatsById: {
-      chat_dummy_001: {
-        id: 'chat_dummy_001',
-        title: 'Getting started with React',
-        points: 15,
-        createdAt: '2025-03-10T10:00:00.000Z',
-      },
-      chat_dummy_002: {
+    chats: [
+      {
         id: 'chat_dummy_002',
         title: 'Understanding Redux state',
-        points: 10,
         createdAt: '2025-03-11T14:30:00.000Z',
       },
-    },
-    chatIds: ['chat_dummy_002', 'chat_dummy_001'],
-    messagesById: {
-      msg_dummy_1_user: {
+      {
+        id: 'chat_dummy_001',
+        title: 'Getting started with React',
+        createdAt: '2025-03-10T10:00:00.000Z',
+      },
+    ],
+    messages: [
+      {
         id: 'msg_dummy_1_user',
         chatId: 'chat_dummy_001',
         role: 'user',
         content: 'What is React and why should I use it?',
         timestamp: '2025-03-10T10:00:00.000Z',
       },
-      msg_dummy_1_assistant: {
+      {
         id: 'msg_dummy_1_assistant',
         chatId: 'chat_dummy_001',
         role: 'assistant',
@@ -55,15 +42,17 @@ const initialState = {
           'React is a JavaScript library for building user interfaces, particularly single-page applications. You should use it for component-based UIs, strong ecosystem, and React Native for mobile.',
         timestamp: '2025-03-10T10:00:15.000Z',
         promptPoint: 5,
+        promptCategory: 'active',
+        promptFeedback: 'Strong prompt: you are using AI as a thinking partner.',
       },
-      msg_dummy_2_user: {
+      {
         id: 'msg_dummy_2_user',
         chatId: 'chat_dummy_001',
         role: 'user',
         content: 'How do I create a new React component?',
         timestamp: '2025-03-10T10:01:00.000Z',
       },
-      msg_dummy_2_assistant: {
+      {
         id: 'msg_dummy_2_assistant',
         chatId: 'chat_dummy_001',
         role: 'assistant',
@@ -71,15 +60,17 @@ const initialState = {
           'You can create a component with a function: `function MyComponent() { return <div>Hello</div>; }` or as an arrow function. Export it and use it as `<MyComponent />`.',
         timestamp: '2025-03-10T10:01:20.000Z',
         promptPoint: 5,
+        promptCategory: 'active',
+        promptFeedback: 'Strong prompt: you are using AI as a thinking partner.',
       },
-      msg_dummy_3_user: {
+      {
         id: 'msg_dummy_3_user',
         chatId: 'chat_dummy_002',
         role: 'user',
         content: 'What is the difference between Redux and React state?',
         timestamp: '2025-03-11T14:30:00.000Z',
       },
-      msg_dummy_3_assistant: {
+      {
         id: 'msg_dummy_3_assistant',
         chatId: 'chat_dummy_002',
         role: 'assistant',
@@ -87,15 +78,17 @@ const initialState = {
           'React state is local to a component (useState) and passed down via props. Redux is a global store: one place for app state, predictable updates with actions/reducers, and easy to access from any component.',
         timestamp: '2025-03-11T14:30:25.000Z',
         promptPoint: 5,
+        promptCategory: 'active',
+        promptFeedback: 'Strong prompt: you are using AI as a thinking partner.',
       },
-      msg_dummy_4_user: {
+      {
         id: 'msg_dummy_4_user',
         chatId: 'chat_dummy_002',
         role: 'user',
         content: 'How do I add a new slice in Redux Toolkit?',
         timestamp: '2025-03-11T14:31:00.000Z',
       },
-      msg_dummy_4_assistant: {
+      {
         id: 'msg_dummy_4_assistant',
         chatId: 'chat_dummy_002',
         role: 'assistant',
@@ -103,26 +96,10 @@ const initialState = {
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Use createSlice from Redux Toolkit.',
         timestamp: '2025-03-11T14:31:18.000Z',
         promptPoint: 5,
+        promptCategory: 'active',
+        promptFeedback: 'Strong prompt: you are using AI as a thinking partner.',
       },
-    },
-    messageIdsByChatId: {
-      chat_dummy_001: [
-        'msg_dummy_1_user',
-        'msg_dummy_1_assistant',
-        'msg_dummy_2_user',
-        'msg_dummy_2_assistant',
-      ],
-      chat_dummy_002: [
-        'msg_dummy_3_user',
-        'msg_dummy_3_assistant',
-        'msg_dummy_4_user',
-        'msg_dummy_4_assistant',
-      ],
-    },
-    activeChatId: 'chat_dummy_002',
-    sendingMessageChatId: null,
-    sendError: null,
-    lastAddedAssistantMessageId: null,
+    ],
   },
 };
 

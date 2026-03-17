@@ -3,6 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { Chat, Message } from '../../types/chat';
 import { generateChatResponse } from '../../config/chatApi';
 import { dummyChatState } from '../../data/dummy/data';
+import { normalizePromptScoring } from '../../utils/promptScoring';
 
 interface ChatState {
   chatsById: Record<string, Chat>;
@@ -45,7 +46,7 @@ const initialState: ChatState = {
 export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
   async (
-    payload: { content: string; chatId?: string },
+    payload: { content: string; chatId?: string; },
     { dispatch, rejectWithValue }
   ) => {
     const { content, chatId } = payload;
@@ -78,6 +79,12 @@ export const sendMessage = createAsyncThunk(
 
     try {
       const apiResponse = await generateChatResponse(content);
+      const normalizedScoring = normalizePromptScoring({
+        promptText: content,
+        providerPoint: apiResponse.promptPoint,
+        providerCategory: apiResponse.promptCategory,
+        providerFeedback: apiResponse.promptFeedback,
+      });
 
       const assistantMessageId = `msg_${Date.now() + 1}_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -91,10 +98,12 @@ export const sendMessage = createAsyncThunk(
           role: 'assistant' as const,
           content: apiResponse.content,
           timestamp: apiResponse.timestamp || new Date().toISOString(),
-          promptPoint: apiResponse.promptPoint,
+          promptPoint: normalizedScoring.promptPoint,
+          promptCategory: normalizedScoring.promptCategory,
+          promptFeedback: normalizedScoring.promptFeedback,
         },
         chatTitle: apiResponse.chatTitle,
-        promptPoint: apiResponse.promptPoint,
+        promptPoint: normalizedScoring.promptPoint,
       };
     } catch (error) {
       // Rollback optimistic update on failure
@@ -107,10 +116,10 @@ export const sendMessage = createAsyncThunk(
       );
       // Extract user-friendly error message
       let errorMessage = 'Failed to send message';
-      
+
       if (error instanceof Error) {
         const errorText = error.message;
-        
+
         // Check for quota exceeded
         if (errorText.includes('RESOURCE_EXHAUSTED') || errorText.includes('quota')) {
           errorMessage = 'API quota exceeded. Please check your plan or try again later.';
@@ -132,7 +141,7 @@ export const sendMessage = createAsyncThunk(
           errorMessage = error.message;
         }
       }
-      
+
       console.error('Send message error:', error);
       return rejectWithValue(errorMessage);
     }
@@ -157,7 +166,6 @@ const chatSlice = createSlice({
         state.chatsById[chatId] = {
           id: chatId,
           title: userMessage.content.substring(0, 30),
-          points: 0,
           createdAt: new Date().toISOString(),
         };
         state.chatIds.unshift(chatId);
@@ -213,21 +221,11 @@ const chatSlice = createSlice({
         state.lastAddedAssistantMessageId = null;
       })
       .addCase(sendMessage.fulfilled, (state, action) => {
-        const {
-          chatId,
-          isNewChat,
-          assistantMessage,
-          chatTitle,
-          promptPoint,
-        } = action.payload;
+        const { chatId, assistantMessage, chatTitle } = action.payload;
 
-        // Update chat (user message and chat already added optimistically)
-        if (isNewChat && state.chatsById[chatId]) {
+        // Update chat title (points are computed from messages via selectors)
+        if (state.chatsById[chatId]) {
           state.chatsById[chatId].title = chatTitle.substring(0, 30);
-          state.chatsById[chatId].points = promptPoint;
-        } else if (!isNewChat && state.chatsById[chatId]) {
-          state.chatsById[chatId].title = chatTitle.substring(0, 30);
-          state.chatsById[chatId].points += promptPoint;
         }
 
         state.messagesById[assistantMessage.id] = assistantMessage;
