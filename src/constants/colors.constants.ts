@@ -23,6 +23,8 @@ export const COLORS = {
   // Surfaces / overlays (buttons, hover states)
   SURFACE_OVERLAY_LIGHT: 'rgba(255, 255, 255, 0.1)',
   SURFACE_OVERLAY_MEDIUM: 'rgba(255, 255, 255, 0.15)',
+  USER_MESSAGE_BG: '#2f325c69',
+  FEEDBACK_PANEL_BG: '#1f2438',
 
   // Borders
   BORDER_SUBTLE: 'rgba(255, 255, 255, 0.2)',

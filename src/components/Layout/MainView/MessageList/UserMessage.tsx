@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { FiInfo } from 'react-icons/fi';
 import { COLORS } from '../../../../constants/colors.constants';
 import { FONTS } from '../../../../constants/fonts.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
@@ -19,7 +20,7 @@ const MessageAndPointWrapper = styled.div`
 
 const Bubble = styled.div`
   padding: ${SPACING.BUTTON_PADDING_X};
-  background: #2f325c69;
+  background: ${COLORS.USER_MESSAGE_BG};
   border-radius: ${SPACING.RADIUS_SMALL};
   color: ${COLORS.TEXT_PRIMARY};
   font-family: ${FONTS.FAMILY.PRIMARY};
@@ -27,12 +28,86 @@ const Bubble = styled.div`
   line-height: 1.5;
 `;
 
+const PointsMetaRow = styled.div`
+  margin-top: ${SPACING.BUTTON_PADDING_Y};
+  display: inline-flex;
+  align-items: center;
+  gap: ${SPACING.BUTTON_PADDING_Y};
+`;
+
+const InfoTrigger = styled.div`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const InfoIconButton = styled.button<{
+  $backgroundColor: string;
+  $color: string;
+}>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: ${FONTS.SIZE.LARGE};
+  height: ${FONTS.SIZE.LARGE};
+  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+  border-radius: 999rem;
+  background: ${(p) => p.$backgroundColor};
+  color: ${(p) => p.$color};
+  padding: 0;
+  cursor: pointer;
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    background-color 200ms ease;
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-0.0625rem);
+    border-color: ${COLORS.BORDER_SUBTLE_HOVER};
+    outline: none;
+  }
+`;
+
+const FeedbackPanel = styled.div`
+  position: absolute;
+  right: calc(100% + ${SPACING.BUTTON_PADDING_Y});
+  top: 50%;
+  transform: translateY(-50%) translateX(${SPACING.BUTTON_PADDING_Y}) scaleX(0);
+  transform-origin: right center;
+  width: 18rem;
+  max-width: 45vw;
+  padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
+  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+  border-radius: ${SPACING.RADIUS_SMALLER};
+  background: ${COLORS.FEEDBACK_PANEL_BG};
+  color: ${COLORS.TEXT_PRIMARY};
+  font-size: ${FONTS.SIZE.SMALL};
+  font-family: ${FONTS.FAMILY.PRIMARY};
+  line-height: 1.4;
+  direction: ltr;
+  text-align: left;
+  opacity: 0;
+  pointer-events: none;
+  white-space: normal;
+  z-index: 1;
+  transition:
+    opacity 220ms ease,
+    transform 260ms ease;
+
+  ${InfoTrigger}:hover &,
+  ${InfoTrigger}:focus-within & {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0) scaleX(1);
+  }
+`;
+
 const MessagePoint = styled.span<{
   $backgroundColor: string;
   $color: string;
   $isPending: boolean;
 }>`
-  margin-top: ${SPACING.BUTTON_PADDING_Y};
   padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
   border-radius: ${SPACING.RADIUS_SMALLER};
   background-color: ${(p) => p.$backgroundColor};
@@ -77,9 +152,10 @@ function getMessagePointColors(
 export interface UserMessageProps {
   content: string;
   promptPoint?: number;
+  promptFeedback?: string;
 }
 
-const UserMessage = ({ content, promptPoint }: UserMessageProps) => {
+const UserMessage = ({ content, promptPoint, promptFeedback }: UserMessageProps) => {
   const isPending = promptPoint === undefined;
   const resolvedPoints = promptPoint ?? 0;
   const { backgroundColor, color } = isPending
@@ -89,19 +165,35 @@ const UserMessage = ({ content, promptPoint }: UserMessageProps) => {
       }
     : getMessagePointColors(resolvedPoints);
   const pointLabel = `${resolvedPoints} ${resolvedPoints === 1 ? 'point' : 'points'}`;
+  const feedbackText = isPending
+    ? 'Prompt feedback will appear once the assistant responds.'
+    : promptFeedback?.trim() || 'No prompt feedback available for this message yet.';
 
   return (
     <BubbleWrapper>
       <MessageAndPointWrapper>
         <Bubble>{content}</Bubble>
-        <MessagePoint
-          $backgroundColor={backgroundColor}
-          $color={color}
-          $isPending={isPending}
-          aria-label={isPending ? 'Awaiting prompt points' : pointLabel}
-        >
-          {pointLabel}
-        </MessagePoint>
+        <PointsMetaRow>
+          <InfoTrigger>
+            <InfoIconButton
+              type='button'
+              $backgroundColor={backgroundColor}
+              $color={color}
+              aria-label='Show prompt feedback'
+            >
+              <FiInfo />
+            </InfoIconButton>
+            <FeedbackPanel role='tooltip'>{feedbackText}</FeedbackPanel>
+          </InfoTrigger>
+          <MessagePoint
+            $backgroundColor={backgroundColor}
+            $color={color}
+            $isPending={isPending}
+            aria-label={isPending ? 'Awaiting prompt points' : pointLabel}
+          >
+            {pointLabel}
+          </MessagePoint>
+        </PointsMetaRow>
       </MessageAndPointWrapper>
     </BubbleWrapper>
   );
