@@ -73,7 +73,7 @@ const ChatItem = ({ title, points, active, onClick }: ChatItemProps) => {
 
   return (
     <ChatItemWrapper type="button" $active={active} onClick={onClick}>
-      <ChatItemTitle>{title}</ChatItemTitle>
+      <ChatItemTitle>{title}</ChatItemTitle> {/* CURSOR PROMPT:This should not update on every assistaant message in the chat. It should not update on every new assistant message in this chat */}
       <ChatItemPoints $bg={bg} $textColor={textColor}>
         {points}
       </ChatItemPoints>

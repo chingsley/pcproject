@@ -39,13 +39,13 @@ const MessageList = ({ onScrollToBottom, onAnimationComplete }: MessageListProps
     (state) => state.chat.sendingMessageChatId
   );
 
-  if (!activeChatId || !messageIdsByChatId[activeChatId]) {
-    return <EmptyState>No messages yet</EmptyState>;
-  }
-
-  const messageIds = messageIdsByChatId[activeChatId];
+  const messageIds =
+    activeChatId && messageIdsByChatId[activeChatId]
+      ? messageIdsByChatId[activeChatId]
+      : [];
   const messages = messageIds.map((id) => messagesById[id]);
   const isSendingToActiveChat =
+    activeChatId !== null &&
     sendingMessageChatId !== null &&
     (sendingMessageChatId === activeChatId || sendingMessageChatId === 'new');
   const lastMessage = messages[messages.length - 1];
@@ -57,6 +57,10 @@ const MessageList = ({ onScrollToBottom, onAnimationComplete }: MessageListProps
       onScrollToBottom();
     }
   }, [showTypingLoader, onScrollToBottom]);
+
+  if (!activeChatId || messageIds.length === 0) {
+    return <EmptyState>No messages yet</EmptyState>;
+  }
 
   return (
     <ListContainer>
@@ -78,6 +82,9 @@ const MessageList = ({ onScrollToBottom, onAnimationComplete }: MessageListProps
           <AssistantMessage
             key={message.id}
             content={message.content}
+            assistantMessageId={message.id}
+            chatId={message.chatId}
+            isEngagementResponse={message.isEngagementResponse === true}
             shouldAnimate={message.id === lastAddedAssistantMessageId}
             onScrollToBottom={onScrollToBottom}
             onAnimationComplete={onAnimationComplete}

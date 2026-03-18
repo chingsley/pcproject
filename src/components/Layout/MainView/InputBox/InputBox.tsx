@@ -5,17 +5,20 @@ import { FONTS } from '../../../../constants/fonts.constants';
 import { LAYOUT } from '../../../../constants/layout.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
-import { sendMessage } from '../../../../store/slices/chatSlice';
+import { sendEngagement, sendMessage } from '../../../../store/slices/chatSlice';
 import SearchIcon from './SearchIcon';
 import UploadButton from './UploadButton';
 import SubmitButton from './SubmitButton';
+import { clearEngagementContext } from '../../../../store/slices/uiSlice';
+import { drawBorder } from '../../../../utils/playground';
 
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
-  padding: ${SPACING.FIXED_OFFSET} 0;
+  // padding: ${SPACING.FIXED_OFFSET} 0;
   // border: 1px solid blue;
   width: 100%;
+  border: ${drawBorder('white', true)};
 `;
 
 const Box = styled.div`
@@ -28,6 +31,7 @@ const Box = styled.div`
   flex-direction: column;
   padding: ${SPACING.FIXED_OFFSET};
   border: 1px solid ${COLORS.BORDER_SUBTLE};
+  border: ${drawBorder('blue')};
 `;
 
 const InputRow = styled.div`
@@ -36,6 +40,7 @@ const InputRow = styled.div`
   gap: ${SPACING.BUTTON_PADDING_X};
   flex: 1;
   min-height: 0;
+  border: ${drawBorder('green')};
 `;
 
 const TextArea = styled.textarea`
@@ -105,6 +110,7 @@ const InputBox = () => {
   const dispatch = useAppDispatch();
   const activeChatId = useAppSelector((state) => state.chat.activeChatId);
   const isSending = useAppSelector((state) => state.chat.sendingMessageChatId !== null);
+  const engagementContext = useAppSelector((state) => state.ui.engagementContext);
   const sendError = useAppSelector((state) => state.chat.sendError);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -117,15 +123,37 @@ const InputBox = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    
+
     if (!input.trim() || isSending) return;
 
     setShowError(true); // Reset error visibility on new submit
     console.log('Submitting message:', input.trim());
-    
+
+    const trimmed = input.trim();
+    if (engagementContext?.active) {
+      dispatch(
+        sendEngagement({
+          chatId: engagementContext.chatId,
+          assistantMessageId: engagementContext.assistantMessageId,
+          assistantResponse: engagementContext.assistantResponse,
+          engagementType: engagementContext.engagementType,
+          userEngagementText: trimmed,
+        })
+      )
+        .unwrap()
+        .then(() => {
+          dispatch(clearEngagementContext());
+          setInput('');
+        })
+        .catch((error) => {
+          console.error('Failed to send engagement:', error);
+        });
+      return;
+    }
+
     dispatch(
       sendMessage({
-        content: input.trim(),
+        content: trimmed,
         chatId: activeChatId || undefined,
       })
     )
@@ -146,7 +174,7 @@ const InputBox = () => {
         <InputRow>
           <SearchIcon />
           <TextArea
-            placeholder="Ask anything"
+            placeholder={engagementContext?.active ? 'Type your engagement...' : 'Ask anything'}
             rows={3}
             aria-label="Ask anything"
             value={input}
@@ -163,7 +191,7 @@ const InputBox = () => {
           <ErrorMessage>
             <ErrorIcon>⚠️</ErrorIcon>
             <span>{sendError}</span>
-            <CloseButton 
+            <CloseButton
               onClick={() => setShowError(false)}
               type="button"
               aria-label="Close error"

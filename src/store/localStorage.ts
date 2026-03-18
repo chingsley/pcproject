@@ -3,7 +3,7 @@ import type { Middleware } from '@reduxjs/toolkit';
 const STORAGE_KEY = 'pcproject_state';
 
 // Load state from localStorage
-export const loadState = (): any => {
+export const loadState = (): unknown => {
   try {
     const serializedState = localStorage.getItem(STORAGE_KEY);
     if (serializedState === null) {
@@ -17,10 +17,11 @@ export const loadState = (): any => {
 };
 
 // Save state to localStorage
-export const saveState = (state: any) => {
+export const saveState = (state: unknown) => {
   try {
+    const typed = state as { chat?: unknown };
     const serializedState = JSON.stringify({
-      chat: state.chat,
+      chat: typed.chat,
     });
     localStorage.setItem(STORAGE_KEY, serializedState);
   } catch (err) {

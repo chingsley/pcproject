@@ -35,6 +35,8 @@ export interface AssistantMessage {
   promptPoint: number;
   promptCategory: PromptCategory;
   promptFeedback: string;
+  /** True when this is an evaluation response to user engagement; no engage buttons. */
+  isEngagementResponse?: boolean;
 }
 
 /** Client-side message representation */

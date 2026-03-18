@@ -4,6 +4,7 @@ import type { Chat, Message } from '../../types/chat';
 import { generateChatResponse } from '../../config/chatApi';
 import { dummyChatState } from '../../data/dummy/data';
 import { normalizePromptScoring } from '../../utils/promptScoring';
+import { buildEngagementEvaluationPrompt, type EngagementType } from '../../utils/engagementPrompt';
 
 interface ChatState {
   chatsById: Record<string, Chat>;
@@ -148,6 +149,104 @@ export const sendMessage = createAsyncThunk(
   }
 );
 
+export const sendEngagement = createAsyncThunk(
+  'chat/sendEngagement',
+  async (
+    payload: {
+      chatId: string;
+      assistantMessageId: string;
+      assistantResponse: string;
+      engagementType: EngagementType;
+      userEngagementText: string;
+    },
+    { dispatch, rejectWithValue }
+  ) => {
+    const { chatId, assistantResponse, engagementType, userEngagementText } = payload;
+
+    const engagementUserMessageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    const userMessage: Message = {
+      id: engagementUserMessageId,
+      chatId,
+      role: 'user',
+      content: userEngagementText,
+      timestamp: new Date().toISOString(),
+    };
+
+    // Optimistic update: show the engagement text immediately.
+    dispatch(
+      addOptimisticUserMessage({
+        chatId,
+        isNewChat: false,
+        userMessage,
+      })
+    );
+
+    try {
+      const evaluationPrompt = buildEngagementEvaluationPrompt({
+        engagementType,
+        assistantResponse,
+        userEngagementText,
+      });
+
+      const apiResponse = await generateChatResponse(evaluationPrompt);
+
+      const normalizedScoring = normalizePromptScoring({
+        promptText: userEngagementText,
+        providerPoint: apiResponse.promptPoint,
+        providerCategory: apiResponse.promptCategory,
+        providerFeedback: apiResponse.promptFeedback,
+      });
+
+      const assistantMessageId = `msg_${Date.now() + 1}_${Math.random().toString(36).substr(2, 9)}`;
+
+      return {
+        chatId,
+        userMessage,
+        assistantMessage: {
+          id: assistantMessageId,
+          chatId,
+          role: 'assistant' as const,
+          content: apiResponse.content,
+          timestamp: apiResponse.timestamp || new Date().toISOString(),
+          promptPoint: normalizedScoring.promptPoint,
+          promptCategory: normalizedScoring.promptCategory,
+          promptFeedback: normalizedScoring.promptFeedback,
+          isEngagementResponse: true,
+        },
+      };
+    } catch (error) {
+      dispatch(
+        removeOptimisticUserMessage({
+          chatId,
+          userMessageId: engagementUserMessageId,
+          isNewChat: false,
+        })
+      );
+
+      let errorMessage = 'Failed to submit engagement';
+      if (error instanceof Error) {
+        const errorText = error.message;
+
+        if (errorText.includes('RESOURCE_EXHAUSTED') || errorText.includes('quota')) {
+          errorMessage = 'API quota exceeded. Please check your plan or try again later.';
+        } else if (errorText.includes('API key') || errorText.includes('authentication')) {
+          errorMessage = 'Invalid API key. Please check your configuration.';
+        } else if (errorText.includes('rate limit')) {
+          errorMessage = 'Rate limit exceeded. Please wait a moment and try again.';
+        } else if (errorText.includes('fetch') || errorText.includes('network')) {
+          errorMessage = 'Network error. Please check your connection and try again.';
+        } else if (error.message.length < 100) {
+          errorMessage = error.message;
+        }
+      }
+
+      console.error('Send engagement error:', error);
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 const chatSlice = createSlice({
   name: 'chat',
   initialState,
@@ -235,6 +334,24 @@ const chatSlice = createSlice({
         state.sendingMessageChatId = null;
       })
       .addCase(sendMessage.rejected, (state, action) => {
+        state.sendingMessageChatId = null;
+        state.sendError = action.payload as string;
+      });
+
+    builder
+      .addCase(sendEngagement.pending, (state, action) => {
+        state.sendingMessageChatId = action.meta.arg.chatId;
+        state.sendError = null;
+        state.lastAddedAssistantMessageId = null;
+      })
+      .addCase(sendEngagement.fulfilled, (state, action) => {
+        const { chatId, assistantMessage } = action.payload;
+        state.messagesById[assistantMessage.id] = assistantMessage;
+        state.messageIdsByChatId[chatId].push(assistantMessage.id);
+        state.lastAddedAssistantMessageId = assistantMessage.id;
+        state.sendingMessageChatId = null;
+      })
+      .addCase(sendEngagement.rejected, (state, action) => {
         state.sendingMessageChatId = null;
         state.sendError = action.payload as string;
       });

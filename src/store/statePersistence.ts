@@ -20,7 +20,10 @@ export function toPersistedState(state: RootState) {
   });
 
   return {
-    ui: state.ui,
+    ui: {
+      ...state.ui,
+      engagementContext: null,
+    },
     chat: {
       chats,
       messages,

@@ -5,6 +5,9 @@ import { COLORS } from '../../../../constants/colors.constants';
 import { FONTS } from '../../../../constants/fonts.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
 import { drawBorder } from '../../../../utils/playground';
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import { clearEngagementContext, setEngagementContext } from '../../../../store/slices/uiSlice';
+import type { EngagementType } from '../../../../utils/engagementPrompt';
 
 const CanvaWrapper = styled.div`
   display: flex;
@@ -66,11 +69,63 @@ const ActionIcon = styled.span`
 
 const TYPEWRITER_MS_PER_CHAR = 5;
 
+const EngageWrapper = styled.div`
+  width: 100%;
+  margin-top: ${SPACING.BUTTON_PADDING_Y};
+`;
+
+const EngageTitle = styled.div`
+  font-family: ${FONTS.FAMILY.PRIMARY};
+  font-size: ${FONTS.SIZE.SMALL};
+  color: ${COLORS.MUTED_WHITE};
+  margin-bottom: ${SPACING.BUTTON_PADDING_Y};
+`;
+
+const EngageTypeRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${SPACING.BUTTON_PADDING_Y};
+`;
+
+const EngageTypeButton = styled.button<{ $isActive: boolean }>`
+  padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
+  border-radius: ${SPACING.RADIUS_SMALLER};
+  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+  background: ${(p) => (p.$isActive ? COLORS.SURFACE_OVERLAY_MEDIUM : COLORS.TRANSPARENT)};
+  color: ${COLORS.TEXT_PRIMARY};
+  font-family: ${FONTS.FAMILY.PRIMARY};
+  font-size: ${FONTS.SIZE.SMALL};
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+
+  &:hover,
+  &:focus-visible {
+    border-color: ${COLORS.BORDER_SUBTLE_HOVER};
+  }
+
+  &:active {
+    transform: scale(0.99);
+  }
+`;
+
+const ENGAGEMENT_TYPES: Array<{ type: EngagementType; label: string }> = [
+  { type: 'summarize', label: 'Summarize' },
+  { type: 'ask_questions', label: 'Ask Questions' },
+  { type: 'paraphrase', label: 'Paraphrase' },
+  { type: 'analyze', label: 'Analyze' },
+];
+
 export interface AssistantMessageProps {
   content: string;
   shouldAnimate?: boolean;
   onScrollToBottom?: () => void;
   onAnimationComplete?: () => void;
+  assistantMessageId: string;
+  chatId: string;
+  isEngagementResponse?: boolean;
 }
 
 const AssistantMessage = ({
@@ -78,16 +133,23 @@ const AssistantMessage = ({
   shouldAnimate = false,
   onScrollToBottom,
   onAnimationComplete,
+  assistantMessageId,
+  chatId,
+  isEngagementResponse = false,
 }: AssistantMessageProps) => {
   const [visibleContent, setVisibleContent] = useState(() =>
     shouldAnimate ? '' : content
   );
+  const dispatch = useAppDispatch();
+  const engagementContext = useAppSelector((state) => state.ui.engagementContext);
+  const selectedEngagement = engagementContext?.active
+    ? engagementContext.engagementType
+    : null;
 
   useEffect(() => {
-    if (!shouldAnimate) {
-      setVisibleContent(content);
-      return;
-    }
+    if (!shouldAnimate) return;
+    // This is a deliberate typewriter animation that updates local UI state.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setVisibleContent('');
     let index = 0;
     const fullText = content;
@@ -133,10 +195,12 @@ const AssistantMessage = ({
     }
   };
 
+  const displayContent = shouldAnimate ? visibleContent : content;
+
   return (
     <CanvaWrapper>
       <div>
-        <Canva>{visibleContent}</Canva>
+        <Canva>{displayContent}</Canva>
         <Actions>
           <ActionButton onClick={handleCopy} aria-label="Copy message" title="Copy">
             <ActionIcon>
@@ -149,6 +213,47 @@ const AssistantMessage = ({
             </ActionIcon>
           </ActionButton>
         </Actions>
+
+        {!isEngagementResponse && (
+        <EngageWrapper>
+          <EngageTitle>Engage for bonus points</EngageTitle>
+          <EngageTypeRow>
+            {ENGAGEMENT_TYPES.map((item) => (
+              <EngageTypeButton
+                key={item.type}
+                type='button'
+                $isActive={
+                  engagementContext?.active === true &&
+                  engagementContext.assistantMessageId === assistantMessageId &&
+                  selectedEngagement === item.type
+                }
+                onClick={() => {
+                  if (
+                    engagementContext?.active &&
+                    engagementContext.assistantMessageId === assistantMessageId &&
+                    engagementContext.engagementType === item.type
+                  ) {
+                    dispatch(clearEngagementContext());
+                    return;
+                  }
+
+                  dispatch(
+                    setEngagementContext({
+                      active: true,
+                      chatId,
+                      assistantMessageId,
+                      assistantResponse: content,
+                      engagementType: item.type,
+                    })
+                  );
+                }}
+              >
+                {item.label}
+              </EngageTypeButton>
+            ))}
+          </EngageTypeRow>
+        </EngageWrapper>
+        )}
       </div>
     </CanvaWrapper>
   );

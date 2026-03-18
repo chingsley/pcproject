@@ -10,7 +10,7 @@ export const simulatedAIChatProvider: ChatApiProvider = {
         });
 
         resolve({
-          chatTitle: 'Theory-driven prompt review',
+          chatTitle: 'Theory-driven prompt review', // { CURSORPROMPT: update this to be simuation prompt 1, simulation prompt 2, etc depending, assume 1, 2 ... are the chat id.}
           content:
             'Simulation mode: this response mirrors production scoring behavior. Use critique-focused prompts to earn higher engagement points.',
           promptPoint: scoring.promptPoint,

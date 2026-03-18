@@ -22,6 +22,7 @@ interface PersistedMessage {
   promptPoint?: number;
   promptCategory?: 'passive' | 'low' | 'moderate' | 'active';
   promptFeedback?: string;
+  isEngagementResponse?: boolean;
 }
 
 function getMostRecentChatId(
@@ -75,6 +76,7 @@ function normalizeLegacyChatShape(chat: Record<string, unknown>) {
         promptPoint: point,
         promptCategory: category,
         promptFeedback: feedback,
+        ...(m.isEngagementResponse && { isEngagementResponse: true }),
       };
     } else {
       messagesById[id] = {
@@ -131,6 +133,7 @@ function normalizeArrayChatShape(chat: Record<string, unknown>) {
         promptPoint: point,
         promptCategory: category,
         promptFeedback: feedback,
+        ...(message.isEngagementResponse && { isEngagementResponse: true }),
       };
     } else {
       hydrated = {
@@ -184,6 +187,11 @@ export async function loadState(): Promise<Record<string, unknown> | undefined> 
           lastAddedAssistantMessageId: null,
         };
       }
+    }
+    // Never restore engagement context (transient UI state)
+    const ui = data?.ui as Record<string, unknown> | undefined;
+    if (ui && typeof ui === 'object') {
+      data.ui = { ...ui, engagementContext: null };
     }
     return data;
   } catch {
