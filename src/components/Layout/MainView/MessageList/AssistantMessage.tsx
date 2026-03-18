@@ -8,6 +8,10 @@ import { drawBorder } from '../../../../utils/playground';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import { clearEngagementContext, setEngagementContext } from '../../../../store/slices/uiSlice';
 import type { EngagementType } from '../../../../utils/engagementPrompt';
+import {
+  ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES,
+  MIN_AI_RESPONSE_CHAR_LENGTH_FOR_ENGAGEMENT_BONUS,
+} from '../../../../constants/engagement.constants';
 
 const CanvaWrapper = styled.div`
   display: flex;
@@ -87,7 +91,7 @@ const EngageTypeRow = styled.div`
   gap: ${SPACING.BUTTON_PADDING_Y};
 `;
 
-const EngageTypeButton = styled.button<{ $isActive: boolean }>`
+const EngageTypeButton = styled.button<{ $isActive: boolean; }>`
   padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
   border-radius: ${SPACING.RADIUS_SMALLER};
   border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
@@ -111,7 +115,7 @@ const EngageTypeButton = styled.button<{ $isActive: boolean }>`
   }
 `;
 
-const ENGAGEMENT_TYPES: Array<{ type: EngagementType; label: string }> = [
+const ENGAGEMENT_TYPES: Array<{ type: EngagementType; label: string; }> = [
   { type: 'summarize', label: 'Summarize' },
   { type: 'ask_questions', label: 'Ask Questions' },
   { type: 'paraphrase', label: 'Paraphrase' },
@@ -126,6 +130,7 @@ export interface AssistantMessageProps {
   assistantMessageId: string;
   chatId: string;
   isEngagementResponse?: boolean;
+  isLastAssistantMessage?: boolean;
 }
 
 const AssistantMessage = ({
@@ -136,6 +141,7 @@ const AssistantMessage = ({
   assistantMessageId,
   chatId,
   isEngagementResponse = false,
+  isLastAssistantMessage = false,
 }: AssistantMessageProps) => {
   const [visibleContent, setVisibleContent] = useState(() =>
     shouldAnimate ? '' : content
@@ -214,46 +220,48 @@ const AssistantMessage = ({
           </ActionButton>
         </Actions>
 
-        {!isEngagementResponse && (
-        <EngageWrapper>
-          <EngageTitle>Engage for bonus points</EngageTitle>
-          <EngageTypeRow>
-            {ENGAGEMENT_TYPES.map((item) => (
-              <EngageTypeButton
-                key={item.type}
-                type='button'
-                $isActive={
-                  engagementContext?.active === true &&
-                  engagementContext.assistantMessageId === assistantMessageId &&
-                  selectedEngagement === item.type
-                }
-                onClick={() => {
-                  if (
-                    engagementContext?.active &&
-                    engagementContext.assistantMessageId === assistantMessageId &&
-                    engagementContext.engagementType === item.type
-                  ) {
-                    dispatch(clearEngagementContext());
-                    return;
-                  }
+        {!isEngagementResponse &&
+          content.length >= MIN_AI_RESPONSE_CHAR_LENGTH_FOR_ENGAGEMENT_BONUS &&
+          (isLastAssistantMessage || ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES) && (
+            <EngageWrapper>
+              <EngageTitle>Engage for bonus points</EngageTitle>
+              <EngageTypeRow>
+                {ENGAGEMENT_TYPES.map((item) => (
+                  <EngageTypeButton
+                    key={item.type}
+                    type='button'
+                    $isActive={
+                      engagementContext?.active === true &&
+                      engagementContext.assistantMessageId === assistantMessageId &&
+                      selectedEngagement === item.type
+                    }
+                    onClick={() => {
+                      if (
+                        engagementContext?.active &&
+                        engagementContext.assistantMessageId === assistantMessageId &&
+                        engagementContext.engagementType === item.type
+                      ) {
+                        dispatch(clearEngagementContext());
+                        return;
+                      }
 
-                  dispatch(
-                    setEngagementContext({
-                      active: true,
-                      chatId,
-                      assistantMessageId,
-                      assistantResponse: content,
-                      engagementType: item.type,
-                    })
-                  );
-                }}
-              >
-                {item.label}
-              </EngageTypeButton>
-            ))}
-          </EngageTypeRow>
-        </EngageWrapper>
-        )}
+                      dispatch(
+                        setEngagementContext({
+                          active: true,
+                          chatId,
+                          assistantMessageId,
+                          assistantResponse: content,
+                          engagementType: item.type,
+                        })
+                      );
+                    }}
+                  >
+                    {item.label}
+                  </EngageTypeButton>
+                ))}
+              </EngageTypeRow>
+            </EngageWrapper>
+          )}
       </div>
     </CanvaWrapper>
   );

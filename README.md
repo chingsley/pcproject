@@ -79,6 +79,7 @@ pcproject/
 │   │       └── MainView/    # Main content area
 │   ├── constants/           # Design tokens and constants
 │   │   ├── colors.constants.ts
+│   │   ├── engagement.constants.ts  # UI behavior: engagement feature
 │   │   └── fonts.constants.ts
 │   ├── store/              # Redux store
 │   │   ├── index.ts        # Store configuration
@@ -124,6 +125,19 @@ styled-components with a constants-based design system:
 - All fonts defined in `fonts.constants.ts`
 - No magic strings or hardcoded values in components
 - Global styles applied via styled-components
+
+## Engagement Constants
+
+UI behavior for the "Engage for bonus points" feature is controlled by constants in:
+
+**Location:** `src/constants/engagement.constants.ts`
+
+| Variable | Purpose | How to use |
+|----------|---------|------------|
+| `ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES` | When `false`, only the last assistant message shows engagement options. When `true`, all assistant messages (except engagement responses) show them. | Set to `true` to allow engagement on older messages. |
+| `MIN_AI_RESPONSE_CHAR_LENGTH_FOR_ENGAGEMENT_BONUS` | Minimum character length for an assistant response to show engagement options. Short replies (e.g. "Hello, how can I help you today") are excluded. | Increase to hide engagement on shorter responses; decrease to allow it on shorter ones. |
+
+**Note:** Engagement responses (evaluations of user engagement) never show engagement options, regardless of these settings.
 
 ## Design Specifications
 

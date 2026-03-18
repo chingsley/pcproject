@@ -320,10 +320,10 @@ const chatSlice = createSlice({
         state.lastAddedAssistantMessageId = null;
       })
       .addCase(sendMessage.fulfilled, (state, action) => {
-        const { chatId, assistantMessage, chatTitle } = action.payload;
+        const { chatId, assistantMessage, chatTitle, isNewChat } = action.payload;
 
-        // Update chat title (points are computed from messages via selectors)
-        if (state.chatsById[chatId]) {
+        // Update chat title only for the first prompt (new chat); never on subsequent messages
+        if (state.chatsById[chatId] && isNewChat) {
           state.chatsById[chatId].title = chatTitle.substring(0, 30);
         }
 

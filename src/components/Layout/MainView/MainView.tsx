@@ -71,6 +71,7 @@ const PlaceholderContent = styled.div`
   .subheader {
     color: ${COLORS.MUTED_WHITE};
     border: ${drawBorder('white')};
+    margin-bottom: 2rem;
   }
 `;
 

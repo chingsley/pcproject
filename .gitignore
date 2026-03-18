@@ -32,3 +32,4 @@ pending_tasks.md
 src/data/dummy/currentState.json
 theory
 keeps
+prompts_drafts

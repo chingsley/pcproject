@@ -1,0 +1,19 @@
+---
+description: Update README when adding or changing constants that affect UI behavior
+globs: src/constants/**/*.ts
+alwaysApply: false
+---
+
+# Constants and README Rule
+
+When adding or changing constants that affect UI behavior:
+
+1. **Update the README** – Add or update the relevant section in `README.md` with:
+   - Variable name
+   - Purpose (what it controls)
+   - How to use it (how changing the value affects behavior)
+   - File location
+
+2. **Apply to** – Constants in `src/constants/` that change how the UI behaves (e.g. feature toggles, thresholds, visibility rules).
+
+3. **Example** – If you add `MAX_RETRY_COUNT` in `api.constants.ts` that only affects internal API logic, no README update is required. If you add `SHOW_DEBUG_PANEL` in `ui.constants.ts` that toggles a UI element, update the README.

@@ -52,6 +52,8 @@ const MessageList = ({ onScrollToBottom, onAnimationComplete }: MessageListProps
   const showTypingLoader =
     isSendingToActiveChat && lastMessage?.role === 'user';
 
+  const lastAssistantMessage = [...messages].reverse().find((m) => m.role === 'assistant');
+
   useEffect(() => {
     if (showTypingLoader && onScrollToBottom) {
       onScrollToBottom();
@@ -85,6 +87,7 @@ const MessageList = ({ onScrollToBottom, onAnimationComplete }: MessageListProps
             assistantMessageId={message.id}
             chatId={message.chatId}
             isEngagementResponse={message.isEngagementResponse === true}
+            isLastAssistantMessage={message.id === lastAssistantMessage?.id}
             shouldAnimate={message.id === lastAddedAssistantMessageId}
             onScrollToBottom={onScrollToBottom}
             onAnimationComplete={onAnimationComplete}

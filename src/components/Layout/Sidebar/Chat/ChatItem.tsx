@@ -70,10 +70,9 @@ function getPointsBadgeStyle(points: number): { bg: string; textColor: string; }
 
 const ChatItem = ({ title, points, active, onClick }: ChatItemProps) => {
   const { bg, textColor } = getPointsBadgeStyle(points);
-
   return (
     <ChatItemWrapper type="button" $active={active} onClick={onClick}>
-      <ChatItemTitle>{title}</ChatItemTitle> {/* CURSOR PROMPT:This should not update on every assistaant message in the chat. It should not update on every new assistant message in this chat */}
+      <ChatItemTitle>{title}</ChatItemTitle>
       <ChatItemPoints $bg={bg} $textColor={textColor}>
         {points}
       </ChatItemPoints>
