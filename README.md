@@ -41,6 +41,45 @@ npm run dev
 # The app will be available at http://localhost:5173/
 ```
 
+### Demo Mode (No API Setup Needed)
+
+Use this mode when you want to run a full product walkthrough with pre-written demo responses (no real AI API calls).
+
+#### What Demo Mode does
+
+- Uses built-in scripted data instead of live model calls
+- Lets you demo prompt scoring and engagement scoring reliably
+- Works without configuring model API keys
+
+#### Step-by-step (beginner friendly)
+
+1. Open your project folder in Cursor (or your terminal).
+2. Open a terminal in the project root (`pcproject`).
+3. Install dependencies (only needed once):
+
+```bash
+npm install
+```
+
+1. Start demo mode:
+
+```bash
+npm run demo
+```
+
+1. When you see a local URL (usually `http://localhost:5173`), open it in your browser.
+2. Use the exact demo prompts from:
+  - `src/data/demo/DEMO_DATA.md`
+
+#### Important
+
+- Use the prompts exactly as written in `src/data/demo/DEMO_DATA.md` for best results.
+- If you run normal dev mode (`npm run dev`), demo mapping is not guaranteed unless the provider is set to simulation.
+
+#### Stop demo mode
+
+- In the terminal, press `Ctrl + C`.
+
 ### Building for Production
 
 ```bash
@@ -132,10 +171,12 @@ UI behavior for the "Engage for bonus points" feature is controlled by constants
 
 **Location:** `src/constants/engagement.constants.ts`
 
-| Variable | Purpose | How to use |
-|----------|---------|------------|
-| `ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES` | When `false`, only the last assistant message shows engagement options. When `true`, all assistant messages (except engagement responses) show them. | Set to `true` to allow engagement on older messages. |
-| `MIN_AI_RESPONSE_CHAR_LENGTH_FOR_ENGAGEMENT_BONUS` | Minimum character length for an assistant response to show engagement options. Short replies (e.g. "Hello, how can I help you today") are excluded. | Increase to hide engagement on shorter responses; decrease to allow it on shorter ones. |
+
+| Variable                                           | Purpose                                                                                                                                              | How to use                                                                              |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES`            | When `false`, only the last assistant message shows engagement options. When `true`, all assistant messages (except engagement responses) show them. | Set to `true` to allow engagement on older messages.                                    |
+| `MIN_AI_RESPONSE_CHAR_LENGTH_FOR_ENGAGEMENT_BONUS` | Minimum character length for an assistant response to show engagement options. Short replies (e.g. "Hello, how can I help you today") are excluded.  | Increase to hide engagement on shorter responses; decrease to allow it on shorter ones. |
+
 
 **Note:** Engagement responses (evaluations of user engagement) never show engagement options, regardless of these settings.
 
@@ -171,12 +212,12 @@ npm run build
 
 ### Stage 1: Setup and Layout ✅
 
-- [x] Project scaffolding
-- [x] Two-panel layout with sidebar
-- [x] Redux state management
-- [x] Constants-based design system
-- [x] ESLint and Prettier
-- [x] Vercel configuration
+- Project scaffolding
+- Two-panel layout with sidebar
+- Redux state management
+- Constants-based design system
+- ESLint and Prettier
+- Vercel configuration
 
 ### Stage 2: Sidebar Content (Planned)
 

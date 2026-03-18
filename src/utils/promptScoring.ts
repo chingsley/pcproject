@@ -1,8 +1,12 @@
 import type { PromptCategory } from '../types/chat';
 
 const ACTIVE_PROMPT_PATTERNS = [
+  /\bmy\s+draft\b/i,
+  /\bhere\s+is\s+my\s+draft\b/i,
   /\banaly[sz]e\b/i,
   /\bcritique\b/i,
+  /\bstrength(s)?\b/i,
+  /\bweakness(es)?\b/i,
   /\bquestion\b/i,
   /\bassumption(s)?\b/i,
   /\bevidence\b/i,
@@ -54,15 +58,15 @@ export function getPromptCategoryFromPoint(point: number): PromptCategory {
 
 export function getFallbackFeedback(category: PromptCategory): string {
   if (category === 'active') {
-    return 'Strong prompt: it invites analysis and keeps you in charge of the reasoning.';
+    return 'Great job! You led with your own thinking and asked for critique to improve your work.';
   }
   if (category === 'moderate') {
-    return 'Good direction: add critique or evidence-focused follow-ups for deeper engagement.';
+    return 'Good progress. Add critique and evidence checks to show deeper critical thinking.';
   }
   if (category === 'low') {
-    return 'Solid start: ask the AI to evaluate assumptions or challenge your reasoning next.';
+    return 'Nice start. Add your own view and ask for critique or evidence gaps next.';
   }
-  return 'This prompt leans on substitution. Reframe it to analyse, critique, or question.';
+  return 'Thanks for trying. Share your own draft or ideas and ask for critique to earn more points.';
 }
 
 function isPromptCategory(value: unknown): value is PromptCategory {

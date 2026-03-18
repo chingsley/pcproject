@@ -26,7 +26,7 @@ interface PersistedMessage {
 }
 
 function getMostRecentChatId(
-  chatsById: Record<string, { createdAt: string }>,
+  chatsById: Record<string, { createdAt: string; }>,
   chatIds: string[]
 ): string | null {
   if (chatIds.length === 0) return null;
@@ -89,7 +89,7 @@ function normalizeLegacyChatShape(chat: Record<string, unknown>) {
     }
   }
   return {
-    chatsById: chat.chatsById as Record<string, { id: string; title: string; createdAt: string }>,
+    chatsById: chat.chatsById as Record<string, { id: string; title: string; createdAt: string; }>,
     chatIds: chat.chatIds as string[],
     messagesById,
     messageIdsByChatId: chat.messageIdsByChatId as Record<string, string[]>,
@@ -179,7 +179,7 @@ export async function loadState(): Promise<Record<string, unknown> | undefined> 
         data.chat = {
           ...normalizedChat,
           activeChatId: getMostRecentChatId(
-            normalizedChat.chatsById as Record<string, { createdAt: string }>,
+            normalizedChat.chatsById as Record<string, { createdAt: string; }>,
             normalizedChat.chatIds
           ),
           sendingMessageChatId: null,
