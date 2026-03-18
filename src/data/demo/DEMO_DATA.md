@@ -42,23 +42,29 @@ Use these prompts in this order to show the score levels.
 
 ## Feature 2: Prompt Engagement (Summarize)
 
-Use the active prompt above first, then select **Summarize** from engagement options.
+Start with this prompt, then select **Summarize** from engagement options.
+
+### Feature 2 starter prompt
+
+> Tell me about the state of the art in persuasive computing systems.
+
+This returns a detailed summary response to engage with.
 
 ### Summary sample (0 points: near-copy)
 
-> You said my draft has strengths and weaknesses. You said I should add evidence, define terms, and include a test plan.
+> Persuasive computing systems are used in health, education, finance, and productivity. The field moved from fixed reminders to adaptive systems with context. Strengths include personalization, real-time feedback, experimentation, and multimodal delivery. Weaknesses include short-term optimization, engagement not equal outcomes, variation across groups, and ethics concerns.
 
 ### Summary sample (1 point)
 
-> My draft is good, but it needs evidence and clearer definitions.
+> It says persuasive systems are getting better, but they still have problems with ethics and long-term results.
 
 ### Summary sample (2-3 points)
 
-> The critique says my draft has a good core idea, but needs clearer terms and better evidence. It suggests comparing conversion and 30-day retention, and adding a test plan for long-term impact.
+> The response says modern persuasive systems are strong at personalization and real-time feedback, but still weak on long-term behavior change and ethics. It also says research is shifting toward user agency and better long-term evaluation.
 
 ### Summary sample (4-5 points)
 
-> The critique supports my main idea, then gives clear upgrades: define key terms, add one evidence source, compare conversion with 30-day retention, and include a test plan. These changes improve my draft without replacing my own argument.
+> The response shows that persuasive systems are advanced in personalization, testing, and cross-device delivery, but still weak in proving durable change and protecting user autonomy. Its key message is that engagement metrics are not enough. Future systems should prioritize agency, transparent nudging, and long-term evaluation like retention and behavior transfer.
 
 ## Notes
 

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FiCopy, FiShare2 } from 'react-icons/fi';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { COLORS } from '../../../../constants/colors.constants';
 import { FONTS } from '../../../../constants/fonts.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
@@ -26,6 +28,84 @@ const Canva = styled.div`
   font-size: ${FONTS.SIZE.LARGE};
   color: ${COLORS.MUTED_WHITE};
   line-height: 1.5;
+`;
+
+const PlainAnimatedText = styled.div`
+  white-space: pre-wrap;
+`;
+
+const MarkdownContent = styled.div`
+  p {
+    margin: 0 0 ${SPACING.BUTTON_PADDING_Y};
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: ${COLORS.TEXT_PRIMARY};
+    margin: ${SPACING.BUTTON_PADDING_X} 0 ${SPACING.BUTTON_PADDING_Y};
+    line-height: 1.3;
+  }
+
+  h1 {
+    font-size: ${FONTS.SIZE.XLARGEPLUS};
+  }
+
+  h2 {
+    font-size: ${FONTS.SIZE.XLARGE};
+  }
+
+  h3,
+  h4 {
+    font-size: ${FONTS.SIZE.LARGE};
+  }
+
+  ul,
+  ol {
+    margin: 0 0 ${SPACING.BUTTON_PADDING_X};
+    padding-left: ${SPACING.FIXED_OFFSET};
+  }
+
+  li {
+    margin-bottom: ${SPACING.BUTTON_PADDING_Y};
+  }
+
+  strong {
+    color: ${COLORS.TEXT_PRIMARY};
+    font-weight: ${FONTS.WEIGHT.SEMIBOLD};
+  }
+
+  blockquote {
+    margin: 0 0 ${SPACING.BUTTON_PADDING_X};
+    padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
+    border-left: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE_HOVER};
+    background: ${COLORS.SURFACE_OVERLAY_LIGHT};
+    border-radius: ${SPACING.RADIUS_SMALLER};
+  }
+
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+      'Courier New', monospace;
+    font-size: ${FONTS.SIZE.SMALL};
+    background: ${COLORS.SURFACE_OVERLAY_LIGHT};
+    border-radius: ${SPACING.RADIUS_SMALLER};
+    padding: 0 ${SPACING.SHORTCUT_KEY_PADDING_X};
+  }
+
+  pre {
+    margin: 0 0 ${SPACING.BUTTON_PADDING_X};
+    padding: ${SPACING.BUTTON_PADDING_X};
+    background: ${COLORS.SURFACE_OVERLAY_LIGHT};
+    border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+    border-radius: ${SPACING.RADIUS_SMALLER};
+    overflow-x: auto;
+  }
+
+  pre code {
+    background: ${COLORS.TRANSPARENT};
+    padding: 0;
+  }
 `;
 
 const Actions = styled.div`
@@ -202,11 +282,20 @@ const AssistantMessage = ({
   };
 
   const displayContent = shouldAnimate ? visibleContent : content;
+  const isAnimating = shouldAnimate && visibleContent.length < content.length;
 
   return (
     <CanvaWrapper>
       <div>
-        <Canva>{displayContent}</Canva>
+        <Canva>
+          {isAnimating ? (
+            <PlainAnimatedText>{displayContent}</PlainAnimatedText>
+          ) : (
+            <MarkdownContent>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayContent}</ReactMarkdown>
+            </MarkdownContent>
+          )}
+        </Canva>
         <Actions>
           <ActionButton onClick={handleCopy} aria-label="Copy message" title="Copy">
             <ActionIcon>
