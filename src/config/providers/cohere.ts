@@ -1,6 +1,55 @@
 import { CohereClientV2 } from 'cohere-ai';
 import type { ApiChatResponse, ChatApiProvider } from '../../types/chat';
 
+/**
+ * Escapes unescaped control characters inside JSON string literals.
+ * LLMs sometimes return JSON with raw newlines/tabs in strings, which is invalid.
+ */
+function sanitizeJsonForParse(jsonStr: string): string {
+  let result = '';
+  let inString = false;
+  let i = 0;
+  while (i < jsonStr.length) {
+    const c = jsonStr[i];
+    if (inString) {
+      if (c === '\\') {
+        result += c;
+        if (i + 1 < jsonStr.length) {
+          result += jsonStr[i + 1];
+          i++;
+        }
+        i++;
+        continue;
+      }
+      if (c === '"') {
+        inString = false;
+        result += c;
+        i++;
+        continue;
+      }
+      if (c === '\n') {
+        result += '\\n';
+      } else if (c === '\r') {
+        result += '\\r';
+      } else if (c === '\t') {
+        result += '\\t';
+      } else if (c.charCodeAt(0) < 32) {
+        result += `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`;
+      } else {
+        result += c;
+      }
+      i++;
+      continue;
+    }
+    if (c === '"') {
+      inString = true;
+    }
+    result += c;
+    i++;
+  }
+  return result;
+}
+
 const cohere = new CohereClientV2({
   token: import.meta.env.VITE_COHERE_API_KEY,
 });
@@ -83,7 +132,9 @@ Respond ONLY with the JSON object, no additional text.`;
       jsonText = jsonText.replace(/^```\s*/, '').replace(/\s*```$/, '');
     }
 
-    const parsed = JSON.parse(jsonText) as ApiChatResponse;
+    // Escape unescaped control chars in string literals (LLMs sometimes return invalid JSON)
+    const sanitized = sanitizeJsonForParse(jsonText);
+    const parsed = JSON.parse(sanitized) as ApiChatResponse;
 
     // Add timestamp if not provided by API
     if (!parsed.timestamp) {
