@@ -14,8 +14,8 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   height: ${LAYOUT.SIDEBAR_POINTS_HEIGHT};
-  border-bottom: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
   border: ${drawBorder('orange')};
+  // border-bottom: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
   padding: 0 ${LAYOUT.SIDEBAR_ITEM_X_PADDING};
 `;
 
@@ -41,7 +41,7 @@ const InnerCircle = styled.div`
   height: ${LAYOUT.POINTS_LOADER_SIZE};
   border-radius: 50%;
   border: 1px solid ${COLORS.BORDER_SUBTLE};
-  background-color: ${COLORS.INPUT_BG};
+  background-color: ${COLORS.PRIMARY_BLUE};
   color: ${COLORS.TEXT_PRIMARY};
   display: flex;
   align-items: center;

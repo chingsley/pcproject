@@ -5,11 +5,14 @@ export const COLORS = {
   SIDEBAR_BG: '#303030',
   MAIN_BG: '#1A1A1A',
 
-  // Input box
-  INPUT_BG: '#1E293B',
+  // Input, user message, etc
+  PRIMARY_BLUE: '#1E293B',
+  // Hover and select colors
+  PRIMARY_BLUE_LIGHT: '#2C3547',
 
   // Text
   TEXT_PRIMARY: '#F1F5F9',
+  TEXT_PRIMARY_MUTED: '#f1f5f9de',
   MUTED_WHITE: '#C0C7D0', // placeholder & icon
 
   // Action buttons (upload, submit)
@@ -23,7 +26,8 @@ export const COLORS = {
   // Surfaces / overlays (buttons, hover states)
   SURFACE_OVERLAY_LIGHT: 'rgba(255, 255, 255, 0.1)',
   SURFACE_OVERLAY_MEDIUM: 'rgba(255, 255, 255, 0.15)',
-  USER_MESSAGE_BG: '#2f325c69',
+  // USER_MESSAGE_BG: '#2f325c69',
+  USER_MESSAGE_BG: '#2C3547',
 
   // Borders
   BORDER_SUBTLE: 'rgba(255, 255, 255, 0.2)',
@@ -59,10 +63,6 @@ export const COLORS = {
   // glassy red
   GLASS_RED: 'rgba(127, 29, 29, 0.5)', // red, points === 0
   HISTORY_ITEM_POINTS_RED_TEXT: '#FCA5A5', // red text
-
-  // History item row states
-  HISTORY_ITEM_HOVER_BG: 'rgba(56, 56, 77, 0.5)', // glassy blue on hover
-  HISTORY_ITEM_ACTIVE_BG: '#38384D', // selected item
 
   // Sidebar footer
   FOOTER_BG: '#2B2A31',

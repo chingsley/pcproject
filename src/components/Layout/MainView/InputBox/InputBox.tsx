@@ -15,8 +15,6 @@ import { drawBorder } from '../../../../utils/playground';
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
-  // padding: ${SPACING.FIXED_OFFSET} 0;
-  // border: 1px solid blue;
   width: 100%;
   border: ${drawBorder('white', true)};
 `;
@@ -25,7 +23,7 @@ const Box = styled.div`
   width: 100%;
   max-width: ${LAYOUT.INPUT_BOX_WIDTH};
   min-height: ${LAYOUT.INPUT_BOX_HEIGHT};
-  background-color: ${COLORS.INPUT_BG};
+  background-color: ${COLORS.PRIMARY_BLUE};
   border-radius: ${SPACING.RADIUS_SMALL};
   display: flex;
   flex-direction: column;
@@ -49,8 +47,8 @@ const TextArea = styled.textarea`
   border: none;
   resize: none;
   font-family: ${FONTS.FAMILY.PRIMARY};
-  font-size: ${FONTS.SIZE.MEDIUM};
   color: ${COLORS.TEXT_PRIMARY};
+  font-size: ${FONTS.SIZE.LARGE};
   line-height: 1.5;
 
   &::placeholder {

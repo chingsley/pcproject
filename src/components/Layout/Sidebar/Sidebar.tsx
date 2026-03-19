@@ -11,6 +11,7 @@ import StarsProgress from './StarsProgress/StarsProgress';
 import ChatSection from './Chat/ChatSection';
 import SidebarFooter from './Footer/SidebarFooter';
 import { drawBorder } from '../../../utils/playground';
+import { SPACING } from '../../../constants/spacing.constants';
 
 const SidebarContainer = styled.div<{ $isOpen: boolean; }>`
   position: fixed;
@@ -56,6 +57,8 @@ const MiddleSection = styled.div`
   padding: ${LAYOUT.PANEL_PADDING};
   text-align: center;
   border: ${drawBorder('yellow')};
+  // border-top: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+  // border-bottom: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
 `;
 
 const BottomSection = styled.div`

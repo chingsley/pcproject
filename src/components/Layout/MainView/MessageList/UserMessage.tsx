@@ -20,11 +20,13 @@ const MessageAndPointWrapper = styled.div`
 
 const Bubble = styled.div`
   padding: ${SPACING.BUTTON_PADDING_X};
-  background: ${COLORS.USER_MESSAGE_BG};
+  // background: ${COLORS.PRIMARY_BLUE_LIGHT};
+  background: ${COLORS.PRIMARY_BLUE};
   border-radius: ${SPACING.RADIUS_SMALL};
-  color: ${COLORS.TEXT_PRIMARY};
+  color: ${COLORS.TEXT_PRIMARY_MUTED};
   font-family: ${FONTS.FAMILY.PRIMARY};
-  font-size: ${FONTS.SIZE.MEDIUM};
+  font-size: ${FONTS.SIZE.LARGE};
+  // font-weight: ${FONTS.WEIGHT.THIN};
   line-height: 1.5;
 `;
 
@@ -129,7 +131,7 @@ const MessagePoint = styled.span<{
 
 function getMessagePointColors(
   points: number
-): { backgroundColor: string; color: string } {
+): { backgroundColor: string; color: string; } {
   if (points >= 4) {
     return {
       backgroundColor: COLORS.GLASS_GREEN,
@@ -165,9 +167,9 @@ const UserMessage = ({ content, promptPoint, promptFeedback }: UserMessageProps)
   const resolvedPoints = promptPoint ?? 0;
   const { backgroundColor, color } = isPending
     ? {
-        backgroundColor: COLORS.SURFACE_OVERLAY_LIGHT,
-        color: COLORS.TRANSPARENT,
-      }
+      backgroundColor: COLORS.SURFACE_OVERLAY_LIGHT,
+      color: COLORS.TRANSPARENT,
+    }
     : getMessagePointColors(resolvedPoints);
   const pointLabel = `${resolvedPoints} ${resolvedPoints === 1 ? 'point' : 'points'}`;
   const feedbackText = isPending

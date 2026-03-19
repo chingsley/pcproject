@@ -14,7 +14,7 @@ const ChatItemWrapper = styled.button<{ $active?: boolean; }>`
   min-width: 0;
   padding: 1.5rem ${LAYOUT.SIDEBAR_ITEM_X_PADDING};
   border: none;
-  background: ${(props) => (props.$active ? COLORS.HISTORY_ITEM_ACTIVE_BG : 'transparent')};
+  background: ${(props) => (props.$active ? COLORS.PRIMARY_BLUE_LIGHT : 'transparent')};
   font-family: inherit;
   cursor: pointer;
   text-align: left;
@@ -23,7 +23,7 @@ const ChatItemWrapper = styled.button<{ $active?: boolean; }>`
 
   &:hover {
     background: ${(props) =>
-    props.$active ? COLORS.HISTORY_ITEM_ACTIVE_BG : COLORS.HISTORY_ITEM_HOVER_BG};
+    props.$active ? COLORS.PRIMARY_BLUE_LIGHT : COLORS.PRIMARY_BLUE_LIGHT};
   }
 `;
 

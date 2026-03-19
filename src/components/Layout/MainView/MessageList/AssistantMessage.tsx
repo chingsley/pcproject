@@ -120,9 +120,6 @@ const ActionButton = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  // background: ${COLORS.ACTION_BUTTON_BG};
-  // border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
-  // border-radius: ${SPACING.RADIUS_SMALLER};
   background: none;
   border: none;
   border: ${drawBorder('red')};
@@ -133,9 +130,8 @@ const ActionButton = styled.button`
 
   &:hover {
     opacity: 0.9;
-    // border: 1px solid red;
-    border-radius: 50%;
-    background: ${COLORS.ACTION_BUTTON_BG};
+    border-radius: 0.5rem;
+    background: ${COLORS.PRIMARY_BLUE_LIGHT};
   }
 
   &:active {
