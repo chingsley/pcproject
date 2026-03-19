@@ -4,6 +4,8 @@ import { COLORS } from '../../../../constants/colors.constants';
 import { FONTS } from '../../../../constants/fonts.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
 import { ICONS } from '../../../../constants/icons.constants';
+import { drawBorder } from '../../../../utils/playground';
+import { LAYOUT } from '../../../../constants/layout.constants';
 
 const SidebarFooterWrapper = styled.div`
   height: 4rem;
@@ -12,6 +14,8 @@ const SidebarFooterWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 3rem 0;
+  border: ${drawBorder('orange')};
+  padding: 0 ${LAYOUT.SIDEBAR_ITEM_X_PADDING};
 `;
 
 const SettingsButton = styled.button`

@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { COLORS } from '../../../constants/colors.constants';
 import { LAYOUT } from '../../../constants/layout.constants';
-import { SPACING } from '../../../constants/spacing.constants';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { setActiveChatId, clearActiveChatId } from '../../../store/slices/chatSlice';
 import { selectChatsWithPoints } from '../../../store/selectors/chatSelectors';
@@ -35,7 +34,7 @@ const SidebarContainer = styled.div<{ $isOpen: boolean; }>`
 
 const SidebarContent = styled.div`
   flex: 1;
-  padding: ${LAYOUT.PANEL_PADDING};
+  padding: 0.6rem;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -56,6 +55,7 @@ const MiddleSection = styled.div`
   justify-content: center;
   padding: ${LAYOUT.PANEL_PADDING};
   text-align: center;
+  border: ${drawBorder('yellow')};
 `;
 
 const BottomSection = styled.div`
@@ -64,11 +64,6 @@ const BottomSection = styled.div`
   justify-content: space-between;
   min-height: 28rem;
   border: ${drawBorder('yellow')};
-`;
-
-const SidebarPoints = styled.div`
-  height: ${LAYOUT.SIDEBAR_POINTS_HEIGHT};
-  border-bottom: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
 `;
 
 
@@ -95,9 +90,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
         <TopSection>
           <Header />
           <NewChat onClick={handleNewChat} />
-          <SidebarPoints>
-            <Points />
-          </SidebarPoints>
+          <Points />
         </TopSection>
 
         <MiddleSection>

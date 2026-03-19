@@ -4,12 +4,15 @@ import { FONTS } from '../../../../constants/fonts.constants';
 import { ICONS } from '../../../../constants/icons.constants';
 import { LAYOUT } from '../../../../constants/layout.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
+import { drawBorder } from '../../../../utils/playground';
 
 const Wrapper = styled.div`
   height: 4rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: ${drawBorder('orange')};
+  padding: 0 ${LAYOUT.SIDEBAR_ITEM_X_PADDING};
 `;
 
 const NewChatButton = styled.button`

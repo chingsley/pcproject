@@ -9,6 +9,8 @@ import {
   type ChatWithPoints,
 } from '../../../../store/selectors/chatSelectors';
 import ChatList from './ChatList';
+import { drawBorder } from '../../../../utils/playground';
+import { LAYOUT } from '../../../../constants/layout.constants';
 
 const SectionWrapper = styled.div`
   height: 21rem;
@@ -22,6 +24,8 @@ const CaptionWrapper = styled.div`
   justify-content: space-between;
   gap: ${SPACING.BUTTON_PADDING_X};
   margin-bottom: 0.5rem;
+  border: ${drawBorder('orange')};
+  padding: 0 ${LAYOUT.SIDEBAR_ITEM_X_PADDING};
 `;
 
 const CaptionLeft = styled.div`

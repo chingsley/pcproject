@@ -4,6 +4,8 @@ import { FONTS } from '../../../../constants/fonts.constants';
 import { LAYOUT } from '../../../../constants/layout.constants';
 import { useAppSelector } from '../../../../store/hooks';
 import { selectGameProgress } from '../../../../store/selectors/chatSelectors';
+import { SPACING } from '../../../../constants/spacing.constants';
+import { drawBorder } from '../../../../utils/playground';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -11,6 +13,10 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  height: ${LAYOUT.SIDEBAR_POINTS_HEIGHT};
+  border-bottom: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+  border: ${drawBorder('orange')};
+  padding: 0 ${LAYOUT.SIDEBAR_ITEM_X_PADDING};
 `;
 
 const LoaderWrapper = styled.div`

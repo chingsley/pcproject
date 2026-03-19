@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { COLORS } from "../../../../constants/colors.constants";
 import { FONTS } from "../../../../constants/fonts.constants";
 import { SPACING } from "../../../../constants/spacing.constants";
+import { drawBorder } from "../../../../utils/playground";
+import { LAYOUT } from "../../../../constants/layout.constants";
 
 const ChatItemWrapper = styled.button<{ $active?: boolean; }>`
   width: 100%;
@@ -10,14 +12,14 @@ const ChatItemWrapper = styled.button<{ $active?: boolean; }>`
   align-items: center;
   justify-content: space-between;
   min-width: 0;
-  padding: 1.5rem 0;
-  padding-left: 0.5rem;
+  padding: 1.5rem ${LAYOUT.SIDEBAR_ITEM_X_PADDING};
   border: none;
   background: ${(props) => (props.$active ? COLORS.HISTORY_ITEM_ACTIVE_BG : 'transparent')};
   font-family: inherit;
   cursor: pointer;
   text-align: left;
-  border-radius: ${SPACING.RADIUS_SMALLER};
+  border-radius: 10px; // ${SPACING.RADIUS_SMALLER};
+  border: ${drawBorder('orange')};
 
   &:hover {
     background: ${(props) =>

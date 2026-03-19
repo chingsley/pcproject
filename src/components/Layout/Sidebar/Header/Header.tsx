@@ -5,12 +5,13 @@ import { SPACING } from '../../../../constants/spacing.constants';
 import SidebarToggle from '../SidebarToggle';
 import { drawBorder } from '../../../../utils/playground';
 
-const SidebarHeader = styled.div`
+const HeaderWrapper = styled.div`
   height: ${LAYOUT.HEADER_ROW_HEIGHT};
   display: flex;
   align-items: center;
   justify-content: center;
-  border: ${drawBorder('white')};
+  border: ${drawBorder('orange')};
+  padding: 0 ${LAYOUT.SIDEBAR_ITEM_X_PADDING};
 `;
 
 const HeaderRow = styled.div`
@@ -40,14 +41,14 @@ const LightbulbIcon = styled.img`
 `;
 
 const Header = () => (
-  <SidebarHeader>
+  <HeaderWrapper>
     <HeaderRow>
       <HeaderLeft>
         <LightbulbIcon src={ICONS.LIGHTBULB_ICON} alt="" />
       </HeaderLeft>
       <SidebarToggle />
     </HeaderRow>
-  </SidebarHeader>
+  </HeaderWrapper>
 );
 
 export default Header;
