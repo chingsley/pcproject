@@ -12,7 +12,8 @@ This file lists the demo prompts and sample engagement inputs used in demo mode.
 - Run the app with `npm run demo`.
 - Demo mode sets `VITE_CHAT_PROVIDER=simulation` via `.env.demo`.
 - The simulation provider returns predefined responses for exact prompt matches.
-- If no exact match is found, a simulation fallback response is returned.
+- For engagement (summarize, etc.), use the **exact** sample text from this doc; minor edits can prevent a match.
+- If no exact match is found, a simulation fallback response is returned (0 points for engagement prompts).
 
 ## Feature 1: Prompt Scoring (Topic: Persuasive Computing)
 
@@ -52,6 +53,8 @@ This returns a detailed summary response to engage with.
 
 ### Summary sample (0 points: near-copy)
 
+Copy and paste this **exact** text (no edits) for a 0-point match:
+
 > Persuasive computing systems are used in health, education, finance, and productivity. The field moved from fixed reminders to adaptive systems with context. Strengths include personalization, real-time feedback, experimentation, and multimodal delivery. Weaknesses include short-term optimization, engagement not equal outcomes, variation across groups, and ethics concerns.
 
 ### Summary sample (1 point)
@@ -66,9 +69,9 @@ This returns a detailed summary response to engage with.
 
 > The response shows that persuasive systems are advanced in personalization, testing, and cross-device delivery, but still weak in proving durable change and protecting user autonomy. Its key message is that engagement metrics are not enough. Future systems should prioritize agency, transparent nudging, and long-term evaluation like retention and behavior transfer.
 
-## Feature 3: Quiz (Ask Questions)
+## Feature 3: Quiz
 
-The **Ask Questions** engagement option shows multiple-choice questions about the AI response. Scoring is **all-or-nothing**: you earn 5 bonus points only if you answer all questions correctly. Otherwise you get 0 points.
+The quiz shows multiple-choice questions about the AI response. **Trigger it** by clicking **Copy** or **Share** (when disabled) below the AI response. Scoring is **all-or-nothing**: you earn 5 bonus points only if you answer all questions correctly. Otherwise you get 0 points.
 
 ### How to test the quiz in demo mode
 
@@ -76,7 +79,7 @@ The **Ask Questions** engagement option shows multiple-choice questions about th
 
    > Tell me about the state of the art in persuasive computing systems.
 
-2. **Click "Ask Questions"** in the engagement options below the AI response.
+2. **Click Copy or Share** (the disabled buttons below the AI response) to open the quiz panel.
 
 3. **Wait for questions to load** (~1.2–2 seconds in demo mode). A random set of 3 questions is fetched each time.
 
@@ -84,7 +87,7 @@ The **Ask Questions** engagement option shows multiple-choice questions about th
 
 5. **Click "Submit answers"** to receive your score and feedback.
 
-6. **Retry if needed:** If you get 0 points, click **Ask Questions** again to try a new set of questions. Each click fetches a different (random) set.
+6. **Retry if needed:** If you get 0 points, click Copy or Share again to try a new set of questions. Each click fetches a different (random) set.
 
 ### Demo quiz scoring (all-or-nothing)
 

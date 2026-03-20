@@ -64,14 +64,21 @@ function parseEngagementEvaluationPrompt(prompt: string): {
   return { engagementType, userEngagementText };
 }
 
+function normalizeForEngagementMatch(text: string): string {
+  const unicodeNormalized = text
+    .replace(/[\u201c\u201d\u201e\u201f\u2033\u2036"]/g, '"')
+    .replace(/[\u2013\u2014]/g, '-');
+  return normalizeText(unicodeNormalized);
+}
+
 function findDemoEngagementCase(prompt: string): DemoEngagementCase | undefined {
   const parsed = parseEngagementEvaluationPrompt(prompt);
   if (!parsed) return undefined;
-  const normalizedUserEngagementText = normalizeText(parsed.userEngagementText);
+  const normalizedUser = normalizeForEngagementMatch(parsed.userEngagementText);
   return DEMO_ENGAGEMENT_CASES.find(
     (item) =>
       item.engagementType === parsed.engagementType &&
-      normalizeText(item.userEngagementText) === normalizedUserEngagementText
+      normalizeForEngagementMatch(item.userEngagementText) === normalizedUser
   );
 }
 
@@ -140,14 +147,17 @@ export const simulatedAIChatProvider: ChatApiProvider = {
           return;
         }
 
-        const scoring = normalizePromptScoring({
-          promptText: prompt,
-        });
+        const parsedEngagement = parseEngagementEvaluationPrompt(prompt);
+        const isEngagementPrompt = parsedEngagement !== null;
+        const scoring = isEngagementPrompt
+          ? { promptPoint: 0, promptCategory: 'passive' as const, promptFeedback: 'Use one of the demo summary samples from DEMO_DATA.md for exact scoring.' }
+          : normalizePromptScoring({ promptText: prompt });
 
         resolve({
-          chatTitle: 'Simulation fallback response',
-          content:
-            'Simulation mode fallback: no exact demo mapping found for this prompt. Use one of the predefined demo prompts to replay the scripted walkthrough.',
+          chatTitle: isEngagementPrompt ? 'Engagement review' : 'Simulation fallback response',
+          content: isEngagementPrompt
+            ? 'No demo match found for this engagement. Use the exact sample text from DEMO_DATA.md to test scoring.'
+            : 'Simulation mode fallback: no exact demo mapping found for this prompt. Use one of the predefined demo prompts to replay the scripted walkthrough.',
           promptPoint: scoring.promptPoint,
           promptCategory: scoring.promptCategory,
           promptFeedback: scoring.promptFeedback,
