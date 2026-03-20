@@ -41,6 +41,12 @@ export interface PromptScoringInput {
   providerPoint?: unknown;
   providerCategory?: unknown;
   providerFeedback?: unknown;
+  /**
+   * When the provider does not return a numeric promptPoint, use this value instead of
+   * scorePromptFromText(promptText). Use for engagement/quiz flows where heuristic scoring
+   * on the user's text is misleading (e.g. a long summary would default to 2).
+   */
+  fallbackPointIfProviderInvalid?: number;
 }
 
 export interface PromptScoringResult {
@@ -105,7 +111,26 @@ export function normalizePromptPoint(value: unknown, promptText: string): number
     return Math.max(0, Math.min(5, Math.round(value)));
   }
 
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (trimmed !== '') {
+      const n = Number(trimmed);
+      if (Number.isFinite(n)) {
+        return Math.max(0, Math.min(5, Math.round(n)));
+      }
+    }
+  }
+
   return scorePromptFromText(promptText);
+}
+
+function isValidProviderPoint(value: unknown): boolean {
+  if (typeof value === 'number' && Number.isFinite(value)) return true;
+  if (typeof value === 'string' && value.trim() !== '') {
+    const n = Number(value.trim());
+    return Number.isFinite(n);
+  }
+  return false;
 }
 
 export function normalizePromptScoring({
@@ -113,8 +138,16 @@ export function normalizePromptScoring({
   providerPoint,
   providerCategory,
   providerFeedback,
+  fallbackPointIfProviderInvalid,
 }: PromptScoringInput): PromptScoringResult {
-  const promptPoint = normalizePromptPoint(providerPoint, promptText);
+  let promptPoint: number;
+  if (isValidProviderPoint(providerPoint)) {
+    promptPoint = normalizePromptPoint(providerPoint, promptText);
+  } else if (typeof fallbackPointIfProviderInvalid === 'number' && Number.isFinite(fallbackPointIfProviderInvalid)) {
+    promptPoint = Math.max(0, Math.min(5, Math.round(fallbackPointIfProviderInvalid)));
+  } else {
+    promptPoint = normalizePromptPoint(providerPoint, promptText);
+  }
   const promptCategory = isPromptCategory(providerCategory)
     ? providerCategory
     : getPromptCategoryFromPoint(promptPoint);

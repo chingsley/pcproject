@@ -98,7 +98,7 @@ export const DEMO_PROMPT_CASES: DemoPromptCase[] = [
     },
   },
   {
-    // Engagement starter prompt: detailed summary for Feature 2 demo
+    // Engagement starter prompt: detailed summary for Feature 3 demo (see DEMO_DATA.md)
     prompt: 'Tell me about the state of the art in persuasive computing systems.',
     response: {
       chatTitle: 'State of persuasive systems',

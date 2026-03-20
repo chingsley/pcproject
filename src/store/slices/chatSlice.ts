@@ -199,6 +199,8 @@ export const sendEngagement = createAsyncThunk(
         providerPoint: apiResponse.promptPoint,
         providerCategory: apiResponse.promptCategory,
         providerFeedback: apiResponse.promptFeedback,
+        // Avoid scorePromptFromText on engagement text (it defaults to 2 for neutral prose).
+        fallbackPointIfProviderInvalid: 0,
       });
 
       const assistantMessageId = `msg_${Date.now() + 1}_${Math.random().toString(36).substr(2, 9)}`;

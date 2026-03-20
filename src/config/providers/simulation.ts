@@ -66,6 +66,7 @@ function parseEngagementEvaluationPrompt(prompt: string): {
 
 function normalizeForEngagementMatch(text: string): string {
   const unicodeNormalized = text
+    .replace(/[\u200B\u200C\u200D\uFEFF]/g, '')
     .replace(/[\u201c\u201d\u201e\u201f\u2033\u2036"]/g, '"')
     .replace(/[\u2013\u2014]/g, '-');
   return normalizeText(unicodeNormalized);

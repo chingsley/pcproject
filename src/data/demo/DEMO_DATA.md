@@ -41,41 +41,13 @@ Use these prompts in this order to show the score levels.
 - The user asks for critique (not substitution).
 - The user requests strengths, weaknesses, and improvements, which drives critical thinking.
 
-## Feature 2: Prompt Engagement (Summarize)
-
-Start with this prompt, then select **Summarize** from engagement options.
-
-### Feature 2 starter prompt
-
-> Tell me about the state of the art in persuasive computing systems.
-
-This returns a detailed summary response to engage with.
-
-### Summary sample (0 points: near-copy)
-
-Copy and paste this **exact** text (no edits) for a 0-point match:
-
-> Persuasive computing systems are tools that guide behavior with design, timing, and feedback. They are now common in health, education, finance, and productivity apps. Today, the field is moving from simple reminder systems to adaptive systems. Older tools used fixed rules (for example, “send a reminder at 8:00 AM”). Newer tools use user context like habits, time of day, and interaction history to choose better prompts.
-
-### Summary sample (1 point)
-
-> It says persuasive systems are getting better, but they still have problems with ethics and long-term results.
-
-### Summary sample (2-3 points)
-
-> The response says modern persuasive systems are strong at personalization and real-time feedback, but still weak on long-term behavior change and ethics. It also says research is shifting toward user agency and better long-term evaluation.
-
-### Summary sample (4-5 points)
-
-> The response shows that persuasive systems are advanced in personalization, testing, and cross-device delivery, but still weak in proving durable change and protecting user autonomy. Its key message is that engagement metrics are not enough. Future systems should prioritize agency, transparent nudging, and long-term evaluation like retention and behavior transfer.
-
-## Feature 3: Quiz
+## Feature 2: Quiz
 
 The quiz shows multiple-choice questions about the AI response. **Trigger it** by clicking **Copy** or **Share** (when disabled) below the AI response. Scoring is **all-or-nothing**: you earn 5 bonus points only if you answer all questions correctly. Otherwise you get 0 points.
 
 ### How to test the quiz in demo mode
 
-1. **Start with a prompt that returns substantial content** (at least ~100 characters and 2+ sentences). Use the engagement starter prompt:
+1. **Start with a prompt that returns substantial content** (at least ~100 characters and 2+ sentences). Use the Feature 3 starter prompt:
 
    > Tell me about the state of the art in persuasive computing systems.
 
@@ -122,11 +94,39 @@ Demo mode has 3 question sets. The simulation randomly returns one on each fetch
 
 Any demo prompt that returns content long enough to show engagement options will work:
 
-- **Tell me about the state of the art in persuasive computing systems.** (recommended – detailed content)
+- **Tell me about the state of the art in persuasive computing systems.** (recommended – detailed content; same as Feature 3 starter)
 - **Outline the state of persuasive computing and give 3 angles I can compare in my own analysis.**
 - **Here is my draft: "Persuasive computing can help people build better habits..."** (critique response)
 
 Very short or single-sentence responses (e.g. greetings) do not show engagement options. All demo prompts above return content long enough for the quiz.
+
+## Feature 3: Prompt Engagement (Summarize)
+
+Start with this prompt, then select **Summarize** from engagement options.
+
+### Feature 3 starter prompt
+
+> Tell me about the state of the art in persuasive computing systems.
+
+This returns a detailed summary response to engage with.
+
+### Summary sample (0 points: near-copy)
+
+Copy and paste this **exact** text (no edits) for a 0-point match:
+
+> Persuasive computing systems are tools that guide behavior with design, timing, and feedback. They are now common in health, education, finance, and productivity apps. Today, the field is moving from simple reminder systems to adaptive systems. Older tools used fixed rules (for example, “send a reminder at 8:00 AM”). Newer tools use user context like habits, time of day, and interaction history to choose better prompts.
+
+### Summary sample (1 point)
+
+> It says persuasive systems are getting better, but they still have problems with ethics and long-term results.
+
+### Summary sample (2-3 points)
+
+> The response says modern persuasive systems are strong at personalization and real-time feedback, but still weak on long-term behavior change and ethics. It also says research is shifting toward user agency and better long-term evaluation.
+
+### Summary sample (4-5 points)
+
+> The response shows that persuasive systems are advanced in personalization, testing, and cross-device delivery, but still weak in proving durable change and protecting user autonomy. Its key message is that engagement metrics are not enough. Future systems should prioritize agency, transparent nudging, and long-term evaluation like retention and behavior transfer.
 
 ## Notes
 
