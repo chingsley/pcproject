@@ -103,28 +103,28 @@ const InputBoxContent = styled.div`
   border: ${drawBorder('yellow', true)};
 `;
 
-const EngageCaption = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: ${SPACING.BUTTON_PADDING_Y};
-  padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
-  background: ${COLORS.SURFACE_OVERLAY_LIGHT};
-  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
-  border-radius: ${SPACING.RADIUS_SMALLER};
-  font-family: ${FONTS.FAMILY.PRIMARY};
-  font-size: ${FONTS.SIZE.SMALL};
-  font-weight: ${FONTS.WEIGHT.MEDIUM};
-  color: ${COLORS.TEXT_PRIMARY};
-  letter-spacing: 0.02em;
-  border: ${drawBorder('red', true)};
-  margin-bottom: ${SPACING.BUTTON_PADDING_Y};
-  margin-top: ${SPACING.BUTTON_PADDING_Y};
+// const EngageCaption = styled.div`
+//   display: inline-flex;
+//   align-items: center;
+//   gap: ${SPACING.BUTTON_PADDING_Y};
+//   padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
+//   background: ${COLORS.SURFACE_OVERLAY_LIGHT};
+//   border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+//   border-radius: ${SPACING.RADIUS_SMALLER};
+//   font-family: ${FONTS.FAMILY.PRIMARY};
+//   font-size: ${FONTS.SIZE.SMALL};
+//   font-weight: ${FONTS.WEIGHT.MEDIUM};
+//   color: ${COLORS.TEXT_PRIMARY};
+//   letter-spacing: 0.02em;
+//   border: ${drawBorder('red', true)};
+//   margin-bottom: ${SPACING.BUTTON_PADDING_Y};
+//   margin-top: ${SPACING.BUTTON_PADDING_Y};
 
-  span {
-    color: ${COLORS.LOADER_FILL};
-    font-weight: ${FONTS.WEIGHT.SEMIBOLD};
-  }
-`;
+//   span {
+//     color: ${COLORS.LOADER_FILL};
+//     font-weight: ${FONTS.WEIGHT.SEMIBOLD};
+//   }
+// `;
 
 const ToggleButton = styled.button`
   position: fixed;
@@ -173,7 +173,6 @@ interface MainViewProps {
 const MainView = ({ sidebarOpen }: MainViewProps) => {
   const dispatch = useAppDispatch();
   const activeChatId = useAppSelector((state) => state.chat.activeChatId);
-  const engagementContext = useAppSelector((state) => state.ui.engagementContext);
   const messageIds = useAppSelector((state) =>
     activeChatId ? state.chat.messageIdsByChatId[activeChatId] ?? [] : []
   );
@@ -227,7 +226,7 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
           </ChatContent>
           <InputBoxWrapper>
             <InputBoxContent>
-              {engagementContext?.active && (
+              {/* {engagementContext?.active && (
                 <EngageCaption>
                   Engage: <span>
                     {engagementContext.engagementType
@@ -235,7 +234,7 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
                       .replace(/\b\w/g, (c) => c.toUpperCase())}
                   </span>
                 </EngageCaption>
-              )}
+              )} */}
               <InputBox />
             </InputBoxContent>
           </InputBoxWrapper>

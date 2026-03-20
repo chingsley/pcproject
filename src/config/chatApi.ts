@@ -3,6 +3,7 @@ import type { QuizEvaluationResponse, QuizQuestionsResponse } from '../types/qui
 import { QUIZ_BONUS_POINTS, QUIZ_FAIL_MESSAGE, QUIZ_SUCCESS_MESSAGE } from '../constants/engagement.constants';
 import { geminiProvider } from './providers/gemini';
 import { cohereProvider } from './providers/cohere';
+import { openaiProvider } from './providers/openai';
 import { simulatedAIChatProvider } from './providers/simulation';
 import { buildQuizQuestionsPrompt, buildQuizEvaluationPrompt } from '../utils/quizPrompt';
 import { sanitizeJsonForParse } from '../utils/jsonParse';
@@ -10,6 +11,7 @@ import { sanitizeJsonForParse } from '../utils/jsonParse';
 const PROVIDER_MAP: Record<string, ChatApiProvider> = {
   gemini: geminiProvider,
   cohere: cohereProvider,
+  openai: openaiProvider,
   simulation: simulatedAIChatProvider,
 };
 

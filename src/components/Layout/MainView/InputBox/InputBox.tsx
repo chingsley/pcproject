@@ -67,6 +67,29 @@ const Footer = styled.div`
   margin-top: ${SPACING.BUTTON_PADDING_Y};
 `;
 
+const EngageCaption = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: ${SPACING.BUTTON_PADDING_Y};
+  padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
+  background: ${COLORS.SURFACE_OVERLAY_LIGHT};
+  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+  border-radius: ${SPACING.RADIUS_SMALLER};
+  font-family: ${FONTS.FAMILY.PRIMARY};
+  font-size: ${FONTS.SIZE.SMALL};
+  font-weight: ${FONTS.WEIGHT.MEDIUM};
+  color: ${COLORS.TEXT_PRIMARY};
+  letter-spacing: 0.02em;
+  border: ${drawBorder('red', true)};
+  // margin-bottom: ${SPACING.BUTTON_PADDING_Y};
+  // margin-top: ${SPACING.BUTTON_PADDING_Y};
+
+  span {
+    color: ${COLORS.LOADER_FILL};
+    font-weight: ${FONTS.WEIGHT.SEMIBOLD};
+  }
+`;
+
 const ErrorMessage = styled.div`
   color: #ef4444;
   background-color: rgba(239, 68, 68, 0.1);
@@ -187,6 +210,15 @@ const InputBox = () => {
         </InputRow>
         <Footer>
           <UploadButton />
+          {engagementContext?.active && (
+            <EngageCaption>
+              Engage: <span>
+                {engagementContext.engagementType
+                  .replaceAll('_', ' ')
+                  .replace(/\b\w/g, (c) => c.toUpperCase())}
+              </span>
+            </EngageCaption>
+          )}
           <SubmitButton disabled={isSending || !input.trim()} />
         </Footer>
         {sendError && showError && (

@@ -36,7 +36,7 @@ export const QUIZ_SUCCESS_MESSAGE = `Good job! You've earned ${QUIZ_BONUS_POINTS
 /**
  * Message shown when user does not answer all quiz questions correctly.
  */
-export const QUIZ_FAIL_MESSAGE = 'Not all correct. Click Ask Questions again to try a new set of questions.';
+export const QUIZ_FAIL_MESSAGE = 'Not all correct. Please read the output carefully and try again. You need to pass all questions to enable the copy button.';
 
 /**
  * Patterns that indicate a simple greeting or trivial response.

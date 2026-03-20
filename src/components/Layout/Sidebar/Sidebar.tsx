@@ -3,6 +3,7 @@ import { COLORS } from '../../../constants/colors.constants';
 import { LAYOUT } from '../../../constants/layout.constants';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { setActiveChatId, clearActiveChatId } from '../../../store/slices/chatSlice';
+import { clearEngagementContext } from '../../../store/slices/uiSlice';
 import { selectChatsWithPoints } from '../../../store/selectors/chatSelectors';
 import Header from './Header';
 import { NewChat } from './NewChat';
@@ -81,6 +82,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
 
   const handleNewChat = () => {
     dispatch(clearActiveChatId());
+    dispatch(clearEngagementContext());
   };
 
   const handleSelectChat = (chatId: string) => {

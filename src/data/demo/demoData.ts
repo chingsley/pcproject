@@ -173,7 +173,9 @@ export const DEMO_ENGAGEMENT_CASES: DemoEngagementCase[] = [
     // Summarize: 0 points (near-copy)
     engagementType: 'summarize',
     userEngagementText:
-      'Persuasive computing systems are used in health, education, finance, and productivity. The field moved from fixed reminders to adaptive systems with context. Strengths include personalization, real-time feedback, experimentation, and multimodal delivery. Weaknesses include short-term optimization, engagement not equal outcomes, variation across groups, and ethics concerns.',
+      `
+      Persuasive computing systems are tools that guide behavior with design, timing, and feedback. They are now common in health, education, finance, and productivity apps. Today, the field is moving from simple reminder systems to adaptive systems. Older tools used fixed rules (for example, “send a reminder at 8:00 AM”). Newer tools use user context like habits, time of day, and interaction history to choose better prompts.
+      `,
     response: {
       chatTitle: 'Engagement review',
       content: [
@@ -411,7 +413,7 @@ export const DEMO_QUIZ_QUESTION_SETS: QuizQuestion[][] = [
 /** All-or-nothing: 5 pts only if all correct, else 0. Keyed by correct count (0–2 = fail, 3 = pass) */
 export const DEMO_QUIZ_EVALUATIONS: Record<
   number,
-  Omit<ApiChatResponse, 'chatTitle'> & { correctCount: number; totalCount: number }
+  Omit<ApiChatResponse, 'chatTitle'> & { correctCount: number; totalCount: number; }
 > = {
   0: {
     content: QUIZ_FAIL_MESSAGE,

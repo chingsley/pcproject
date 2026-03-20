@@ -55,7 +55,7 @@ This returns a detailed summary response to engage with.
 
 Copy and paste this **exact** text (no edits) for a 0-point match:
 
-> Persuasive computing systems are used in health, education, finance, and productivity. The field moved from fixed reminders to adaptive systems with context. Strengths include personalization, real-time feedback, experimentation, and multimodal delivery. Weaknesses include short-term optimization, engagement not equal outcomes, variation across groups, and ethics concerns.
+> Persuasive computing systems are tools that guide behavior with design, timing, and feedback. They are now common in health, education, finance, and productivity apps. Today, the field is moving from simple reminder systems to adaptive systems. Older tools used fixed rules (for example, “send a reminder at 8:00 AM”). Newer tools use user context like habits, time of day, and interaction history to choose better prompts.
 
 ### Summary sample (1 point)
 
@@ -91,26 +91,29 @@ The quiz shows multiple-choice questions about the AI response. **Trigger it** b
 
 ### Demo quiz scoring (all-or-nothing)
 
-| Result | Points | Category |
-|--------|--------|----------|
-| Any wrong (0/3, 1/3, 2/3) | 0 | passive |
-| All correct (3/3) | 5 | active |
+| Result                    | Points | Category |
+| ------------------------- | ------ | -------- |
+| Any wrong (0/3, 1/3, 2/3) | 0      | passive  |
+| All correct (3/3)         | 5      | active   |
 
 ### Correct answers by question set
 
 Demo mode has 3 question sets. The simulation randomly returns one on each fetch.
 
 **Set 1**
+
 - Q1: Main strengths → **A** (Personalization, real-time feedback, experimentation, multimodal delivery)
 - Q2: Key weakness → **B** (They optimize short-term clicks instead of long-term change)
 - Q3: Research direction → **B** (Systems that support user agency and long-term evaluation)
 
 **Set 2**
+
 - Q1: Strength of current systems → **B** (Personalization and real-time feedback)
 - Q2: Why engagement ≠ outcomes → **B** (Engagement metrics can miss long-term behavior change)
 - Q3: Future priority → **B** (User agency, transparent nudging, and long-term evaluation)
 
 **Set 3**
+
 - Q1: Evolution from older tools → **B** (From fixed rules to context-aware, adaptive systems)
 - Q2: Ethical concern → **B** (Manipulation risk, weak consent, limited transparency)
 - Q3: Research focus → **B** (User agency and sustained outcomes)
