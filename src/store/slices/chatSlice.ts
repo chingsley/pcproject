@@ -1,10 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { Chat, Message } from '../../types/chat';
-import { generateChatResponse } from '../../config/chatApi';
+import type { QuizQuestion } from '../../types/quiz';
+import { generateChatResponse, generateQuizEvaluation } from '../../config/chatApi';
 import { dummyChatState } from '../../data/dummy/data';
 import { normalizePromptScoring } from '../../utils/promptScoring';
 import { buildEngagementEvaluationPrompt, type EngagementType } from '../../utils/engagementPrompt';
+import { clearEngagementContext, markQuizPassed } from './uiSlice';
+import { QUIZ_BONUS_POINTS } from '../../constants/engagement.constants';
 
 interface ChatState {
   chatsById: Record<string, Chat>;
@@ -247,6 +250,69 @@ export const sendEngagement = createAsyncThunk(
   }
 );
 
+export const submitQuizAnswers = createAsyncThunk(
+  'chat/submitQuizAnswers',
+  async (
+    payload: {
+      chatId: string;
+      assistantMessageId: string;
+      assistantResponse: string;
+      userAnswers: Array<{ questionId: string; selectedIndex: number }>;
+      questions: QuizQuestion[];
+    },
+    { dispatch, rejectWithValue }
+  ) => {
+    const { chatId, assistantMessageId: originalAssistantMessageId, assistantResponse, userAnswers, questions } = payload;
+
+    try {
+      const evaluation = await generateQuizEvaluation(
+        assistantResponse,
+        questions,
+        userAnswers
+      );
+
+      const passed = evaluation.promptPoint === QUIZ_BONUS_POINTS;
+      if (passed) {
+        dispatch(markQuizPassed(originalAssistantMessageId));
+      }
+      dispatch(clearEngagementContext());
+
+      const assistantMessageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      return {
+        chatId,
+        assistantMessage: {
+          id: assistantMessageId,
+          chatId,
+          role: 'assistant' as const,
+          content: evaluation.content,
+          timestamp: evaluation.timestamp ?? new Date().toISOString(),
+          promptPoint: evaluation.promptPoint,
+          promptCategory: evaluation.promptCategory ?? 'moderate',
+          promptFeedback: evaluation.promptFeedback,
+          isEngagementResponse: true,
+        },
+      };
+    } catch (error) {
+      let errorMessage = 'Failed to submit quiz answers';
+      if (error instanceof Error) {
+        const t = error.message;
+        if (t.includes('RESOURCE_EXHAUSTED') || t.includes('quota')) {
+          errorMessage = 'API quota exceeded. Please try again later.';
+        } else if (t.includes('API key') || t.includes('authentication')) {
+          errorMessage = 'Invalid API key. Please check your configuration.';
+        } else if (t.includes('rate limit')) {
+          errorMessage = 'Rate limit exceeded. Please wait a moment.';
+        } else if (t.length < 100) {
+          errorMessage = t;
+        }
+      }
+      console.error('Submit quiz error:', error);
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 const chatSlice = createSlice({
   name: 'chat',
   initialState,
@@ -352,6 +418,24 @@ const chatSlice = createSlice({
         state.sendingMessageChatId = null;
       })
       .addCase(sendEngagement.rejected, (state, action) => {
+        state.sendingMessageChatId = null;
+        state.sendError = action.payload as string;
+      });
+
+    builder
+      .addCase(submitQuizAnswers.pending, (state, action) => {
+        state.sendingMessageChatId = action.meta.arg.chatId;
+        state.sendError = null;
+        state.lastAddedAssistantMessageId = null;
+      })
+      .addCase(submitQuizAnswers.fulfilled, (state, action) => {
+        const { chatId, assistantMessage } = action.payload;
+        state.messagesById[assistantMessage.id] = assistantMessage;
+        state.messageIdsByChatId[chatId].push(assistantMessage.id);
+        state.lastAddedAssistantMessageId = assistantMessage.id;
+        state.sendingMessageChatId = null;
+      })
+      .addCase(submitQuizAnswers.rejected, (state, action) => {
         state.sendingMessageChatId = null;
         state.sendError = action.payload as string;
       });

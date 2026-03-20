@@ -66,7 +66,64 @@ This returns a detailed summary response to engage with.
 
 > The response shows that persuasive systems are advanced in personalization, testing, and cross-device delivery, but still weak in proving durable change and protecting user autonomy. Its key message is that engagement metrics are not enough. Future systems should prioritize agency, transparent nudging, and long-term evaluation like retention and behavior transfer.
 
+## Feature 3: Quiz (Ask Questions)
+
+The **Ask Questions** engagement option shows multiple-choice questions about the AI response. Scoring is **all-or-nothing**: you earn 5 bonus points only if you answer all questions correctly. Otherwise you get 0 points.
+
+### How to test the quiz in demo mode
+
+1. **Start with a prompt that returns substantial content** (at least ~100 characters and 2+ sentences). Use the engagement starter prompt:
+
+   > Tell me about the state of the art in persuasive computing systems.
+
+2. **Click "Ask Questions"** in the engagement options below the AI response.
+
+3. **Wait for questions to load** (~1.2–2 seconds in demo mode). A random set of 3 questions is fetched each time.
+
+4. **Answer the questions** by clicking the correct option. Each try uses one of 3 question sets – see below for correct answers.
+
+5. **Click "Submit answers"** to receive your score and feedback.
+
+6. **Retry if needed:** If you get 0 points, click **Ask Questions** again to try a new set of questions. Each click fetches a different (random) set.
+
+### Demo quiz scoring (all-or-nothing)
+
+| Result | Points | Category |
+|--------|--------|----------|
+| Any wrong (0/3, 1/3, 2/3) | 0 | passive |
+| All correct (3/3) | 5 | active |
+
+### Correct answers by question set
+
+Demo mode has 3 question sets. The simulation randomly returns one on each fetch.
+
+**Set 1**
+- Q1: Main strengths → **A** (Personalization, real-time feedback, experimentation, multimodal delivery)
+- Q2: Key weakness → **B** (They optimize short-term clicks instead of long-term change)
+- Q3: Research direction → **B** (Systems that support user agency and long-term evaluation)
+
+**Set 2**
+- Q1: Strength of current systems → **B** (Personalization and real-time feedback)
+- Q2: Why engagement ≠ outcomes → **B** (Engagement metrics can miss long-term behavior change)
+- Q3: Future priority → **B** (User agency, transparent nudging, and long-term evaluation)
+
+**Set 3**
+- Q1: Evolution from older tools → **B** (From fixed rules to context-aware, adaptive systems)
+- Q2: Ethical concern → **B** (Manipulation risk, weak consent, limited transparency)
+- Q3: Research focus → **B** (User agency and sustained outcomes)
+
+### Other prompts that work for the quiz
+
+Any demo prompt that returns content long enough to show engagement options will work:
+
+- **Tell me about the state of the art in persuasive computing systems.** (recommended – detailed content)
+- **Outline the state of persuasive computing and give 3 angles I can compare in my own analysis.**
+- **Here is my draft: "Persuasive computing can help people build better habits..."** (critique response)
+
+Very short or single-sentence responses (e.g. greetings) do not show engagement options. All demo prompts above return content long enough for the quiz.
+
 ## Notes
 
 - Engagement responses are marked with `isEngagementResponse` and never show engagement options again.
 - Engagement scoring and feedback fields are returned in the same shape as live provider responses.
+- Quiz questions and evaluations in demo mode come from `DEMO_QUIZ_QUESTION_SETS` and `DEMO_QUIZ_EVALUATIONS` in `demoData.ts`. Each fetch uses `setTimeout` (1.2–2 s) to simulate API latency and randomly selects one of the 3 question sets.

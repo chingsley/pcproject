@@ -172,7 +172,11 @@ const InputBox = () => {
         <InputRow>
           <SearchIcon />
           <TextArea
-            placeholder={engagementContext?.active ? 'Type your engagement...' : 'Ask anything'}
+            placeholder={
+              engagementContext?.active && engagementContext.engagementType !== 'ask_questions'
+                ? 'Type your engagement...'
+                : 'Ask anything'
+            }
             rows={3}
             aria-label="Ask anything"
             value={input}

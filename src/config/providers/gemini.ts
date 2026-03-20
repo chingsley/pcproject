@@ -10,10 +10,10 @@ export const geminiProvider: ChatApiProvider = {
     prompt: string,
     options = {}
   ): Promise<ApiChatResponse> {
-    const { temperature = 1 } = options;
+    const { temperature = 1, systemMessage: customSystemMessage } = options;
 
-    // System instruction for structured JSON response
-    const systemPrompt = `You are a helpful AI assistant. Respond with a JSON object in this exact format:
+    // System instruction for structured JSON response (or custom for quiz etc.)
+    const defaultSystemPrompt = `You are a helpful AI assistant. Respond with a JSON object in this exact format:
 {
   "chatTitle": "A brief 3-5 word summary of the user's question",
   "content": "Your detailed, helpful response to the user's question",
@@ -41,9 +41,14 @@ User question: ${prompt}
 
 Respond ONLY with the JSON object, no additional text.`;
 
+    const systemPrompt = customSystemMessage ?? defaultSystemPrompt;
+    const contents = customSystemMessage
+      ? `${systemPrompt}\n\nUser: ${prompt}`
+      : systemPrompt;
+
     const response = await ai.models.generateContent({
       model: 'gemini-2.0-flash',
-      contents: systemPrompt,
+      contents,
       config: {
         maxOutputTokens: 2000,
         temperature,
@@ -65,5 +70,25 @@ Respond ONLY with the JSON object, no additional text.`;
     }
 
     return parsed;
+  },
+
+  async generateRawResponse(
+    prompt: string,
+    options = {}
+  ): Promise<string> {
+    const { temperature = 0.5, systemMessage } = options;
+    const contents = `${systemMessage ?? 'Return ONLY valid JSON. No markdown, no extra text.'}\n\nUser: ${prompt}`;
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents,
+      config: {
+        maxOutputTokens: 2000,
+        temperature,
+        responseMimeType: 'application/json',
+      },
+    });
+    const text = response.text;
+    if (!text) throw new Error('No response text from API');
+    return text.trim();
   },
 };

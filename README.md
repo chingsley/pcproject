@@ -176,9 +176,12 @@ UI behavior for the "Engage for bonus points" feature is controlled by constants
 | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | `ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES`            | When `false`, only the last assistant message shows engagement options. When `true`, all assistant messages (except engagement responses) show them. | Set to `true` to allow engagement on older messages.                                    |
 | `MIN_AI_RESPONSE_CHAR_LENGTH_FOR_ENGAGEMENT_BONUS` | Minimum character length for an assistant response to show engagement options. Short replies (e.g. "Hello, how can I help you today") are excluded.  | Increase to hide engagement on shorter responses; decrease to allow it on shorter ones. |
+| `MIN_SENTENCES_FOR_ENGAGEMENT`                     | Minimum number of sentences required. One-sentence definitions or greetings are excluded from engagement.                                            | Increase to require longer responses; decrease to allow shorter ones.                    |
+| `SIMPLE_GREETING_PATTERNS`                         | Regex patterns that indicate trivial responses (e.g. "Hello", "Hi there"). Matching responses never show engagement.                                  | Edit the array to add or remove greeting patterns.                                       |
+| `QUIZ_BONUS_POINTS`                                | Bonus points awarded when user answers all quiz questions correctly (all-or-nothing).                                                                 | Change to adjust the quiz completion reward (e.g. 3, 5, 10).                              |
 
 
-**Note:** Engagement responses (evaluations of user engagement) never show engagement options, regardless of these settings.
+**Note:** Engagement responses (evaluations of user engagement) never show engagement options, regardless of these settings. The "Ask Questions" option shows a multiple-choice quiz for bonus points.
 
 ## Design Specifications
 

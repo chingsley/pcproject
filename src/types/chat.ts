@@ -53,6 +53,11 @@ export interface Chat {
 export interface ChatApiProvider {
   generateChatResponse(
     prompt: string,
-    options?: { temperature?: number; }
+    options?: { temperature?: number; systemMessage?: string }
   ): Promise<ApiChatResponse>;
+  /** Returns raw text/JSON for custom formats (e.g. quiz). Used when response shape differs from ApiChatResponse. */
+  generateRawResponse?(
+    prompt: string,
+    options?: { temperature?: number; systemMessage?: string }
+  ): Promise<string>;
 }

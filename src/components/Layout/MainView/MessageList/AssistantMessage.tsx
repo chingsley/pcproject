@@ -10,10 +10,9 @@ import { drawBorder } from '../../../../utils/playground';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import { clearEngagementContext, setEngagementContext } from '../../../../store/slices/uiSlice';
 import type { EngagementType } from '../../../../utils/engagementPrompt';
-import {
-  ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES,
-  MIN_AI_RESPONSE_CHAR_LENGTH_FOR_ENGAGEMENT_BONUS,
-} from '../../../../constants/engagement.constants';
+import { ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES } from '../../../../constants/engagement.constants';
+import { shouldShowEngagementOptions } from '../../../../utils/engagementVisibility';
+import QuizPanel from './QuizPanel';
 
 const CanvaWrapper = styled.div`
   display: flex;
@@ -108,13 +107,41 @@ const MarkdownContent = styled.div`
   }
 `;
 
-const Actions = styled.div`
+const ActionRow = styled.div`
   display: flex;
-  // gap: ${SPACING.BUTTON_PADDING_Y};
-  // margin-top: ${SPACING.BUTTON_PADDING_Y};
+  flex-wrap: wrap;
+  align-items: center;
+  gap: ${SPACING.BUTTON_PADDING_X};
+  margin-top: ${SPACING.BUTTON_PADDING_Y};
 `;
 
-const ActionButton = styled.button`
+const ActionGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${SPACING.BUTTON_PADDING_Y};
+`;
+
+const ActionDivider = styled.div`
+  width: ${SPACING.BORDER_WIDTH};
+  height: ${SPACING.FIXED_OFFSET};
+  background: ${COLORS.BORDER_SUBTLE};
+  border-radius: ${SPACING.RADIUS_PILL};
+`;
+
+const EngageGroup = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: ${SPACING.BUTTON_PADDING_Y};
+`;
+
+const EngageLabel = styled.span`
+  font-family: ${FONTS.FAMILY.PRIMARY};
+  font-size: ${FONTS.SIZE.SMALL};
+  color: ${COLORS.MUTED_WHITE};
+`;
+
+const ActionButton = styled.button<{ $disabled?: boolean }>`
   width: ${SPACING.UPLOAD_BUTTON_SIZE};
   height: ${SPACING.UPLOAD_BUTTON_SIZE};
   display: inline-flex;
@@ -126,12 +153,13 @@ const ActionButton = styled.button`
   color: ${COLORS.ACTION_BUTTON_TEXT};
   padding: 0;
   cursor: pointer;
+  opacity: ${(p) => (p.$disabled ? 0.5 : 1)};
   transition: opacity 0.2s ease;
 
   &:hover {
-    opacity: 0.9;
-    border-radius: 0.5rem;
-    background: ${COLORS.PRIMARY_BLUE_LIGHT};
+    opacity: ${(p) => (p.$disabled ? 0.65 : 0.9)};
+    border-radius: ${SPACING.RADIUS_SMALLER};
+    background: ${(p) => (p.$disabled ? COLORS.SURFACE_OVERLAY_LIGHT : COLORS.PRIMARY_BLUE_LIGHT)};
   }
 
   &:active {
@@ -149,22 +177,14 @@ const ActionIcon = styled.span`
 
 const TYPEWRITER_MS_PER_CHAR = 5;
 
-const EngageWrapper = styled.div`
-  width: 100%;
-  margin-top: ${SPACING.BUTTON_PADDING_Y};
-`;
-
-const EngageTitle = styled.div`
-  font-family: ${FONTS.FAMILY.PRIMARY};
-  font-size: ${FONTS.SIZE.SMALL};
-  color: ${COLORS.MUTED_WHITE};
-  margin-bottom: ${SPACING.BUTTON_PADDING_Y};
-`;
-
 const EngageTypeRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: ${SPACING.BUTTON_PADDING_Y};
+`;
+
+const QuizPanelWrapper = styled.div`
+  margin-top: ${SPACING.BUTTON_PADDING_X};
 `;
 
 const EngageTypeButton = styled.button<{ $isActive: boolean; }>`
@@ -193,7 +213,6 @@ const EngageTypeButton = styled.button<{ $isActive: boolean; }>`
 
 const ENGAGEMENT_TYPES: Array<{ type: EngagementType; label: string; }> = [
   { type: 'summarize', label: 'Summarize' },
-  { type: 'ask_questions', label: 'Ask Questions' },
   { type: 'paraphrase', label: 'Paraphrase' },
   { type: 'analyze', label: 'Analyze' },
 ];
@@ -224,9 +243,18 @@ const AssistantMessage = ({
   );
   const dispatch = useAppDispatch();
   const engagementContext = useAppSelector((state) => state.ui.engagementContext);
+  const quizPassedAssistantMessageIds = useAppSelector(
+    (state) => state.ui.quizPassedAssistantMessageIds ?? []
+  );
   const selectedEngagement = engagementContext?.active
     ? engagementContext.engagementType
     : null;
+
+  const hasEngagementOptions =
+    shouldShowEngagementOptions(content) &&
+    (isLastAssistantMessage || ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES);
+  const copyShareEnabled =
+    !hasEngagementOptions || quizPassedAssistantMessageIds.includes(assistantMessageId);
 
   useEffect(() => {
     if (!shouldAnimate) return;
@@ -272,8 +300,39 @@ const AssistantMessage = ({
         console.error('Failed to share:', err);
       }
     } else {
-      // Fallback: copy to clipboard
       await handleCopy();
+    }
+  };
+
+  const handleCopyClick = () => {
+    if (copyShareEnabled) {
+      handleCopy();
+    } else {
+      dispatch(
+        setEngagementContext({
+          active: true,
+          chatId,
+          assistantMessageId,
+          assistantResponse: content,
+          engagementType: 'ask_questions',
+        })
+      );
+    }
+  };
+
+  const handleShareClick = () => {
+    if (copyShareEnabled) {
+      handleShare();
+    } else {
+      dispatch(
+        setEngagementContext({
+          active: true,
+          chatId,
+          assistantMessageId,
+          assistantResponse: content,
+          engagementType: 'ask_questions',
+        })
+      );
     }
   };
 
@@ -292,61 +351,91 @@ const AssistantMessage = ({
             </MarkdownContent>
           )}
         </Canva>
-        <Actions>
-          <ActionButton onClick={handleCopy} aria-label="Copy message" title="Copy">
-            <ActionIcon>
-              <FiCopy />
-            </ActionIcon>
-          </ActionButton>
-          <ActionButton onClick={handleShare} aria-label="Share message" title="Share">
-            <ActionIcon>
-              <FiShare2 />
-            </ActionIcon>
-          </ActionButton>
-        </Actions>
+        {!isEngagementResponse && (
+          <>
+            <ActionRow>
+              <ActionGroup>
+                <ActionButton
+                  type="button"
+                  onClick={handleCopyClick}
+                  $disabled={!copyShareEnabled}
+                  aria-label={copyShareEnabled ? 'Copy message' : 'Complete quiz to enable copy'}
+                  title={copyShareEnabled ? 'Copy' : 'Complete quiz to enable copy'}
+                >
+                  <ActionIcon>
+                    <FiCopy />
+                  </ActionIcon>
+                </ActionButton>
+                <ActionButton
+                  type="button"
+                  onClick={handleShareClick}
+                  $disabled={!copyShareEnabled}
+                  aria-label={copyShareEnabled ? 'Share message' : 'Complete quiz to enable share'}
+                  title={copyShareEnabled ? 'Share' : 'Complete quiz to enable share'}
+                >
+                  <ActionIcon>
+                    <FiShare2 />
+                  </ActionIcon>
+                </ActionButton>
+              </ActionGroup>
+              {hasEngagementOptions && (
+                  <>
+                    <ActionDivider />
+                    <EngageGroup>
+                      <EngageLabel>Engage for bonus points</EngageLabel>
+                      <EngageTypeRow>
+                        {ENGAGEMENT_TYPES.map((item) => (
+                          <EngageTypeButton
+                            key={item.type}
+                            type='button'
+                            $isActive={
+                              engagementContext?.active === true &&
+                              engagementContext.assistantMessageId === assistantMessageId &&
+                              selectedEngagement === item.type
+                            }
+                            onClick={() => {
+                              if (
+                                engagementContext?.active &&
+                                engagementContext.assistantMessageId === assistantMessageId &&
+                                engagementContext.engagementType === item.type
+                              ) {
+                                dispatch(clearEngagementContext());
+                                return;
+                              }
 
-        {!isEngagementResponse &&
-          content.length >= MIN_AI_RESPONSE_CHAR_LENGTH_FOR_ENGAGEMENT_BONUS &&
-          (isLastAssistantMessage || ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES) && (
-            <EngageWrapper>
-              <EngageTitle>Engage for bonus points</EngageTitle>
-              <EngageTypeRow>
-                {ENGAGEMENT_TYPES.map((item) => (
-                  <EngageTypeButton
-                    key={item.type}
-                    type='button'
-                    $isActive={
-                      engagementContext?.active === true &&
-                      engagementContext.assistantMessageId === assistantMessageId &&
-                      selectedEngagement === item.type
-                    }
-                    onClick={() => {
-                      if (
-                        engagementContext?.active &&
-                        engagementContext.assistantMessageId === assistantMessageId &&
-                        engagementContext.engagementType === item.type
-                      ) {
-                        dispatch(clearEngagementContext());
-                        return;
-                      }
-
-                      dispatch(
-                        setEngagementContext({
-                          active: true,
-                          chatId,
-                          assistantMessageId,
-                          assistantResponse: content,
-                          engagementType: item.type,
-                        })
-                      );
-                    }}
-                  >
-                    {item.label}
-                  </EngageTypeButton>
-                ))}
-              </EngageTypeRow>
-            </EngageWrapper>
-          )}
+                              dispatch(
+                                setEngagementContext({
+                                  active: true,
+                                  chatId,
+                                  assistantMessageId,
+                                  assistantResponse: content,
+                                  engagementType: item.type,
+                                })
+                              );
+                            }}
+                          >
+                            {item.label}
+                          </EngageTypeButton>
+                        ))}
+                      </EngageTypeRow>
+                    </EngageGroup>
+                  </>
+                )}
+            </ActionRow>
+            {hasEngagementOptions &&
+              engagementContext?.active &&
+              engagementContext.assistantMessageId === assistantMessageId &&
+              engagementContext.engagementType === 'ask_questions' && (
+                <QuizPanelWrapper>
+                  <QuizPanel
+                    assistantResponse={content}
+                    assistantMessageId={assistantMessageId}
+                    chatId={chatId}
+                  />
+                </QuizPanelWrapper>
+              )}
+          </>
+        )}
       </div>
     </CanvaWrapper>
   );

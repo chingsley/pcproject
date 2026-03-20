@@ -1,54 +1,6 @@
 import { CohereClientV2 } from 'cohere-ai';
 import type { ApiChatResponse, ChatApiProvider } from '../../types/chat';
-
-/**
- * Escapes unescaped control characters inside JSON string literals.
- * LLMs sometimes return JSON with raw newlines/tabs in strings, which is invalid.
- */
-function sanitizeJsonForParse(jsonStr: string): string {
-  let result = '';
-  let inString = false;
-  let i = 0;
-  while (i < jsonStr.length) {
-    const c = jsonStr[i];
-    if (inString) {
-      if (c === '\\') {
-        result += c;
-        if (i + 1 < jsonStr.length) {
-          result += jsonStr[i + 1];
-          i++;
-        }
-        i++;
-        continue;
-      }
-      if (c === '"') {
-        inString = false;
-        result += c;
-        i++;
-        continue;
-      }
-      if (c === '\n') {
-        result += '\\n';
-      } else if (c === '\r') {
-        result += '\\r';
-      } else if (c === '\t') {
-        result += '\\t';
-      } else if (c.charCodeAt(0) < 32) {
-        result += `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`;
-      } else {
-        result += c;
-      }
-      i++;
-      continue;
-    }
-    if (c === '"') {
-      inString = true;
-    }
-    result += c;
-    i++;
-  }
-  return result;
-}
+import { sanitizeJsonForParse } from '../../utils/jsonParse';
 
 const cohere = new CohereClientV2({
   token: import.meta.env.VITE_COHERE_API_KEY,
@@ -59,10 +11,12 @@ export const cohereProvider: ChatApiProvider = {
     prompt: string,
     options = {}
   ): Promise<ApiChatResponse> {
-    const { temperature = 0.7 } = options;
+    const { temperature = 0.7, systemMessage: customSystemMessage } = options;
 
-    // System message for structured JSON response
-    const systemMessage = `You are a helpful AI assistant. Respond with a JSON object in this exact format:
+    // System message for structured JSON response (or custom for quiz etc.)
+    const systemMessage =
+      customSystemMessage ??
+      `You are a helpful AI assistant. Respond with a JSON object in this exact format:
 {
   "chatTitle": "A brief 3-5 word summary of the user's question",
   "content": "Your detailed, helpful response to the user's question",
@@ -142,5 +96,30 @@ Respond ONLY with the JSON object, no additional text.`;
     }
 
     return parsed;
+  },
+
+  async generateRawResponse(
+    prompt: string,
+    options = {}
+  ): Promise<string> {
+    const { temperature = 0.5, systemMessage } = options;
+    const response = await cohere.chat({
+      model: 'command-a-03-2025',
+      messages: [
+        { role: 'system', content: systemMessage ?? 'Return ONLY valid JSON. No markdown, no extra text.' },
+        { role: 'user', content: prompt },
+      ],
+      temperature,
+    });
+    const content = response.message?.content;
+    if (!content?.length) throw new Error('No response content from Cohere API');
+    const textContent = content.find((item) => item.type === 'text');
+    if (!textContent || textContent.type !== 'text') throw new Error('No text content in Cohere response');
+    const text = textContent.text;
+    if (!text) throw new Error('No response text from Cohere API');
+    let out = text.trim();
+    if (out.startsWith('```json')) out = out.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+    else if (out.startsWith('```')) out = out.replace(/^```\s*/, '').replace(/\s*```$/, '');
+    return out;
   },
 };

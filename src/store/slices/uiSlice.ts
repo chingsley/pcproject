@@ -13,12 +13,15 @@ interface UiState {
     assistantResponse: string;
     engagementType: EngagementType;
   };
+  /** Assistant message IDs that passed the quiz (100% score); copy/share enabled for these */
+  quizPassedAssistantMessageIds: string[];
 }
 
 const initialState: UiState = {
   sidebarOpen: true,
   selectedHistoryId: null,
   engagementContext: null,
+  quizPassedAssistantMessageIds: [],
 };
 
 const uiSlice = createSlice({
@@ -40,6 +43,13 @@ const uiSlice = createSlice({
     clearEngagementContext: (state) => {
       state.engagementContext = null;
     },
+    markQuizPassed: (state, action: PayloadAction<string>) => {
+      const id = action.payload;
+      const ids = state.quizPassedAssistantMessageIds ?? [];
+      if (!ids.includes(id)) {
+        state.quizPassedAssistantMessageIds = [...ids, id];
+      }
+    },
   },
 });
 
@@ -49,5 +59,6 @@ export const {
   setSelectedHistoryId,
   setEngagementContext,
   clearEngagementContext,
+  markQuizPassed,
 } = uiSlice.actions;
 export default uiSlice.reducer;

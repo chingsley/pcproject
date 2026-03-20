@@ -1,5 +1,11 @@
 import type { ApiChatResponse } from '../../types/chat';
+import type { QuizQuestion } from '../../types/quiz';
 import type { EngagementType } from '../../utils/engagementPrompt';
+import {
+  QUIZ_BONUS_POINTS,
+  QUIZ_FAIL_MESSAGE,
+  QUIZ_SUCCESS_MESSAGE,
+} from '../../constants/engagement.constants';
 
 export interface DemoPromptCase {
   prompt: string;
@@ -292,4 +298,152 @@ export const DEMO_ENGAGEMENT_CASES: DemoEngagementCase[] = [
     },
   },
 ];
+
+/** Three question sets for demo mode – a different set is returned on each fetch/retry */
+export const DEMO_QUIZ_QUESTION_SETS: QuizQuestion[][] = [
+  [
+    {
+      id: 'q1',
+      question: 'What are the main strengths of modern persuasive computing systems?',
+      options: [
+        'Personalization, real-time feedback, experimentation, multimodal delivery',
+        'Fixed reminders, basic dashboards, manual testing',
+        'Long-term behavior change, proven outcomes, full transparency',
+        'Low engagement, limited context, single-channel delivery',
+      ],
+      correctIndex: 0,
+    },
+    {
+      id: 'q2',
+      question: 'What is a key weakness of many persuasive systems today?',
+      options: [
+        'They personalize too much',
+        'They optimize short-term clicks instead of long-term change',
+        'They use too many channels',
+        'They lack A/B testing',
+      ],
+      correctIndex: 1,
+    },
+    {
+      id: 'q3',
+      question: 'What is the current research direction in persuasive computing?',
+      options: [
+        'More reminders and notifications',
+        'Systems that support user agency and long-term evaluation',
+        'Faster A/B testing only',
+        'Reducing personalization',
+      ],
+      correctIndex: 1,
+    },
+  ],
+  [
+    {
+      id: 'q1',
+      question: 'Which of these is a strength of current persuasive systems?',
+      options: [
+        'Short-term optimization only',
+        'Personalization and real-time feedback',
+        'Lack of experimentation',
+        'Single-channel delivery',
+      ],
+      correctIndex: 1,
+    },
+    {
+      id: 'q2',
+      question: 'Why does high engagement not always mean better outcomes?',
+      options: [
+        'Users prefer low engagement',
+        'Engagement metrics can miss long-term behavior change',
+        'Systems are too personalized',
+        'A/B testing is unreliable',
+      ],
+      correctIndex: 1,
+    },
+    {
+      id: 'q3',
+      question: 'What should future persuasive systems prioritize?',
+      options: [
+        'More notifications',
+        'User agency, transparent nudging, and long-term evaluation',
+        'Fewer channels',
+        'Fixed reminder rules',
+      ],
+      correctIndex: 1,
+    },
+  ],
+  [
+    {
+      id: 'q1',
+      question: 'How have persuasive systems evolved from older tools?',
+      options: [
+        'From adaptive models to fixed rules',
+        'From fixed rules to context-aware, adaptive systems',
+        'From multimodal to single-channel',
+        'From long-term to short-term focus',
+      ],
+      correctIndex: 1,
+    },
+    {
+      id: 'q2',
+      question: 'What ethical concern is mentioned in the content?',
+      options: [
+        'Too much user control',
+        'Manipulation risk, weak consent, limited transparency',
+        'Excessive experimentation',
+        'Over-reliance on personalization',
+      ],
+      correctIndex: 1,
+    },
+    {
+      id: 'q3',
+      question: 'What are researchers now focusing on?',
+      options: [
+        'Compliance only',
+        'User agency and sustained outcomes',
+        'Faster A/B tests',
+        'Reducing feedback loops',
+      ],
+      correctIndex: 1,
+    },
+  ],
+];
+
+/** All-or-nothing: 5 pts only if all correct, else 0. Keyed by correct count (0–2 = fail, 3 = pass) */
+export const DEMO_QUIZ_EVALUATIONS: Record<
+  number,
+  Omit<ApiChatResponse, 'chatTitle'> & { correctCount: number; totalCount: number }
+> = {
+  0: {
+    content: QUIZ_FAIL_MESSAGE,
+    promptPoint: 0,
+    promptCategory: 'passive',
+    promptFeedback: 'Click Ask Questions again to retry with a new set of questions.',
+    correctCount: 0,
+    totalCount: 3,
+  },
+  1: {
+    content: QUIZ_FAIL_MESSAGE,
+    promptPoint: 0,
+    promptCategory: 'passive',
+    promptFeedback: 'Click Ask Questions again to retry with a new set of questions.',
+    correctCount: 1,
+    totalCount: 3,
+  },
+  2: {
+    content: QUIZ_FAIL_MESSAGE,
+    promptPoint: 0,
+    promptCategory: 'passive',
+    promptFeedback: 'Click Ask Questions again to retry with a new set of questions.',
+    correctCount: 2,
+    totalCount: 3,
+  },
+  3: {
+    content: QUIZ_SUCCESS_MESSAGE,
+    promptPoint: QUIZ_BONUS_POINTS,
+    promptCategory: 'active',
+    promptFeedback: `Great job! You earned ${QUIZ_BONUS_POINTS} bonus points.`,
+    correctCount: 3,
+    totalCount: 3,
+  },
+};
 

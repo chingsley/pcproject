@@ -3,6 +3,8 @@ import { normalizePromptScoring } from '../../utils/promptScoring';
 import {
   DEMO_ENGAGEMENT_CASES,
   DEMO_PROMPT_CASES,
+  DEMO_QUIZ_EVALUATIONS,
+  DEMO_QUIZ_QUESTION_SETS,
   type DemoEngagementCase,
   type DemoPromptCase,
 } from '../../data/demo/demoData';
@@ -73,7 +75,56 @@ function findDemoEngagementCase(prompt: string): DemoEngagementCase | undefined 
   );
 }
 
+function parseQuizCorrectCount(prompt: string): number {
+  const answersBlock = extractQuotedBlock(prompt, "User's answers:");
+  if (!answersBlock) return 0;
+  let correct = 0;
+  const selectedMatch = answersBlock.matchAll(/Selected:\s*(.+?)(?:\n|$)/g);
+  const correctMatch = answersBlock.matchAll(/Correct:\s*(.+?)(?:\n|$)/g);
+  const selected = [...selectedMatch].map((m) => m[1].trim());
+  const correctAnswers = [...correctMatch].map((m) => m[1].trim());
+  for (let i = 0; i < Math.min(selected.length, correctAnswers.length); i++) {
+    if (selected[i] === correctAnswers[i]) correct++;
+  }
+  return correct;
+}
+
+function isQuizQuestionsPrompt(prompt: string): boolean {
+  return prompt.includes('Generate 3 multiple-choice questions') || prompt.includes('multiple-choice questions');
+}
+
+function isQuizEvaluationPrompt(prompt: string): boolean {
+  return prompt.includes("Evaluate the user's quiz answers");
+}
+
 export const simulatedAIChatProvider: ChatApiProvider = {
+  async generateRawResponse(prompt: string): Promise<string> {
+    const delayMs = 1200 + Math.random() * 800;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (isQuizQuestionsPrompt(prompt)) {
+          const setIndex = Math.floor(Math.random() * DEMO_QUIZ_QUESTION_SETS.length);
+          const questions = DEMO_QUIZ_QUESTION_SETS[setIndex];
+          resolve(JSON.stringify({ questions }));
+          return;
+        }
+        if (isQuizEvaluationPrompt(prompt)) {
+          const correctCount = Math.min(3, Math.max(0, parseQuizCorrectCount(prompt)));
+          const evaluation = DEMO_QUIZ_EVALUATIONS[correctCount] ?? DEMO_QUIZ_EVALUATIONS[0];
+          resolve(
+            JSON.stringify({
+              chatTitle: 'Quiz Results',
+              ...evaluation,
+              timestamp: new Date().toISOString(),
+            })
+          );
+          return;
+        }
+        resolve(JSON.stringify({ questions: [] }));
+      }, delayMs);
+    });
+  },
+
   async generateChatResponse(prompt: string): Promise<ApiChatResponse> {
     return new Promise<ApiChatResponse>((resolve) => {
       setTimeout(() => {
