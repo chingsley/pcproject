@@ -4,7 +4,7 @@
  */
 export const LAYOUT = {
   SIDEBAR_WIDTH: '20.25rem', // 260px at 16px base
-  PANEL_PADDING: '1.25rem', // 20px at 16px base
+  LAYOUT_CONTENT_PADDING: '0.6rem', // 20px at 16px base
   SIDEBAR_ITEM_X_PADDING: '0.8rem', // 9.6px at 16px base
   SIDEBAR_HEADER_HEIGHT: '6rem', // 96px
   HEADER_ROW_HEIGHT: '2.5rem', // 50px – header row (lightbulb + title | toggle)

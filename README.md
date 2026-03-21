@@ -4,6 +4,7 @@ A modern web desktop AI chat interface built with React, TypeScript, and Redux. 
 
 ## Features
 
+- **Persuasive & Gamification Design:** Prompt scoring, engagement options (Summarize, Quiz), Copy/Share friction, points system, and stars. See [Persuasive & Gamification Design](#persuasive--gamification-design) for details.
 - **Modern Tech Stack:** React 18, TypeScript, Vite, Redux Toolkit
 - **Styled Components:** CSS-in-JS with constants-based design system
 - **Responsive Layout:** Toggleable sidebar with smooth animations
@@ -164,6 +165,35 @@ styled-components with a constants-based design system:
 - All fonts defined in `fonts.constants.ts`
 - No magic strings or hardcoded values in components
 - Global styles applied via styled-components
+
+## Persuasive & Gamification Design
+
+The app uses persuasive computing and gamification to encourage deeper learning and critical thinking when interacting with AI.
+
+### Persuasive Components
+
+| Component | How it works |
+|-----------|--------------|
+| **Prompt scoring (0–5 points)** | Prompts are scored by how active they are. Passive prompts (e.g. "write for me") earn 0; active prompts (e.g. "critique my draft") earn 4–5. This nudges users toward reflective, critical prompts. |
+| **Engagement options** | After AI responses, users can **Summarize** or **Ask Questions** (quiz). Summaries are scored 0–4 by quality (paraphrasing vs. near-copy). The quiz awards bonus points only if all answers are correct. |
+| **Feedback** | Category-specific feedback (e.g. "Add your own view and ask for critique") guides users toward better prompts and deeper engagement. |
+| **Friction (Copy/Share)** | Copy and Share buttons are disabled on AI messages that qualify for engagement. They unlock only after the user answers all 3 quiz questions correctly. Clicking Copy or Share when disabled opens the quiz panel instead. |
+
+### Points System
+
+Points come from assistant messages and are summed across all chats:
+
+- **Prompt scoring:** 0–5 points based on prompt quality (passive → active).
+- **Summarize engagement:** 0–4 points based on summary quality (near-copy → strong synthesis).
+- **Quiz bonus:** 5 points if all 3 questions correct; 0 otherwise.
+
+Total points = sum of all `promptPoint` values from assistant messages.
+
+### Stars & Progress
+
+- **Stars:** Earned at 100 points each (first star at 100, second at 200, third at 300, etc.). Configurable via `POINTS_PER_STAR` in `src/utils/gamePoints.ts`.
+- **Points ring:** Shows progress toward the next star (0–100%).
+- **Motivating message:** "You are X points away from earning your first/next star."
 
 ## Engagement Constants
 

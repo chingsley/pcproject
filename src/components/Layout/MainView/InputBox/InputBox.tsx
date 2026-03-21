@@ -197,7 +197,7 @@ const InputBox = () => {
           <TextArea
             placeholder={
               engagementContext?.active && engagementContext.engagementType !== 'ask_questions'
-                ? 'Type your engagement...'
+                ? 'Type your engagement response...'
                 : 'Ask anything'
             }
             rows={3}

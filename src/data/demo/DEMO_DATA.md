@@ -120,16 +120,25 @@ Copy and paste this **exact** text (no edits) for a 0-point match:
 
 > It says persuasive systems are getting better, but they still have problems with ethics and long-term results.
 
-### Summary sample (2-3 points)
+### Summary sample (2 points)
+
+> The response describes how apps use design and feedback to guide behavior in areas like health and education. It says systems moved from fixed reminders to adaptive ones, but it says little about ethics or proof that effects last.
+
+### Summary sample (3 points)
 
 > The response says modern persuasive systems are strong at personalization and real-time feedback, but still weak on long-term behavior change and ethics. It also says research is shifting toward user agency and better long-term evaluation.
 
-### Summary sample (4-5 points)
+### Summary sample (4 points)
+
+> The response argues persuasive tech is strong on personalization, experimentation, and delivery across devices, but weak on proving durable change and protecting autonomy. It warns against using engagement alone as success. One next step would be to tie design choices to retention after prompts end.
+
+### Summary sample (5 points)
 
 > The response shows that persuasive systems are advanced in personalization, testing, and cross-device delivery, but still weak in proving durable change and protecting user autonomy. Its key message is that engagement metrics are not enough. Future systems should prioritize agency, transparent nudging, and long-term evaluation like retention and behavior transfer.
 
 ## Notes
 
+- Engagement evaluation **content** in Markdown uses: an opening praise/encouragement block, then `## Feedback` (paragraphs only), then `## Score` with a single line `Score: N/5`. Live providers follow the same template from `buildEngagementEvaluationPrompt` in `src/utils/engagementPrompt.ts`.
 - Engagement responses are marked with `isEngagementResponse` and never show engagement options again.
 - Engagement scoring and feedback fields are returned in the same shape as live provider responses.
 - Quiz questions and evaluations in demo mode come from `DEMO_QUIZ_QUESTION_SETS` and `DEMO_QUIZ_EVALUATIONS` in `demoData.ts`. Each fetch uses `setTimeout` (1.2–2 s) to simulate API latency and randomly selects one of the 3 question sets.

@@ -36,7 +36,7 @@ const SidebarContainer = styled.div<{ $isOpen: boolean; }>`
 
 const SidebarContent = styled.div`
   flex: 1;
-  padding: 0.6rem;
+  padding: ${LAYOUT.LAYOUT_CONTENT_PADDING};
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -55,7 +55,7 @@ const MiddleSection = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: ${LAYOUT.PANEL_PADDING};
+  padding: ${LAYOUT.LAYOUT_CONTENT_PADDING};
   text-align: center;
   border: ${drawBorder('yellow')};
   // border-top: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};

@@ -21,7 +21,7 @@ const MainContainer = styled.div<{ $sidebarOpen: boolean; }>`
   overflow: hidden;
   background-color: ${COLORS.MAIN_BG};
   transition: margin-left 0.3s ease-in-out;
-  padding: ${LAYOUT.PANEL_PADDING};
+  padding: ${LAYOUT.LAYOUT_CONTENT_PADDING};
   display: flex;
   flex-direction: column;
   border: ${drawBorder('red')};
