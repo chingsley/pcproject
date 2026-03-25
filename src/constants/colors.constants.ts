@@ -39,6 +39,16 @@ export const COLORS = {
   // Stars / achievements
   STAR_ACCENT: '#FCD34D', // amber-gold for star display
 
+  // Leaderboard podium
+  LEADERBOARD_GOLD: '#FCD34D', // 1st place
+  LEADERBOARD_SILVER: '#94A3B8', // 2nd place
+  LEADERBOARD_BRONZE: '#D97706', // 3rd place
+
+  // Modal overlay
+  MODAL_BACKDROP: 'rgba(0, 0, 0, 0.65)',
+  MODAL_SHADOW: 'rgba(0, 0, 0, 0.5)',
+  MODAL_SHADOW_SOFT: 'rgba(0, 0, 0, 0.3)',
+
   // Typing loader dots (oscillating)
   TYPING_DOT_GREEN: '#14B8A6', // teal, matches LOADER_FILL
   TYPING_DOT_AMBER: '#FCD34D', // amber
@@ -70,4 +80,7 @@ export const COLORS = {
   PROFILE_PILL_BG: '#38383D', // dark grey rounded container
   PROFILE_PILL_BORDER: 'rgba(255, 255, 255, 0.12)',
   PROFILE_AVATAR_GRADIENT: 'linear-gradient(180deg, #A78BFA 0%, #7C3AED 100%)', // purple
+
+  /** Header control that opens the right agent-style panel */
+  AGENT_PANEL_TRIGGER_BUTTON_BG: '#0a0a0a',
 } as const;

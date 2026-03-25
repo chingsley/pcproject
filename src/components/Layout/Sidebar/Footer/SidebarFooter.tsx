@@ -13,12 +13,12 @@ const SidebarFooterWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 3rem 0;
+  padding: 0.75rem ${LAYOUT.SIDEBAR_ITEM_X_PADDING};
   border: ${drawBorder('orange')};
-  padding: 0 ${LAYOUT.SIDEBAR_ITEM_X_PADDING};
+  gap: ${SPACING.BUTTON_PADDING_X};
 `;
 
-const SettingsButton = styled.button`
+const FooterButton = styled.button`
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -34,13 +34,13 @@ const SettingsButton = styled.button`
   }
 `;
 
-const SettingsIcon = styled.img`
+const ButtonIcon = styled.img`
   width: ${FONTS.SIZE.XLARGE};
   height: ${FONTS.SIZE.XLARGE};
   object-fit: contain;
 `;
 
-const SettingsLabel = styled.span`
+const ButtonLabel = styled.span`
   font-size: ${FONTS.SIZE.MEDIUM};
   font-weight: ${FONTS.WEIGHT.NORMAL};
 `;
@@ -83,10 +83,10 @@ const SidebarFooter = () => {
 
   return (
     <SidebarFooterWrapper>
-      <SettingsButton type="button" aria-label="Settings">
-        <SettingsIcon src={ICONS.SETTINGS_ICON} alt="" />
-        <SettingsLabel>Settings</SettingsLabel>
-      </SettingsButton>
+      <FooterButton type="button" aria-label="Settings">
+        <ButtonIcon src={ICONS.SETTINGS_ICON} alt="" />
+        <ButtonLabel>Settings</ButtonLabel>
+      </FooterButton>
       <ProfilePill
         type="button"
         $isOpen={isProfileOpen}

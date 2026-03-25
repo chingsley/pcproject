@@ -25,4 +25,6 @@ export const LAYOUT = {
     MEDIUM: '768px',
     LARGE: '1024px',
   },
+  /** Fixed right collapsible panel (agent / tools rail), full viewport height */
+  RIGHT_PANEL_WIDTH: '22rem', // ~352px at 16px base
 } as const;

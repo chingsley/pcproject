@@ -141,7 +141,7 @@ const EngageLabel = styled.span`
   color: ${COLORS.MUTED_WHITE};
 `;
 
-const ActionButton = styled.button<{ $disabled?: boolean }>`
+const ActionButton = styled.button<{ $disabled?: boolean; }>`
   width: ${SPACING.UPLOAD_BUTTON_SIZE};
   height: ${SPACING.UPLOAD_BUTTON_SIZE};
   display: inline-flex;
@@ -158,8 +158,8 @@ const ActionButton = styled.button<{ $disabled?: boolean }>`
 
   &:hover {
     opacity: ${(p) => (p.$disabled ? 0.65 : 0.9)};
-    border-radius: ${SPACING.RADIUS_SMALLER};
-    background: ${(p) => (p.$disabled ? COLORS.SURFACE_OVERLAY_LIGHT : COLORS.PRIMARY_BLUE_LIGHT)};
+    border-radius: 50%;
+    background: ${(p) => (p.$disabled ? 'none' : COLORS.SURFACE_OVERLAY_LIGHT)};
   }
 
   &:active {
@@ -204,6 +204,7 @@ const EngageTypeButton = styled.button<{ $isActive: boolean; }>`
   &:hover,
   &:focus-visible {
     border-color: ${COLORS.BORDER_SUBTLE_HOVER};
+    background: ${COLORS.SURFACE_OVERLAY_LIGHT};
   }
 
   &:active {
@@ -253,8 +254,7 @@ const AssistantMessage = ({
   const hasEngagementOptions =
     shouldShowEngagementOptions(content) &&
     (isLastAssistantMessage || ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES);
-  const copyShareEnabled =
-    !hasEngagementOptions || quizPassedAssistantMessageIds.includes(assistantMessageId);
+  const copyShareEnabled = quizPassedAssistantMessageIds.includes(assistantMessageId);
 
   useEffect(() => {
     if (!shouldAnimate) return;
@@ -379,48 +379,48 @@ const AssistantMessage = ({
                 </ActionButton>
               </ActionGroup>
               {hasEngagementOptions && (
-                  <>
-                    <ActionDivider />
-                    <EngageGroup>
-                      <EngageLabel>Engage for bonus points</EngageLabel>
-                      <EngageTypeRow>
-                        {ENGAGEMENT_TYPES.map((item) => (
-                          <EngageTypeButton
-                            key={item.type}
-                            type='button'
-                            $isActive={
-                              engagementContext?.active === true &&
+                <>
+                  <ActionDivider />
+                  <EngageGroup>
+                    <EngageLabel>Engage for bonus points</EngageLabel>
+                    <EngageTypeRow>
+                      {ENGAGEMENT_TYPES.map((item) => (
+                        <EngageTypeButton
+                          key={item.type}
+                          type='button'
+                          $isActive={
+                            engagementContext?.active === true &&
+                            engagementContext.assistantMessageId === assistantMessageId &&
+                            selectedEngagement === item.type
+                          }
+                          onClick={() => {
+                            if (
+                              engagementContext?.active &&
                               engagementContext.assistantMessageId === assistantMessageId &&
-                              selectedEngagement === item.type
+                              engagementContext.engagementType === item.type
+                            ) {
+                              dispatch(clearEngagementContext());
+                              return;
                             }
-                            onClick={() => {
-                              if (
-                                engagementContext?.active &&
-                                engagementContext.assistantMessageId === assistantMessageId &&
-                                engagementContext.engagementType === item.type
-                              ) {
-                                dispatch(clearEngagementContext());
-                                return;
-                              }
 
-                              dispatch(
-                                setEngagementContext({
-                                  active: true,
-                                  chatId,
-                                  assistantMessageId,
-                                  assistantResponse: content,
-                                  engagementType: item.type,
-                                })
-                              );
-                            }}
-                          >
-                            {item.label}
-                          </EngageTypeButton>
-                        ))}
-                      </EngageTypeRow>
-                    </EngageGroup>
-                  </>
-                )}
+                            dispatch(
+                              setEngagementContext({
+                                active: true,
+                                chatId,
+                                assistantMessageId,
+                                assistantResponse: content,
+                                engagementType: item.type,
+                              })
+                            );
+                          }}
+                        >
+                          {item.label}
+                        </EngageTypeButton>
+                      ))}
+                    </EngageTypeRow>
+                  </EngageGroup>
+                </>
+              )}
             </ActionRow>
             {hasEngagementOptions &&
               engagementContext?.active &&

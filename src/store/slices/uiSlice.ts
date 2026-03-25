@@ -15,6 +15,8 @@ interface UiState {
   };
   /** Assistant message IDs that passed the quiz (100% score); copy/share enabled for these */
   quizPassedAssistantMessageIds: string[];
+  /** Right full-height collapsible panel (e.g. agent prompts, leaderboard) */
+  rightPanelOpen: boolean;
 }
 
 const initialState: UiState = {
@@ -22,6 +24,7 @@ const initialState: UiState = {
   selectedHistoryId: null,
   engagementContext: null,
   quizPassedAssistantMessageIds: [],
+  rightPanelOpen: false,
 };
 
 const uiSlice = createSlice({
@@ -50,6 +53,12 @@ const uiSlice = createSlice({
         state.quizPassedAssistantMessageIds = [...ids, id];
       }
     },
+    toggleRightPanel: (state) => {
+      state.rightPanelOpen = !state.rightPanelOpen;
+    },
+    setRightPanelOpen: (state, action: PayloadAction<boolean>) => {
+      state.rightPanelOpen = action.payload;
+    },
   },
 });
 
@@ -60,5 +69,7 @@ export const {
   setEngagementContext,
   clearEngagementContext,
   markQuizPassed,
+  toggleRightPanel,
+  setRightPanelOpen,
 } = uiSlice.actions;
 export default uiSlice.reducer;

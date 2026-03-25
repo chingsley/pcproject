@@ -3,7 +3,7 @@
  * When false, only the last assistant (non-engagement) message shows engagement options.
  * Engagement responses (isEngagementResponse) never show engagement options.
  */
-export const ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES = true;
+export const ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES = false;
 
 /**
  * Minimum character length for an assistant response to show engagement options.

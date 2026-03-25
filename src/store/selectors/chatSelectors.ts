@@ -1,5 +1,10 @@
 import type { RootState } from '../index';
 import { getGameProgress } from '../../utils/gamePoints';
+import type { LeaderboardEntry } from '../../constants/leaderboard.constants';
+import {
+  CURRENT_USER_ID,
+  MOCK_LEADERBOARD_ENTRIES,
+} from '../../constants/leaderboard.constants';
 
 /**
  * Sum of promptPoint from all assistant messages in a chat.
@@ -45,6 +50,28 @@ export interface ChatWithPoints {
   title: string;
   createdAt: string;
   points: number;
+}
+
+/**
+ * Leaderboard with current user merged in, sorted by points descending.
+ * Mock entries + current user combined and ranked.
+ */
+export function selectLeaderboardWithUser(state: RootState): LeaderboardEntry[] {
+  const userPoints = selectTotalPoints(state);
+  const entries: LeaderboardEntry[] = [
+    ...MOCK_LEADERBOARD_ENTRIES.map((e) => ({ ...e, isCurrentUser: false })),
+    { id: CURRENT_USER_ID, displayName: 'You', points: userPoints, isCurrentUser: true },
+  ];
+  return entries.sort((a, b) => b.points - a.points);
+}
+
+/**
+ * Current user's rank on the leaderboard (1-based).
+ */
+export function selectUserRank(state: RootState): number {
+  const leaderboard = selectLeaderboardWithUser(state);
+  const idx = leaderboard.findIndex((e) => e.isCurrentUser);
+  return idx === -1 ? 0 : idx + 1;
 }
 
 /**

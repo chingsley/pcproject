@@ -6,7 +6,6 @@ import { LAYOUT } from '../../../../constants/layout.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import { sendEngagement, sendMessage } from '../../../../store/slices/chatSlice';
-import SearchIcon from './SearchIcon';
 import UploadButton from './UploadButton';
 import SubmitButton from './SubmitButton';
 import { clearEngagementContext } from '../../../../store/slices/uiSlice';
@@ -193,7 +192,6 @@ const InputBox = () => {
     <Wrapper>
       <Box as="form" ref={formRef} onSubmit={handleSubmit}>
         <InputRow>
-          <SearchIcon />
           <TextArea
             placeholder={
               engagementContext?.active && engagementContext.engagementType !== 'ask_questions'

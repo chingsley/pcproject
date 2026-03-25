@@ -6,21 +6,26 @@ import { LAYOUT } from '../../../constants/layout.constants';
 import { SPACING } from '../../../constants/spacing.constants';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { clearLastAddedAssistantMessageId } from '../../../store/slices/chatSlice';
-import { toggleSidebar } from '../../../store/slices/uiSlice';
+import { toggleSidebar, setRightPanelOpen } from '../../../store/slices/uiSlice';
 import InputBox from './InputBox/InputBox';
 import MessageList from './MessageList/MessageList';
+import RightAgentPanel from './RightAgentPanel/RightAgentPanel';
 import { drawBorder } from '../../../utils/playground';
-import { FiShare } from "react-icons/fi";
+import { FiAward, FiShare } from 'react-icons/fi';
 
 
-const MainContainer = styled.div<{ $sidebarOpen: boolean; }>`
+const MainContainer = styled.div<{ $sidebarOpen: boolean; $rightPanelOpen: boolean; }>`
   margin-left: ${(props) => (props.$sidebarOpen ? LAYOUT.SIDEBAR_WIDTH : '0')};
+  margin-right: ${(props) =>
+    props.$rightPanelOpen ? `min(${LAYOUT.RIGHT_PANEL_WIDTH}, 100vw)` : '0'};
   height: 100vh;
   min-height: 100vh;
   box-sizing: border-box;
   overflow: hidden;
   background-color: ${COLORS.MAIN_BG};
-  transition: margin-left 0.3s ease-in-out;
+  transition:
+    margin-left 0.3s ease-in-out,
+    margin-right 0.3s ease-in-out;
   padding: ${LAYOUT.LAYOUT_CONTENT_PADDING};
   display: flex;
   flex-direction: column;
@@ -37,6 +42,13 @@ const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+`;
+
+const HeaderActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${SPACING.BUTTON_PADDING_Y};
+  flex-shrink: 0;
 `;
 
 const HeaderTitle = styled.span`
@@ -103,29 +115,6 @@ const InputBoxContent = styled.div`
   border: ${drawBorder('yellow', true)};
 `;
 
-// const EngageCaption = styled.div`
-//   display: inline-flex;
-//   align-items: center;
-//   gap: ${SPACING.BUTTON_PADDING_Y};
-//   padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
-//   background: ${COLORS.SURFACE_OVERLAY_LIGHT};
-//   border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
-//   border-radius: ${SPACING.RADIUS_SMALLER};
-//   font-family: ${FONTS.FAMILY.PRIMARY};
-//   font-size: ${FONTS.SIZE.SMALL};
-//   font-weight: ${FONTS.WEIGHT.MEDIUM};
-//   color: ${COLORS.TEXT_PRIMARY};
-//   letter-spacing: 0.02em;
-//   border: ${drawBorder('red', true)};
-//   margin-bottom: ${SPACING.BUTTON_PADDING_Y};
-//   margin-top: ${SPACING.BUTTON_PADDING_Y};
-
-//   span {
-//     color: ${COLORS.LOADER_FILL};
-//     font-weight: ${FONTS.WEIGHT.SEMIBOLD};
-//   }
-// `;
-
 const ToggleButton = styled.button`
   position: fixed;
   top: ${LAYOUT.SIDEBAR_TOGGLE_TOP};
@@ -152,7 +141,7 @@ const ToggleButton = styled.button`
   }
 `;
 
-const ShareButton = styled.div`
+const headerActionStyles = `
   background: transparent;
   border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
   cursor: pointer;
@@ -160,10 +149,72 @@ const ShareButton = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  font-size: 1rem;
-  padding: 0.75rem;
+  gap: ${SPACING.BUTTON_PADDING_Y};
+  font-family: ${FONTS.FAMILY.PRIMARY};
+  font-size: ${FONTS.SIZE.LARGE};
+  font-weight: ${FONTS.WEIGHT.MEDIUM};
+  color: ${COLORS.TEXT_PRIMARY};
+  padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
   border-radius: ${SPACING.RADIUS_SMALLER};
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    background: ${COLORS.SURFACE_OVERLAY_LIGHT};
+    border-color: ${COLORS.BORDER_SUBTLE_HOVER};
+  }
+
+  &:focus-visible {
+    outline: ${SPACING.BORDER_WIDTH} solid ${COLORS.STAR_ACCENT};
+    outline-offset: 0.125rem;
+  }
+`;
+
+const ShareButton = styled.div`
+  ${headerActionStyles}
+`;
+
+const LeaderboardButton = styled.button`
+  ${headerActionStyles}
+`;
+
+const AIFactContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  border: ${drawBorder('red')};
+  margin-bottom: ${SPACING.MAIN_VIEW_BOTTOM_MARGIN};
+`;
+
+const AIFactMessage = styled.p`
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border: ${drawBorder('red')};
+  font-size: ${FONTS.SIZE.LARGE};
+  font-weight: ${FONTS.WEIGHT.MEDIUM};
+  color: ${COLORS.TEXT_PRIMARY};
+  margin-bottom: 1rem;
+`;
+const AIFactSource = styled.a`
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border: ${drawBorder('red')};
+  font-size: ${FONTS.SIZE.SMALL};
+  font-weight: ${FONTS.WEIGHT.NORMAL};
+  color: ${COLORS.TEXT_PRIMARY};
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+  &:focus-visible {
+    outline: ${SPACING.BORDER_WIDTH} solid ${COLORS.STAR_ACCENT};
+    outline-offset: 0.125rem;
+  }
 `;
 
 interface MainViewProps {
@@ -172,6 +223,7 @@ interface MainViewProps {
 
 const MainView = ({ sidebarOpen }: MainViewProps) => {
   const dispatch = useAppDispatch();
+  const rightPanelOpen = useAppSelector((state) => state.ui.rightPanelOpen);
   const activeChatId = useAppSelector((state) => state.chat.activeChatId);
   const messageIds = useAppSelector((state) =>
     activeChatId ? state.chat.messageIdsByChatId[activeChatId] ?? [] : []
@@ -199,48 +251,58 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
   }, [messageIds.length, activeChatId]);
 
   return (
-    <MainContainer $sidebarOpen={sidebarOpen}>
-      <HeaderContainer>
-        <HeaderTitle>Active Research</HeaderTitle>
-        <ShareButton>
-          <FiShare />
-          Share
-        </ShareButton>
-      </HeaderContainer>
-      <ToggleButton onClick={handleToggle}>☰</ToggleButton>
-      {!activeChatId ? (
-        <PlaceholderContent>
-          <h1 className="header">Think clearly. Engage deeply. Stay in charge.</h1>
-          <p className="subheader">
-            Produce work that remains recognisably and confidently your own. Every prompt counts!
-          </p>
-          <InputBox />
-        </PlaceholderContent>
-      ) : (
-        <>
-          <ChatContent ref={chatContentRef}>
-            <MessageList
-              onScrollToBottom={scrollToBottom}
-              onAnimationComplete={handleAnimationComplete}
-            />
-          </ChatContent>
-          <InputBoxWrapper>
-            <InputBoxContent>
-              {/* {engagementContext?.active && (
-                <EngageCaption>
-                  Engage: <span>
-                    {engagementContext.engagementType
-                      .replaceAll('_', ' ')
-                      .replace(/\b\w/g, (c) => c.toUpperCase())}
-                  </span>
-                </EngageCaption>
-              )} */}
-              <InputBox />
-            </InputBoxContent>
-          </InputBoxWrapper>
-        </>
-      )}
-    </MainContainer>
+    <>
+      <MainContainer $sidebarOpen={sidebarOpen} $rightPanelOpen={rightPanelOpen}>
+        <HeaderContainer>
+          <HeaderTitle>Active Research</HeaderTitle>
+          <HeaderActions>
+            <ShareButton>
+              <FiShare aria-hidden />
+              Share
+            </ShareButton>
+            <LeaderboardButton
+              type="button"
+              aria-label="Open leaderboard in side panel"
+              onClick={() => dispatch(setRightPanelOpen(true))}
+            >
+              <FiAward aria-hidden />
+              Leaderboard
+            </LeaderboardButton>
+          </HeaderActions>
+        </HeaderContainer>
+        <ToggleButton onClick={handleToggle}>☰</ToggleButton>
+        {!activeChatId ? (
+          <PlaceholderContent>
+            <h1 className="header">Think clearly. Engage deeply. Stay in charge.</h1>
+            <p className="subheader">
+              Produce work that remains recognisably and confidently your own. Every prompt counts!
+            </p>
+            <InputBox />
+          </PlaceholderContent>
+        ) : (
+          <>
+            <ChatContent ref={chatContentRef}>
+              <MessageList
+                onScrollToBottom={scrollToBottom}
+                onAnimationComplete={handleAnimationComplete}
+              />
+            </ChatContent>
+            <InputBoxWrapper>
+              <InputBoxContent>
+                <InputBox />
+              </InputBoxContent>
+            </InputBoxWrapper>
+          </>
+        )}
+        <AIFactContainer>
+          <AIFactMessage>"Some facts about the impact of AI on the human race"</AIFactMessage>
+          <AIFactSource href="https://www.google.com">
+            John et al. (2026)
+          </AIFactSource>
+        </AIFactContainer>
+      </MainContainer>
+      <RightAgentPanel />
+    </>
   );
 };
 

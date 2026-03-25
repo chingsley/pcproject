@@ -70,7 +70,8 @@ npm run demo
 
 1. When you see a local URL (usually `http://localhost:5173`), open it in your browser.
 2. Use the exact demo prompts from:
-  - `src/data/demo/DEMO_DATA.md`
+
+- `src/data/demo/DEMO_DATA.md`
 
 #### Important
 
@@ -148,13 +149,13 @@ The app follows a component-per-unit architecture where each UI element is a sep
 - **Layout:** Main wrapper that orchestrates sidebar and main view
 - **Sidebar:** Left panel with toggle functionality and smooth animations
 - **SidebarToggle:** Button component for toggling sidebar visibility
-- **MainView:** Main content area with responsive margins
+- **MainView:** Main content area with responsive margins; hosts the right **agent panel** (`RightAgentPanel`, full-height slide-in rail)
 
 ### State Management
 
 Redux Toolkit is used for global state management:
 
-- **UI Slice:** Manages sidebar open/closed state
+- **UI Slice:** Manages sidebar open/closed state and the right collapsible agent panel (`rightPanelOpen` via `toggleRightPanel` / `setRightPanelOpen`), which includes the inline leaderboard. Panel width: `LAYOUT.RIGHT_PANEL_WIDTH` in `layout.constants.ts`.
 - **Typed Hooks:** Custom hooks (`useAppDispatch`, `useAppSelector`) for type-safe Redux usage
 
 ### Styling
@@ -172,12 +173,12 @@ The app uses persuasive computing and gamification to encourage deeper learning 
 
 ### Persuasive Components
 
-| Component | How it works |
-|-----------|--------------|
-| **Prompt scoring (0–5 points)** | Prompts are scored by how active they are. Passive prompts (e.g. "write for me") earn 0; active prompts (e.g. "critique my draft") earn 4–5. This nudges users toward reflective, critical prompts. |
-| **Engagement options** | After AI responses, users can **Summarize** or **Ask Questions** (quiz). Summaries are scored 0–4 by quality (paraphrasing vs. near-copy). The quiz awards bonus points only if all answers are correct. |
-| **Feedback** | Category-specific feedback (e.g. "Add your own view and ask for critique") guides users toward better prompts and deeper engagement. |
-| **Friction (Copy/Share)** | Copy and Share buttons are disabled on AI messages that qualify for engagement. They unlock only after the user answers all 3 quiz questions correctly. Clicking Copy or Share when disabled opens the quiz panel instead. |
+| Component                       | How it works                                                                                                                                                                                                               |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Prompt scoring (0–5 points)** | Prompts are scored by how active they are. Passive prompts (e.g. "write for me") earn 0; active prompts (e.g. "critique my draft") earn 4–5. This nudges users toward reflective, critical prompts.                        |
+| **Engagement options**          | After AI responses, users can **Summarize** or **Ask Questions** (quiz). Summaries are scored 0–4 by quality (paraphrasing vs. near-copy). The quiz awards bonus points only if all answers are correct.                   |
+| **Feedback**                    | Category-specific feedback (e.g. "Add your own view and ask for critique") guides users toward better prompts and deeper engagement.                                                                                       |
+| **Friction (Copy/Share)**       | Copy and Share buttons are disabled on AI messages that qualify for engagement. They unlock only after the user answers all 3 quiz questions correctly. Clicking Copy or Share when disabled opens the quiz panel instead. |
 
 ### Points System
 
@@ -201,15 +202,13 @@ UI behavior for the "Engage for bonus points" feature is controlled by constants
 
 **Location:** `src/constants/engagement.constants.ts`
 
-
 | Variable                                           | Purpose                                                                                                                                              | How to use                                                                              |
 | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | `ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES`            | When `false`, only the last assistant message shows engagement options. When `true`, all assistant messages (except engagement responses) show them. | Set to `true` to allow engagement on older messages.                                    |
 | `MIN_AI_RESPONSE_CHAR_LENGTH_FOR_ENGAGEMENT_BONUS` | Minimum character length for an assistant response to show engagement options. Short replies (e.g. "Hello, how can I help you today") are excluded.  | Increase to hide engagement on shorter responses; decrease to allow it on shorter ones. |
-| `MIN_SENTENCES_FOR_ENGAGEMENT`                     | Minimum number of sentences required. One-sentence definitions or greetings are excluded from engagement.                                            | Increase to require longer responses; decrease to allow shorter ones.                    |
-| `SIMPLE_GREETING_PATTERNS`                         | Regex patterns that indicate trivial responses (e.g. "Hello", "Hi there"). Matching responses never show engagement.                                  | Edit the array to add or remove greeting patterns.                                       |
-| `QUIZ_BONUS_POINTS`                                | Bonus points awarded when user answers all quiz questions correctly (all-or-nothing).                                                                 | Change to adjust the quiz completion reward (e.g. 3, 5, 10).                              |
-
+| `MIN_SENTENCES_FOR_ENGAGEMENT`                     | Minimum number of sentences required. One-sentence definitions or greetings are excluded from engagement.                                            | Increase to require longer responses; decrease to allow shorter ones.                   |
+| `SIMPLE_GREETING_PATTERNS`                         | Regex patterns that indicate trivial responses (e.g. "Hello", "Hi there"). Matching responses never show engagement.                                 | Edit the array to add or remove greeting patterns.                                      |
+| `QUIZ_BONUS_POINTS`                                | Bonus points awarded when user answers all quiz questions correctly (all-or-nothing).                                                                | Change to adjust the quiz completion reward (e.g. 3, 5, 10).                            |
 
 **Note:** Engagement responses (evaluations of user engagement) never show engagement options, regardless of these settings. The "Ask Questions" option shows a multiple-choice quiz for bonus points.
 
