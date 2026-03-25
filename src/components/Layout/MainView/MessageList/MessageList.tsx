@@ -52,7 +52,10 @@ const MessageList = ({ onScrollToBottom, onAnimationComplete }: MessageListProps
   const showTypingLoader =
     isSendingToActiveChat && lastMessage?.role === 'user';
 
-  const lastAssistantMessage = [...messages].reverse().find((m) => m.role === 'assistant');
+  /** Latest assistant turn that is not an engagement follow-up (main reply chain). */
+  const lastNonEngagementAssistantId = [...messages]
+    .reverse()
+    .find((m) => m.role === 'assistant' && m.isEngagementResponse !== true)?.id;
 
   useEffect(() => {
     if (showTypingLoader && onScrollToBottom) {
@@ -87,7 +90,7 @@ const MessageList = ({ onScrollToBottom, onAnimationComplete }: MessageListProps
             assistantMessageId={message.id}
             chatId={message.chatId}
             isEngagementResponse={message.isEngagementResponse === true}
-            isLastAssistantMessage={message.id === lastAssistantMessage?.id}
+            isLatestNonEngagementAssistantMessage={message.id === lastNonEngagementAssistantId}
             shouldAnimate={message.id === lastAddedAssistantMessageId}
             onScrollToBottom={onScrollToBottom}
             onAnimationComplete={onAnimationComplete}

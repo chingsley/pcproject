@@ -27,4 +27,6 @@ export const LAYOUT = {
   },
   /** Fixed right collapsible panel (agent / tools rail), full viewport height */
   RIGHT_PANEL_WIDTH: '22rem', // ~352px at 16px base
+  /** Duration for expand/collapse reveals (e.g. AIFactBlock) */
+  REVEAL_TRANSITION_DURATION: '0.38s',
 } as const;

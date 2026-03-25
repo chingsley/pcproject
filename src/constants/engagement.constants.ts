@@ -1,7 +1,10 @@
 /**
- * When true, engagement options appear on all assistant messages (except engagement responses).
- * When false, only the last assistant (non-engagement) message shows engagement options.
- * Engagement responses (isEngagementResponse) never show engagement options.
+ * Controls whether **Summarize / Paraphrase / Analyze** appear on older assistant messages.
+ * Does **not** affect copy/share or the MCQ unlock flow.
+ *
+ * - `false`: only the latest **non-engagement** assistant message (main reply to the user’s
+ *   prompt) can show those buttons, subject to `shouldShowEngagementOptions`.
+ * - `true`: any qualifying non-engagement assistant message in the thread can show them.
  */
 export const ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES = false;
 

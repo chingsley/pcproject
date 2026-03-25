@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { COLORS } from '../../../constants/colors.constants';
 import { FONTS } from '../../../constants/fonts.constants';
 import { LAYOUT } from '../../../constants/layout.constants';
@@ -10,9 +10,36 @@ import { toggleSidebar, setRightPanelOpen } from '../../../store/slices/uiSlice'
 import InputBox from './InputBox/InputBox';
 import MessageList from './MessageList/MessageList';
 import RightAgentPanel from './RightAgentPanel/RightAgentPanel';
+import AIFactBlock from './AIFactBlock/AIFactBlock';
 import { drawBorder } from '../../../utils/playground';
 import { FiAward, FiShare } from 'react-icons/fi';
 
+const PLACEHOLDER_ENTRANCE_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
+
+const placeholderEntrance = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(${SPACING.REVEAL_MESSAGE_LIFT});
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const PlaceholderRoot = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  animation: ${placeholderEntrance} ${LAYOUT.REVEAL_TRANSITION_DURATION} ${PLACEHOLDER_ENTRANCE_EASE}
+    forwards;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 1;
+  }
+`;
 
 const MainContainer = styled.div<{ $sidebarOpen: boolean; $rightPanelOpen: boolean; }>`
   margin-left: ${(props) => (props.$sidebarOpen ? LAYOUT.SIDEBAR_WIDTH : '0')};
@@ -42,6 +69,7 @@ const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-bottom: 1rem;
 `;
 
 const HeaderActions = styled.div`
@@ -76,9 +104,15 @@ const PlaceholderContent = styled.div`
   min-height: 0;
 
   .header {
-    font-size: 2.5rem;
     border: ${drawBorder('purple')};
-    margin-bottom: 1rem;
+    font-size: 28px;
+    line-height: 34px;
+    font-weight: ${FONTS.WEIGHT.NORMAL};
+    --tw-tracking: 0.38px;
+    letter-spacing: 0.38px;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid ${COLORS.BORDER_SUBTLE};
   }
   .subheader {
     color: ${COLORS.MUTED_WHITE};
@@ -179,44 +213,6 @@ const LeaderboardButton = styled.button`
   ${headerActionStyles}
 `;
 
-const AIFactContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 0;
-  border: ${drawBorder('red')};
-  margin-bottom: ${SPACING.MAIN_VIEW_BOTTOM_MARGIN};
-`;
-
-const AIFactMessage = styled.p`
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  border: ${drawBorder('red')};
-  font-size: ${FONTS.SIZE.LARGE};
-  font-weight: ${FONTS.WEIGHT.MEDIUM};
-  color: ${COLORS.TEXT_PRIMARY};
-  margin-bottom: 1rem;
-`;
-const AIFactSource = styled.a`
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  border: ${drawBorder('red')};
-  font-size: ${FONTS.SIZE.SMALL};
-  font-weight: ${FONTS.WEIGHT.NORMAL};
-  color: ${COLORS.TEXT_PRIMARY};
-  text-decoration: none;
-  &:hover {
-    text-decoration: underline;
-  }
-  &:focus-visible {
-    outline: ${SPACING.BORDER_WIDTH} solid ${COLORS.STAR_ACCENT};
-    outline-offset: 0.125rem;
-  }
-`;
-
 interface MainViewProps {
   sidebarOpen: boolean;
 }
@@ -272,13 +268,17 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
         </HeaderContainer>
         <ToggleButton onClick={handleToggle}>☰</ToggleButton>
         {!activeChatId ? (
-          <PlaceholderContent>
-            <h1 className="header">Think clearly. Engage deeply. Stay in charge.</h1>
-            <p className="subheader">
-              Produce work that remains recognisably and confidently your own. Every prompt counts!
-            </p>
-            <InputBox />
-          </PlaceholderContent>
+          <PlaceholderRoot>
+            <PlaceholderContent>
+              <h1 className="header">Think clearly. Engage deeply. Stay in charge.</h1>
+              <div className="underline"></div>
+              {/* <p className="subheader">
+                Produce work that remains recognisably and confidently your own. Every prompt counts!
+              </p> */}
+              <InputBox />
+            </PlaceholderContent>
+            <AIFactBlock />
+          </PlaceholderRoot>
         ) : (
           <>
             <ChatContent ref={chatContentRef}>
@@ -294,12 +294,6 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
             </InputBoxWrapper>
           </>
         )}
-        <AIFactContainer>
-          <AIFactMessage>"Some facts about the impact of AI on the human race"</AIFactMessage>
-          <AIFactSource href="https://www.google.com">
-            John et al. (2026)
-          </AIFactSource>
-        </AIFactContainer>
       </MainContainer>
       <RightAgentPanel />
     </>

@@ -1,4 +1,4 @@
-const ALL = 1;
+const ALL = 0;
 const SELECTIVE = 0;
 
 export const drawBorder = (color?: string, selected?: boolean) => {

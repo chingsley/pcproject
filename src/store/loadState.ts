@@ -191,7 +191,7 @@ export async function loadState(): Promise<Record<string, unknown> | undefined> 
     // Never restore engagement context (transient UI state)
     const ui = data?.ui as Record<string, unknown> | undefined;
     if (ui && typeof ui === 'object') {
-      data.ui = { ...ui, engagementContext: null };
+      data.ui = { ...ui, engagementContext: null, copyShareQuizContext: null };
     }
     return data;
   } catch {

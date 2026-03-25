@@ -8,7 +8,11 @@ import { FONTS } from '../../../../constants/fonts.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
 import { drawBorder } from '../../../../utils/playground';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
-import { clearEngagementContext, setEngagementContext } from '../../../../store/slices/uiSlice';
+import {
+  clearEngagementContext,
+  setCopyShareQuizContext,
+  setEngagementContext,
+} from '../../../../store/slices/uiSlice';
 import type { EngagementType } from '../../../../utils/engagementPrompt';
 import { ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES } from '../../../../constants/engagement.constants';
 import { shouldShowEngagementOptions } from '../../../../utils/engagementVisibility';
@@ -226,7 +230,8 @@ export interface AssistantMessageProps {
   assistantMessageId: string;
   chatId: string;
   isEngagementResponse?: boolean;
-  isLastAssistantMessage?: boolean;
+  /** True when this is the most recent non-engagement assistant message in the thread. */
+  isLatestNonEngagementAssistantMessage?: boolean;
 }
 
 const AssistantMessage = ({
@@ -237,13 +242,14 @@ const AssistantMessage = ({
   assistantMessageId,
   chatId,
   isEngagementResponse = false,
-  isLastAssistantMessage = false,
+  isLatestNonEngagementAssistantMessage = false,
 }: AssistantMessageProps) => {
   const [visibleContent, setVisibleContent] = useState(() =>
     shouldAnimate ? '' : content
   );
   const dispatch = useAppDispatch();
   const engagementContext = useAppSelector((state) => state.ui.engagementContext);
+  const copyShareQuizContext = useAppSelector((state) => state.ui.copyShareQuizContext);
   const quizPassedAssistantMessageIds = useAppSelector(
     (state) => state.ui.quizPassedAssistantMessageIds ?? []
   );
@@ -251,9 +257,12 @@ const AssistantMessage = ({
     ? engagementContext.engagementType
     : null;
 
-  const hasEngagementOptions =
-    shouldShowEngagementOptions(content) &&
-    (isLastAssistantMessage || ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES);
+  /** Content length/quality gate; used for copy/share MCQ and (with flag) for bonus buttons. */
+  const contentQualifies = shouldShowEngagementOptions(content);
+  /** Summarize / Paraphrase / Analyze — gated by `ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES` vs latest main reply. */
+  const showEngageButtons =
+    contentQualifies &&
+    (ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES || isLatestNonEngagementAssistantMessage);
   const copyShareEnabled = quizPassedAssistantMessageIds.includes(assistantMessageId);
 
   useEffect(() => {
@@ -304,19 +313,22 @@ const AssistantMessage = ({
     }
   };
 
+  const openCopyShareQuiz = () => {
+    if (!contentQualifies) return;
+    dispatch(
+      setCopyShareQuizContext({
+        active: true,
+        chatId,
+        assistantMessageId,
+      })
+    );
+  };
+
   const handleCopyClick = () => {
     if (copyShareEnabled) {
       handleCopy();
     } else {
-      dispatch(
-        setEngagementContext({
-          active: true,
-          chatId,
-          assistantMessageId,
-          assistantResponse: content,
-          engagementType: 'ask_questions',
-        })
-      );
+      openCopyShareQuiz();
     }
   };
 
@@ -324,15 +336,7 @@ const AssistantMessage = ({
     if (copyShareEnabled) {
       handleShare();
     } else {
-      dispatch(
-        setEngagementContext({
-          active: true,
-          chatId,
-          assistantMessageId,
-          assistantResponse: content,
-          engagementType: 'ask_questions',
-        })
-      );
+      openCopyShareQuiz();
     }
   };
 
@@ -378,7 +382,7 @@ const AssistantMessage = ({
                   </ActionIcon>
                 </ActionButton>
               </ActionGroup>
-              {hasEngagementOptions && (
+              {showEngageButtons && (
                 <>
                   <ActionDivider />
                   <EngageGroup>
@@ -422,10 +426,8 @@ const AssistantMessage = ({
                 </>
               )}
             </ActionRow>
-            {hasEngagementOptions &&
-              engagementContext?.active &&
-              engagementContext.assistantMessageId === assistantMessageId &&
-              engagementContext.engagementType === 'ask_questions' && (
+            {copyShareQuizContext?.active &&
+              copyShareQuizContext.assistantMessageId === assistantMessageId && (
                 <QuizPanelWrapper>
                   <QuizPanel
                     assistantResponse={content}

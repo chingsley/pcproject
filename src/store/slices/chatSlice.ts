@@ -6,7 +6,7 @@ import { generateChatResponse, generateQuizEvaluation } from '../../config/chatA
 import { dummyChatState } from '../../data/dummy/data';
 import { normalizePromptScoring } from '../../utils/promptScoring';
 import { buildEngagementEvaluationPrompt, type EngagementType } from '../../utils/engagementPrompt';
-import { clearEngagementContext, markQuizPassed } from './uiSlice';
+import { clearCopyShareQuizContext, clearEngagementContext, markQuizPassed } from './uiSlice';
 import { QUIZ_BONUS_POINTS } from '../../constants/engagement.constants';
 
 interface ChatState {
@@ -278,6 +278,7 @@ export const submitQuizAnswers = createAsyncThunk(
         dispatch(markQuizPassed(originalAssistantMessageId));
       }
       dispatch(clearEngagementContext());
+      dispatch(clearCopyShareQuizContext());
 
       const assistantMessageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 

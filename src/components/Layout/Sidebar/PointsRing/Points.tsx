@@ -4,7 +4,6 @@ import { FONTS } from '../../../../constants/fonts.constants';
 import { LAYOUT } from '../../../../constants/layout.constants';
 import { useAppSelector } from '../../../../store/hooks';
 import { selectGameProgress } from '../../../../store/selectors/chatSelectors';
-import { SPACING } from '../../../../constants/spacing.constants';
 import { drawBorder } from '../../../../utils/playground';
 
 const Wrapper = styled.div`
@@ -15,7 +14,6 @@ const Wrapper = styled.div`
   justify-content: center;
   height: ${LAYOUT.SIDEBAR_POINTS_HEIGHT};
   border: ${drawBorder('orange')};
-  // border-bottom: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
   padding: 0 ${LAYOUT.SIDEBAR_ITEM_X_PADDING};
 `;
 

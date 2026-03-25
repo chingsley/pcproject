@@ -46,8 +46,13 @@ const ChatItemPoints = styled.span<{ $bg: string; $textColor: string; }>`
   font-size: ${FONTS.SIZE.SMALL};
   color: ${(props) => props.$textColor};
   background-color: ${(props) => props.$bg};
-  padding: ${SPACING.SHORTCUT_KEY_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
-  border-radius: 0.8rem;
+  // padding: ${SPACING.SHORTCUT_KEY_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
+  padding: 0.25rem 0.5rem;
+  min-width:2.25rem;
+  min-height: 1.25rem;
+  // border-radius: 0.8rem;
+  border-radius: ${SPACING.RADIUS_SMALLER};
+  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
 `;
 
 export interface ChatItemProps {
@@ -58,6 +63,8 @@ export interface ChatItemProps {
 }
 
 function getPointsBadgeStyle(points: number): { bg: string; textColor: string; } {
+  // return { bg: COLORS.PRIMARY_BLUE, textColor: COLORS.TEXT_PRIMARY_MUTED };
+
   if (points > 10) {
     return { bg: COLORS.GLASS_GREEN, textColor: COLORS.HISTORY_ITEM_POINTS_TEXT };
   }

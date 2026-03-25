@@ -6,12 +6,22 @@ import type { EngagementType } from '../../utils/engagementPrompt';
 interface UiState {
   sidebarOpen: boolean;
   selectedHistoryId: string | null;
+  /** Summarize / Paraphrase / Analyze — drives input caption and sendEngagement */
   engagementContext: null | {
     active: boolean;
     chatId: string;
     assistantMessageId: string;
     assistantResponse: string;
     engagementType: EngagementType;
+  };
+  /**
+   * Copy/share unlock quiz (MCQ) only — inline under the assistant message.
+   * Mutually exclusive with `engagementContext` when either is active.
+   */
+  copyShareQuizContext: null | {
+    active: boolean;
+    chatId: string;
+    assistantMessageId: string;
   };
   /** Assistant message IDs that passed the quiz (100% score); copy/share enabled for these */
   quizPassedAssistantMessageIds: string[];
@@ -23,6 +33,7 @@ const initialState: UiState = {
   sidebarOpen: true,
   selectedHistoryId: null,
   engagementContext: null,
+  copyShareQuizContext: null,
   quizPassedAssistantMessageIds: [],
   rightPanelOpen: false,
 };
@@ -42,9 +53,21 @@ const uiSlice = createSlice({
     },
     setEngagementContext: (state, action: PayloadAction<UiState['engagementContext']>) => {
       state.engagementContext = action.payload;
+      if (action.payload?.active) {
+        state.copyShareQuizContext = null;
+      }
     },
     clearEngagementContext: (state) => {
       state.engagementContext = null;
+    },
+    setCopyShareQuizContext: (state, action: PayloadAction<UiState['copyShareQuizContext']>) => {
+      state.copyShareQuizContext = action.payload;
+      if (action.payload?.active) {
+        state.engagementContext = null;
+      }
+    },
+    clearCopyShareQuizContext: (state) => {
+      state.copyShareQuizContext = null;
     },
     markQuizPassed: (state, action: PayloadAction<string>) => {
       const id = action.payload;
@@ -68,6 +91,8 @@ export const {
   setSelectedHistoryId,
   setEngagementContext,
   clearEngagementContext,
+  setCopyShareQuizContext,
+  clearCopyShareQuizContext,
   markQuizPassed,
   toggleRightPanel,
   setRightPanelOpen,

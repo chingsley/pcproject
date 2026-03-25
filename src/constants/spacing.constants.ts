@@ -19,4 +19,10 @@ export const SPACING = {
   SHORTCUT_KEY_SIZE: '1.25rem', // 20px min height for ⌘ K keys
   TYPING_DOT_SIZE: '0.5rem', // 8px – typing loader dots
   MAIN_VIEW_BOTTOM_MARGIN: '1.25rem', // 20px
+  /** Initial vertical offset for hidden “source” row before hover reveal */
+  REVEAL_SOURCE_START_OFFSET: '2rem', // 12px at 16px base
+  /** Message lift on hover (paired with source sliding down) */
+  REVEAL_MESSAGE_LIFT: '0.5rem', // 8px at 16px base
+  /** Max height for revealed source row animation */
+  REVEAL_SOURCE_MAX_HEIGHT: '3.5rem', // 56px at 16px base
 } as const;

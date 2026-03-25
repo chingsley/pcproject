@@ -23,6 +23,7 @@ export function toPersistedState(state: RootState) {
     ui: {
       ...state.ui,
       engagementContext: null,
+      copyShareQuizContext: null,
     },
     chat: {
       chats,
