@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
+import type { LeaderboardPanelTierLevel } from '../../constants/leaderboard.constants';
 import type { EngagementType } from '../../utils/engagementPrompt';
 import type { PassiveZeroPromptQuotaState } from '../../utils/operantDelayState';
 import { applyPassiveZeroQuotaAfterZeroPointMessage } from '../../utils/operantDelayState';
@@ -34,6 +35,8 @@ interface UiState {
   passiveZeroPromptQuota: PassiveZeroPromptQuotaState;
   /** Right full-height collapsible panel (e.g. agent prompts, leaderboard) */
   rightPanelOpen: boolean;
+  /** Leaderboard tier tab in the right panel (drives mock list + copy). */
+  leaderboardPanelTierLevel: LeaderboardPanelTierLevel;
 }
 
 const initialState: UiState = {
@@ -47,6 +50,7 @@ const initialState: UiState = {
     zeroPointCountInWindow: 0,
   },
   rightPanelOpen: false,
+  leaderboardPanelTierLevel: 1,
 };
 
 const uiSlice = createSlice({
@@ -115,6 +119,9 @@ const uiSlice = createSlice({
     setRightPanelOpen: (state, action: PayloadAction<boolean>) => {
       state.rightPanelOpen = action.payload;
     },
+    setLeaderboardPanelTierLevel: (state, action: PayloadAction<LeaderboardPanelTierLevel>) => {
+      state.leaderboardPanelTierLevel = action.payload;
+    },
   },
 });
 
@@ -130,5 +137,6 @@ export const {
   recordMainAssistantOperantScore,
   toggleRightPanel,
   setRightPanelOpen,
+  setLeaderboardPanelTierLevel,
 } = uiSlice.actions;
 export default uiSlice.reducer;

@@ -64,7 +64,7 @@ const PassiveQuotaStrip = () => {
   );
 
   const bodyText = quotaState.delayActive
-    ? `Passive prompt limit reached. Delays are active for passive prompts.`
+    ? `Passive prompt limit reached. Further passive prompts will be delayed.`
     : `${quotaState.passivePromptsLeft} passive prompt${quotaState.passivePromptsLeft === 1 ? '' : 's'
     } left before delays.`;
 

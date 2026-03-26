@@ -1,3 +1,4 @@
+import type { LeaderboardPanelTierLevel } from '../constants/leaderboard.constants';
 import type { Message } from '../types/chat';
 import {
   getPromptCategoryFromPoint,
@@ -8,6 +9,12 @@ import { DEFAULT_PASSIVE_ZERO_PROMPT_QUOTA_STATE } from '../utils/operantDelaySt
 
 const CURRENT_STATE_URL = '/src/data/dummy/currentState.json';
 const LOAD_TIMEOUT_MS = 1500;
+
+function normalizeLeaderboardPanelTierLevel(raw: unknown): LeaderboardPanelTierLevel {
+  const n = typeof raw === 'number' ? raw : Number(raw);
+  if (Number.isInteger(n) && n >= 1 && n <= 5) return n as LeaderboardPanelTierLevel;
+  return 1;
+}
 
 function normalizePassiveZeroPromptQuota(raw: unknown): PassiveZeroPromptQuotaState {
   if (!raw || typeof raw !== 'object') {
@@ -225,6 +232,9 @@ export async function loadState(): Promise<Record<string, unknown> | undefined> 
         copyShareQuizContext: null,
         passiveZeroPromptQuota: normalizePassiveZeroPromptQuota(
           (ui as Record<string, unknown>).passiveZeroPromptQuota
+        ),
+        leaderboardPanelTierLevel: normalizeLeaderboardPanelTierLevel(
+          (ui as Record<string, unknown>).leaderboardPanelTierLevel
         ),
       };
     }

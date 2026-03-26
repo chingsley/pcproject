@@ -3,8 +3,9 @@ import { getGameProgress } from '../../utils/gamePoints';
 import type { LeaderboardEntry } from '../../constants/leaderboard.constants';
 import {
   CURRENT_USER_ID,
-  MOCK_LEADERBOARD_ENTRIES,
+  getNaturalLeaderboardTierForTotalPoints,
 } from '../../constants/leaderboard.constants';
+import { getMockLeaderboardEntriesForLevel } from '../../data/leaderboard.mock';
 
 /**
  * Sum of promptPoint from all assistant messages in a chat.
@@ -53,15 +54,23 @@ export interface ChatWithPoints {
 }
 
 /**
- * Leaderboard with current user merged in, sorted by points descending.
- * Mock entries + current user combined and ranked.
+ * Leaderboard for the selected panel tier: mock rows, plus **You** only when that tier matches
+ * your natural tier from total points (so browsing other levels does not show your row).
  */
 export function selectLeaderboardWithUser(state: RootState): LeaderboardEntry[] {
   const userPoints = selectTotalPoints(state);
-  const entries: LeaderboardEntry[] = [
-    ...MOCK_LEADERBOARD_ENTRIES.map((e) => ({ ...e, isCurrentUser: false })),
-    { id: CURRENT_USER_ID, displayName: 'You', points: userPoints, isCurrentUser: true },
-  ];
+  const selectedTier = state.ui.leaderboardPanelTierLevel;
+  const naturalTier = getNaturalLeaderboardTierForTotalPoints(userPoints);
+  const mockRows = getMockLeaderboardEntriesForLevel(selectedTier);
+  const entries: LeaderboardEntry[] = mockRows.map((e) => ({ ...e, isCurrentUser: false }));
+  if (naturalTier === selectedTier) {
+    entries.push({
+      id: CURRENT_USER_ID,
+      displayName: 'You',
+      points: userPoints,
+      isCurrentUser: true,
+    });
+  }
   return entries.sort((a, b) => b.points - a.points);
 }
 

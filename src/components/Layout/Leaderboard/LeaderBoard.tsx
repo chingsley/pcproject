@@ -3,16 +3,18 @@ import { COLORS } from '../../../constants/colors.constants';
 import { FONTS } from '../../../constants/fonts.constants';
 import { SPACING } from '../../../constants/spacing.constants';
 import { LAYOUT } from '../../../constants/layout.constants';
+import {
+  getLeaderboardPanelTier,
+  getNaturalLeaderboardTierForTotalPoints,
+} from '../../../constants/leaderboard.constants';
 import { useAppSelector } from '../../../store/hooks';
-import { selectLeaderboardWithUser, selectUserRank } from '../../../store/selectors/chatSelectors';
+import { selectLeaderboardWithUser, selectTotalPoints } from '../../../store/selectors/chatSelectors';
 import type { LeaderboardEntry } from '../../../constants/leaderboard.constants';
 import { drawBorder } from '../../../utils/playground';
 
 const LeadearBox = styled.div`
   border: ${drawBorder('blue', true)};
-  // border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
   border-bottom: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
-  // box-shadow: 0 1.5rem 3rem ${COLORS.MODAL_SHADOW};
   max-width: 24rem;
   width: 100%;
   max-height: 90vh;
@@ -45,7 +47,6 @@ const RankBadge = styled.span<{ $rank: 1 | 2 | 3; }>`
   justify-content: center;
   width: 1.75rem;
   height: 1.75rem;
-  // border-radius: 20%;
   border-radius: 50%;
   padding: 0 ${SPACING.BUTTON_PADDING_X};
   font-family: ${FONTS.FAMILY.PRIMARY};
@@ -169,17 +170,20 @@ function EntryItem({
  */
 const LeaderboardInline = () => {
   const leaderboard = useAppSelector(selectLeaderboardWithUser);
-  const userRank = useAppSelector(selectUserRank);
+  const totalPoints = useAppSelector(selectTotalPoints);
+  const selectedTier = useAppSelector((state) => state.ui.leaderboardPanelTierLevel);
+  const naturalTier = getNaturalLeaderboardTierForTotalPoints(totalPoints);
+  const tierMeta = getLeaderboardPanelTier(selectedTier);
+  const viewingOwnTier = naturalTier === selectedTier;
+
+  const bannerText = viewingOwnTier
+    ? `Congrats ${tierMeta.memberName}! You're doing great!`
+    : `${tierMeta.groupName} Leaderboard`;
 
   return (
     <LeadearBox>
       <ScrollArea>
-        {userRank > 0 && (
-          <YourRankBanner>
-            You're #{userRank} with{' '}
-            {leaderboard.find((e) => e.isCurrentUser)?.points ?? 0} points. Keep it up!
-          </YourRankBanner>
-        )}
+        <YourRankBanner>{bannerText}</YourRankBanner>
         {leaderboard.map((entry, idx) => (
           <EntryItem key={entry.id} entry={entry} rank={idx + 1} />
         ))}

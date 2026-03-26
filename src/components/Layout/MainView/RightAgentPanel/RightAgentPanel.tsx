@@ -1,11 +1,15 @@
 import styled from 'styled-components';
-import { FiX } from 'react-icons/fi';
+import { FiChevronDown, FiX } from 'react-icons/fi';
 import { COLORS } from '../../../../constants/colors.constants';
 import { FONTS } from '../../../../constants/fonts.constants';
+import {
+  LEADERBOARD_PANEL_TIERS,
+  type LeaderboardPanelTierLevel,
+} from '../../../../constants/leaderboard.constants';
 import { LAYOUT } from '../../../../constants/layout.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
-import { setRightPanelOpen } from '../../../../store/slices/uiSlice';
+import { setLeaderboardPanelTierLevel, setRightPanelOpen } from '../../../../store/slices/uiSlice';
 import { drawBorder } from '../../../../utils/playground';
 import Leaderboard from '../../Leaderboard/LeaderBoard';
 
@@ -36,19 +40,53 @@ const PanelHeader = styled.div`
   min-height: ${LAYOUT.HEADER_ROW_HEIGHT};
   padding: ${SPACING.BUTTON_PADDING_Y} ${LAYOUT.LAYOUT_CONTENT_PADDING};
   border-bottom: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
-  // background: linear-gradient(
-  //   180deg,
-  //   ${COLORS.SURFACE_OVERLAY_LIGHT} 0%,
-  //   ${COLORS.TRANSPARENT} 100%
-  // );
 `;
 
-const PanelTitle = styled.h2`
+const TierSelectWrap = styled.div`
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const TierSelect = styled.select`
+  width: 100%;
   margin: 0;
+  padding: ${SPACING.BUTTON_PADDING_Y} 2.25rem ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
+  appearance: none;
+  border: none;
+  background: none;
+  color: ${COLORS.TEXT_PRIMARY};
   font-family: ${FONTS.FAMILY.PRIMARY};
   font-size: ${FONTS.SIZE.MEDIUM};
   font-weight: ${FONTS.WEIGHT.SEMIBOLD};
-  color: ${COLORS.TEXT_PRIMARY};
+  line-height: 1.3;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+
+  &:focus {
+    outline: none;
+  }
+
+  option {
+    background: ${COLORS.MAIN_BG};
+    color: ${COLORS.TEXT_PRIMARY};
+  }
+`;
+
+const TierSelectChevron = styled.span`
+  position: absolute;
+  right: ${SPACING.BUTTON_PADDING_X};
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${COLORS.MUTED_WHITE};
+  pointer-events: none;
 `;
 
 const CloseButton = styled.button`
@@ -92,11 +130,32 @@ const PanelBody = styled.div`
 const RightAgentPanel = () => {
   const dispatch = useAppDispatch();
   const open = useAppSelector((state) => state.ui.rightPanelOpen);
+  const tierLevel = useAppSelector((state) => state.ui.leaderboardPanelTierLevel);
 
   return (
     <Panel $open={open} aria-hidden={!open}>
       <PanelHeader>
-        <PanelTitle>Explorers</PanelTitle> {/* TODO: Add other leaderboard groups: level 2: Thinkers, level 3: Creators, level 4: Leaders, level 5: GateKeepers, ... */}
+        <TierSelectWrap>
+          <TierSelect
+            id="leaderboard-panel-tier"
+            aria-label="Leaderboard level and tier"
+            value={tierLevel}
+            onChange={(e) =>
+              dispatch(
+                setLeaderboardPanelTierLevel(Number(e.target.value) as LeaderboardPanelTierLevel)
+              )
+            }
+          >
+            {LEADERBOARD_PANEL_TIERS.map((t) => (
+              <option key={t.level} value={t.level}>
+                Level {t.level} · {t.groupName}
+              </option>
+            ))}
+          </TierSelect>
+          <TierSelectChevron aria-hidden>
+            <FiChevronDown size={18} />
+          </TierSelectChevron>
+        </TierSelectWrap>
         <CloseButton
           type="button"
           aria-label="Close leaderboard panel"
