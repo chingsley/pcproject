@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { FiCopy, FiShare2 } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
@@ -8,6 +8,7 @@ import { FONTS } from '../../../../constants/fonts.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
 import { drawBorder } from '../../../../utils/playground';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import { markOperantDelayCompleted } from '../../../../store/slices/chatSlice';
 import {
   clearEngagementContext,
   setCopyShareQuizContext,
@@ -15,13 +16,21 @@ import {
 } from '../../../../store/slices/uiSlice';
 import type { EngagementType } from '../../../../utils/engagementPrompt';
 import { ALLOW_ENGAGEMENT_ON_PREVIOUS_MESSAGES } from '../../../../constants/engagement.constants';
+import { usePrefersReducedMotion } from '../../../../hooks/usePrefersReducedMotion';
 import { shouldShowEngagementOptions } from '../../../../utils/engagementVisibility';
+import { getPassiveOutputDelayMs } from '../../../../utils/operantDelay';
 import QuizPanel from './QuizPanel';
+import PassiveOutputDelayLoader from './PassiveOutputDelayLoader';
 
 const CanvaWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
+  width: 100%;
   margin-bottom: ${SPACING.BUTTON_PADDING_X};
+`;
+
+const MessageColumn = styled.div`
+  width: 100%;
 `;
 
 const Canva = styled.div`
@@ -229,6 +238,12 @@ export interface AssistantMessageProps {
   onAnimationComplete?: () => void;
   assistantMessageId: string;
   chatId: string;
+  /** Rubric score (0–5); 0-point delay applies only when `applyOperantDelay` is true for this bubble */
+  promptPoint: number;
+  /** Set on message creation for main send replies only; true = this bubble may show operant delay */
+  applyOperantDelay?: boolean;
+  /** From store after delay finished or skip; prevents replay on rerender/refresh */
+  operantDelayCompleted?: boolean;
   isEngagementResponse?: boolean;
   /** True when this is the most recent non-engagement assistant message in the thread. */
   isLatestNonEngagementAssistantMessage?: boolean;
@@ -241,13 +256,47 @@ const AssistantMessage = ({
   onAnimationComplete,
   assistantMessageId,
   chatId,
+  promptPoint,
+  applyOperantDelay = false,
+  operantDelayCompleted = false,
   isEngagementResponse = false,
   isLatestNonEngagementAssistantMessage = false,
 }: AssistantMessageProps) => {
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  /** Per-message flag from send time so only the current reply shows delay, not older 0-point bubbles when chat activates. */
+  const effectiveOperantDelayMs = useMemo(() => {
+    if (operantDelayCompleted) return 0;
+    if (isEngagementResponse) return 0;
+    if (promptPoint !== 0) return 0;
+    if (!applyOperantDelay) return 0;
+    const d = getPassiveOutputDelayMs(promptPoint);
+    if (d == null) return 0;
+    return prefersReducedMotion ? 0 : d;
+  }, [
+    operantDelayCompleted,
+    isEngagementResponse,
+    promptPoint,
+    applyOperantDelay,
+    prefersReducedMotion,
+  ]);
+
+  const [outputRevealed, setOutputRevealed] = useState(
+    () => effectiveOperantDelayMs === 0
+  );
+  const [remainingMs, setRemainingMs] = useState(() => effectiveOperantDelayMs);
+
   const [visibleContent, setVisibleContent] = useState(() =>
     shouldAnimate ? '' : content
   );
   const dispatch = useAppDispatch();
+  /** Session guard: once delay finishes or is skipped, never restart loader if `effectiveOperantDelayMs` fluctuates (e.g. reduced motion). */
+  const operantDelayFinishedRef = useRef(operantDelayCompleted);
+
+  useEffect(() => {
+    if (operantDelayCompleted) operantDelayFinishedRef.current = true;
+  }, [operantDelayCompleted]);
+
   const engagementContext = useAppSelector((state) => state.ui.engagementContext);
   const copyShareQuizContext = useAppSelector((state) => state.ui.copyShareQuizContext);
   const quizPassedAssistantMessageIds = useAppSelector(
@@ -266,31 +315,80 @@ const AssistantMessage = ({
   const copyShareEnabled = quizPassedAssistantMessageIds.includes(assistantMessageId);
 
   useEffect(() => {
-    if (!shouldAnimate) return;
-    // This is a deliberate typewriter animation that updates local UI state.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (!applyOperantDelay) {
+      setOutputRevealed(true);
+      setRemainingMs(0);
+      return;
+    }
+    if (operantDelayCompleted || operantDelayFinishedRef.current) {
+      setOutputRevealed(true);
+      setRemainingMs(0);
+      return;
+    }
+    if (effectiveOperantDelayMs <= 0) {
+      setOutputRevealed(true);
+      setRemainingMs(0);
+      operantDelayFinishedRef.current = true;
+      dispatch(markOperantDelayCompleted({ messageId: assistantMessageId }));
+      return;
+    }
+    setOutputRevealed(false);
+    setRemainingMs(effectiveOperantDelayMs);
+    const total = effectiveOperantDelayMs;
+    const start = Date.now();
+    const id = window.setInterval(() => {
+      const elapsed = Date.now() - start;
+      const rem = Math.max(0, total - elapsed);
+      setRemainingMs(rem);
+      if (rem <= 0) {
+        operantDelayFinishedRef.current = true;
+        dispatch(markOperantDelayCompleted({ messageId: assistantMessageId }));
+        setOutputRevealed(true);
+      }
+    }, 100);
+    return () => window.clearInterval(id);
+  }, [
+    assistantMessageId,
+    applyOperantDelay,
+    operantDelayCompleted,
+    effectiveOperantDelayMs,
+    dispatch,
+  ]);
+
+  useEffect(() => {
+    if (outputRevealed || effectiveOperantDelayMs <= 0 || !onScrollToBottom) return;
+    const frame = requestAnimationFrame(() => onScrollToBottom());
+    return () => cancelAnimationFrame(frame);
+  }, [outputRevealed, effectiveOperantDelayMs, onScrollToBottom]);
+
+  useEffect(() => {
+    if (!outputRevealed) return;
+    if (!shouldAnimate) {
+      setVisibleContent(content);
+      return;
+    }
     setVisibleContent('');
     let index = 0;
     const fullText = content;
-    const interval = setInterval(() => {
+    const interval = window.setInterval(() => {
       index += 1;
       if (index >= fullText.length) {
         setVisibleContent(fullText);
-        clearInterval(interval);
+        window.clearInterval(interval);
         onAnimationComplete?.();
         return;
       }
       setVisibleContent(fullText.slice(0, index));
     }, TYPEWRITER_MS_PER_CHAR);
-    return () => clearInterval(interval);
-  }, [content, shouldAnimate, onAnimationComplete]);
+    return () => window.clearInterval(interval);
+  }, [outputRevealed, content, shouldAnimate, onAnimationComplete]);
 
   useEffect(() => {
-    if (shouldAnimate && visibleContent && onScrollToBottom) {
-      const id = requestAnimationFrame(() => onScrollToBottom());
-      return () => cancelAnimationFrame(id);
-    }
-  }, [shouldAnimate, visibleContent, onScrollToBottom]);
+    if (!outputRevealed || !onScrollToBottom) return;
+    if (shouldAnimate && !visibleContent) return;
+    const frame = requestAnimationFrame(() => onScrollToBottom());
+    return () => cancelAnimationFrame(frame);
+  }, [outputRevealed, shouldAnimate, visibleContent, onScrollToBottom]);
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(content);
@@ -341,21 +439,31 @@ const AssistantMessage = ({
   };
 
   const displayContent = shouldAnimate ? visibleContent : content;
-  const isAnimating = shouldAnimate && visibleContent.length < content.length;
+  const isAnimating =
+    outputRevealed && shouldAnimate && visibleContent.length < content.length;
+  const showOperantLoader =
+    !isEngagementResponse && effectiveOperantDelayMs > 0 && !outputRevealed;
 
   return (
     <CanvaWrapper>
-      <div>
-        <Canva>
-          {isAnimating ? (
-            <PlainAnimatedText>{displayContent}</PlainAnimatedText>
-          ) : (
-            <MarkdownContent>
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayContent}</ReactMarkdown>
-            </MarkdownContent>
-          )}
-        </Canva>
-        {!isEngagementResponse && (
+      <MessageColumn>
+        {showOperantLoader ? (
+          <PassiveOutputDelayLoader
+            totalMs={effectiveOperantDelayMs}
+            remainingMs={remainingMs}
+          />
+        ) : (
+          <Canva>
+            {isAnimating ? (
+              <PlainAnimatedText>{displayContent}</PlainAnimatedText>
+            ) : (
+              <MarkdownContent>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayContent}</ReactMarkdown>
+              </MarkdownContent>
+            )}
+          </Canva>
+        )}
+        {!isEngagementResponse && outputRevealed && (
           <>
             <ActionRow>
               <ActionGroup>
@@ -438,7 +546,7 @@ const AssistantMessage = ({
               )}
           </>
         )}
-      </div>
+      </MessageColumn>
     </CanvaWrapper>
   );
 };

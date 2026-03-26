@@ -5,8 +5,14 @@ import type { QuizQuestion } from '../../types/quiz';
 import { generateChatResponse, generateQuizEvaluation } from '../../config/chatApi';
 import { dummyChatState } from '../../data/dummy/data';
 import { normalizePromptScoring } from '../../utils/promptScoring';
+import { shouldApplyOperantDelayForMessage } from '../../utils/operantDelayState';
 import { buildEngagementEvaluationPrompt, type EngagementType } from '../../utils/engagementPrompt';
-import { clearCopyShareQuizContext, clearEngagementContext, markQuizPassed } from './uiSlice';
+import {
+  clearCopyShareQuizContext,
+  clearEngagementContext,
+  markQuizPassed,
+  recordMainAssistantOperantScore,
+} from './uiSlice';
 import { QUIZ_BONUS_POINTS } from '../../constants/engagement.constants';
 
 interface ChatState {
@@ -51,7 +57,7 @@ export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
   async (
     payload: { content: string; chatId?: string; },
-    { dispatch, rejectWithValue }
+    { dispatch, rejectWithValue, getState }
   ) => {
     const { content, chatId } = payload;
 
@@ -92,6 +98,23 @@ export const sendMessage = createAsyncThunk(
 
       const assistantMessageId = `msg_${Date.now() + 1}_${Math.random().toString(36).substr(2, 9)}`;
 
+      const nowMs = Date.now();
+      const prevQuota = getState().ui.passiveZeroPromptQuota;
+      const applyOperantDelay = shouldApplyOperantDelayForMessage(
+        prevQuota,
+        normalizedScoring.promptPoint,
+        nowMs
+      );
+
+      dispatch(
+        recordMainAssistantOperantScore({
+          chatId: currentChatId,
+          promptPoint: normalizedScoring.promptPoint,
+          isEngagementResponse: false,
+          recordedAtMs: nowMs,
+        })
+      );
+
       return {
         chatId: currentChatId,
         isNewChat,
@@ -105,6 +128,7 @@ export const sendMessage = createAsyncThunk(
           promptPoint: normalizedScoring.promptPoint,
           promptCategory: normalizedScoring.promptCategory,
           promptFeedback: normalizedScoring.promptFeedback,
+          ...(applyOperantDelay ? { applyOperantDelay: true } : {}),
         },
         chatTitle: apiResponse.chatTitle,
         promptPoint: normalizedScoring.promptPoint,
@@ -379,6 +403,12 @@ const chatSlice = createSlice({
     clearLastAddedAssistantMessageId: (state) => {
       state.lastAddedAssistantMessageId = null;
     },
+    markOperantDelayCompleted: (state, action: PayloadAction<{ messageId: string }>) => {
+      const { messageId } = action.payload;
+      const msg = state.messagesById[messageId];
+      if (!msg || msg.role !== 'assistant') return;
+      state.messagesById[messageId] = { ...msg, operantDelayCompleted: true };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -451,5 +481,6 @@ export const {
   setActiveChatId,
   clearActiveChatId,
   clearLastAddedAssistantMessageId,
+  markOperantDelayCompleted,
 } = chatSlice.actions;
 export default chatSlice.reducer;

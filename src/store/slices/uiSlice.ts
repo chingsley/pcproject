@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 import type { EngagementType } from '../../utils/engagementPrompt';
+import type { PassiveZeroPromptQuotaState } from '../../utils/operantDelayState';
+import { applyPassiveZeroQuotaAfterZeroPointMessage } from '../../utils/operantDelayState';
 
 interface UiState {
   sidebarOpen: boolean;
@@ -25,6 +27,11 @@ interface UiState {
   };
   /** Assistant message IDs that passed the quiz (100% score); copy/share enabled for these */
   quizPassedAssistantMessageIds: string[];
+  /**
+   * App-wide quota for 0-point main replies: rolling window + free count before delay.
+   * Updated only from main `sendMessage` assistant responses (not engagement / quiz). Not per chat.
+   */
+  passiveZeroPromptQuota: PassiveZeroPromptQuotaState;
   /** Right full-height collapsible panel (e.g. agent prompts, leaderboard) */
   rightPanelOpen: boolean;
 }
@@ -35,6 +42,10 @@ const initialState: UiState = {
   engagementContext: null,
   copyShareQuizContext: null,
   quizPassedAssistantMessageIds: [],
+  passiveZeroPromptQuota: {
+    windowStartMs: null,
+    zeroPointCountInWindow: 0,
+  },
   rightPanelOpen: false,
 };
 
@@ -76,6 +87,28 @@ const uiSlice = createSlice({
         state.quizPassedAssistantMessageIds = [...ids, id];
       }
     },
+    /**
+     * Call when a **main** assistant reply arrives from `sendMessage` (not engagement / quiz).
+     */
+    recordMainAssistantOperantScore: (
+      state,
+      action: PayloadAction<{
+        chatId: string;
+        promptPoint: number;
+        isEngagementResponse: boolean;
+        recordedAtMs?: number;
+      }>
+    ) => {
+      const { promptPoint, isEngagementResponse, recordedAtMs } = action.payload;
+      if (isEngagementResponse) return;
+      if (promptPoint !== 0) return;
+
+      const now = recordedAtMs ?? Date.now();
+      state.passiveZeroPromptQuota = applyPassiveZeroQuotaAfterZeroPointMessage(
+        state.passiveZeroPromptQuota,
+        now
+      );
+    },
     toggleRightPanel: (state) => {
       state.rightPanelOpen = !state.rightPanelOpen;
     },
@@ -94,6 +127,7 @@ export const {
   setCopyShareQuizContext,
   clearCopyShareQuizContext,
   markQuizPassed,
+  recordMainAssistantOperantScore,
   toggleRightPanel,
   setRightPanelOpen,
 } = uiSlice.actions;

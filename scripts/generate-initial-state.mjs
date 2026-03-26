@@ -12,7 +12,14 @@ const outputPath = join(projectRoot, 'src/data/dummy/initialState.json');
 
 // Persisted state shape: ui + chat{chats[], messages[]}
 const initialState = {
-  ui: { sidebarOpen: true, selectedHistoryId: null },
+  ui: {
+    sidebarOpen: true,
+    selectedHistoryId: null,
+    passiveZeroPromptQuota: {
+      windowStartMs: null,
+      zeroPointCountInWindow: 0,
+    },
+  },
   chat: {
     chats: [
       {

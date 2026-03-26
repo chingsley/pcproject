@@ -1,7 +1,11 @@
 {
   "ui": {
     "sidebarOpen": true,
-    "selectedHistoryId": null
+    "selectedHistoryId": null,
+    "passiveZeroPromptQuota": {
+      "windowStartMs": null,
+      "zeroPointCountInWindow": 0
+    }
   },
   "chat": {
     "chats": [

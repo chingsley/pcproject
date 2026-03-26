@@ -25,4 +25,6 @@ export const SPACING = {
   REVEAL_MESSAGE_LIFT: '0.5rem', // 8px at 16px base
   /** Max height for revealed source row animation */
   REVEAL_SOURCE_MAX_HEIGHT: '3.5rem', // 56px at 16px base
+  /** Horizontal operant loader track height */
+  OPERANT_SYRINGE_TRACK_HEIGHT: '0.375rem', // 6px at 16px base
 } as const;

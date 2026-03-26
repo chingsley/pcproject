@@ -3,9 +3,25 @@ import {
   getPromptCategoryFromPoint,
   getFallbackFeedback,
 } from '../utils/promptScoring';
+import type { PassiveZeroPromptQuotaState } from '../utils/operantDelayState';
+import { DEFAULT_PASSIVE_ZERO_PROMPT_QUOTA_STATE } from '../utils/operantDelayState';
 
 const CURRENT_STATE_URL = '/src/data/dummy/currentState.json';
 const LOAD_TIMEOUT_MS = 1500;
+
+function normalizePassiveZeroPromptQuota(raw: unknown): PassiveZeroPromptQuotaState {
+  if (!raw || typeof raw !== 'object') {
+    return { ...DEFAULT_PASSIVE_ZERO_PROMPT_QUOTA_STATE };
+  }
+  const o = raw as Record<string, unknown>;
+  const ws = o.windowStartMs;
+  const c = o.zeroPointCountInWindow;
+  return {
+    windowStartMs: typeof ws === 'number' && Number.isFinite(ws) ? ws : null,
+    zeroPointCountInWindow:
+      typeof c === 'number' && Number.isFinite(c) && c >= 0 ? Math.floor(c) : 0,
+  };
+}
 
 interface PersistedChat {
   id: string;
@@ -23,6 +39,8 @@ interface PersistedMessage {
   promptCategory?: 'passive' | 'low' | 'moderate' | 'active';
   promptFeedback?: string;
   isEngagementResponse?: boolean;
+  applyOperantDelay?: boolean;
+  operantDelayCompleted?: boolean;
 }
 
 function getMostRecentChatId(
@@ -77,6 +95,7 @@ function normalizeLegacyChatShape(chat: Record<string, unknown>) {
         promptCategory: category,
         promptFeedback: feedback,
         ...(m.isEngagementResponse && { isEngagementResponse: true }),
+        ...(m.applyOperantDelay && { applyOperantDelay: true }),
       };
     } else {
       messagesById[id] = {
@@ -134,6 +153,8 @@ function normalizeArrayChatShape(chat: Record<string, unknown>) {
         promptCategory: category,
         promptFeedback: feedback,
         ...(message.isEngagementResponse && { isEngagementResponse: true }),
+        ...(message.applyOperantDelay && { applyOperantDelay: true }),
+        ...(message.operantDelayCompleted && { operantDelayCompleted: true }),
       };
     } else {
       hydrated = {
@@ -191,7 +212,21 @@ export async function loadState(): Promise<Record<string, unknown> | undefined> 
     // Never restore engagement context (transient UI state)
     const ui = data?.ui as Record<string, unknown> | undefined;
     if (ui && typeof ui === 'object') {
-      data.ui = { ...ui, engagementContext: null, copyShareQuizContext: null };
+      const {
+        operantDelayCompletedAssistantMessageIds: _legacyOperantIds,
+        operantDelayByChatId: _legacyOperantByChatId,
+        ...uiRest
+      } = ui as Record<string, unknown>;
+      void _legacyOperantIds;
+      void _legacyOperantByChatId;
+      data.ui = {
+        ...uiRest,
+        engagementContext: null,
+        copyShareQuizContext: null,
+        passiveZeroPromptQuota: normalizePassiveZeroPromptQuota(
+          (ui as Record<string, unknown>).passiveZeroPromptQuota
+        ),
+      };
     }
     return data;
   } catch {

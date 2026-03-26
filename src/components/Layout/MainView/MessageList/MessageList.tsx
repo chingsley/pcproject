@@ -89,6 +89,9 @@ const MessageList = ({ onScrollToBottom, onAnimationComplete }: MessageListProps
             content={message.content}
             assistantMessageId={message.id}
             chatId={message.chatId}
+            promptPoint={message.promptPoint}
+            applyOperantDelay={message.applyOperantDelay === true}
+            operantDelayCompleted={message.operantDelayCompleted === true}
             isEngagementResponse={message.isEngagementResponse === true}
             isLatestNonEngagementAssistantMessage={message.id === lastNonEngagementAssistantId}
             shouldAnimate={message.id === lastAddedAssistantMessageId}

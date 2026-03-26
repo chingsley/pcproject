@@ -37,6 +37,13 @@ export interface AssistantMessage {
   promptFeedback: string;
   /** True when this is an evaluation response to user engagement; no engage buttons. */
   isEngagementResponse?: boolean;
+  /**
+   * Set once when the main `sendMessage` reply is created: if true, this message alone may show
+   * the operant delay loader (per-message snapshot of global passive-quota rules; older bubbles never flash).
+   */
+  applyOperantDelay?: boolean;
+  /** After the operant delay has finished once (or was skipped e.g. reduced motion); persisted so refresh does not replay the loader. */
+  operantDelayCompleted?: boolean;
 }
 
 /** Client-side message representation */
