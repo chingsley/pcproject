@@ -11,6 +11,7 @@ import InputBox from './InputBox/InputBox';
 import MessageList from './MessageList/MessageList';
 import RightAgentPanel from './RightAgentPanel/RightAgentPanel';
 import AIFactBlock from './AIFactBlock/AIFactBlock';
+import PassiveQuotaStrip from './PassiveQuotaStrip';
 import { drawBorder } from '../../../utils/playground';
 import { FiAward, FiShare } from 'react-icons/fi';
 
@@ -69,7 +70,7 @@ const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
 `;
 
 const HeaderActions = styled.div`
@@ -289,6 +290,7 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
             </ChatContent>
             <InputBoxWrapper>
               <InputBoxContent>
+                <PassiveQuotaStrip />
                 <InputBox />
               </InputBoxContent>
             </InputBoxWrapper>

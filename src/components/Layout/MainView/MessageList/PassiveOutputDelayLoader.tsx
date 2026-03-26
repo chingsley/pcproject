@@ -85,7 +85,7 @@ function formatClock(ms: number): string {
 }
 
 // const WAIT_MESSAGE = "You're waiting because your prompt is passive.";
-const WAIT_MESSAGE = "Use active prompts for faster responses.";
+const WAIT_MESSAGE = "Use active prompts for faster response.";
 
 const PassiveOutputDelayLoader = ({ totalMs, remainingMs }: PassiveOutputDelayLoaderProps) => {
   const fillRatio = totalMs <= 0 ? 0 : Math.min(1, Math.max(0, remainingMs / totalMs));
