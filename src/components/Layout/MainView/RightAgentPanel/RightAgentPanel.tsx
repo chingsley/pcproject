@@ -1,14 +1,18 @@
+import { useState } from 'react';
 import styled from 'styled-components';
-import { FiChevronDown, FiX } from 'react-icons/fi';
+import { FiChevronDown, FiPrinter, FiX } from 'react-icons/fi';
+import CertificatePrintModal from '../../../Certificate/CertificatePrintModal';
 import { COLORS } from '../../../../constants/colors.constants';
 import { FONTS } from '../../../../constants/fonts.constants';
 import {
+  getNaturalLeaderboardTierForTotalPoints,
   LEADERBOARD_PANEL_TIERS,
   type LeaderboardPanelTierLevel,
 } from '../../../../constants/leaderboard.constants';
 import { LAYOUT } from '../../../../constants/layout.constants';
 import { SPACING } from '../../../../constants/spacing.constants';
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
+import { selectTotalPoints } from '../../../../store/selectors/chatSelectors';
 import { setLeaderboardPanelTierLevel, setRightPanelOpen } from '../../../../store/slices/uiSlice';
 import { drawBorder } from '../../../../utils/playground';
 import Leaderboard from '../../Leaderboard/LeaderBoard';
@@ -127,10 +131,50 @@ const PanelBody = styled.div`
   border: ${drawBorder('yellow', true)};
 `;
 
+const PanelFooter = styled.div`
+  flex-shrink: 0;
+  padding: ${SPACING.BUTTON_PADDING_Y} ${LAYOUT.LAYOUT_CONTENT_PADDING};
+  border-top: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+  background: ${COLORS.SIDEBAR_BG};
+`;
+
+const PrintCertificateButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${SPACING.BUTTON_PADDING_Y};
+  width: 100%;
+  padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
+  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
+  border-radius: ${SPACING.RADIUS_SMALLER};
+  background: ${COLORS.SURFACE_OVERLAY_LIGHT};
+  color: ${COLORS.TEXT_PRIMARY};
+  cursor: pointer;
+  font-family: ${FONTS.FAMILY.PRIMARY};
+  font-size: ${FONTS.SIZE.MEDIUM};
+  font-weight: ${FONTS.WEIGHT.MEDIUM};
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    background: ${COLORS.SURFACE_OVERLAY_MEDIUM};
+    border-color: ${COLORS.BORDER_SUBTLE_HOVER};
+  }
+
+  &:focus-visible {
+    outline: ${SPACING.BORDER_WIDTH} solid ${COLORS.STAR_ACCENT};
+    outline-offset: 0.125rem;
+  }
+`;
+
 const RightAgentPanel = () => {
   const dispatch = useAppDispatch();
   const open = useAppSelector((state) => state.ui.rightPanelOpen);
   const tierLevel = useAppSelector((state) => state.ui.leaderboardPanelTierLevel);
+  const totalPoints = useAppSelector(selectTotalPoints);
+  const naturalTier = getNaturalLeaderboardTierForTotalPoints(totalPoints);
+  const [certificateModalOpen, setCertificateModalOpen] = useState(false);
 
   return (
     <Panel $open={open} aria-hidden={!open}>
@@ -167,6 +211,20 @@ const RightAgentPanel = () => {
       <PanelBody>
         <Leaderboard />
       </PanelBody>
+      <PanelFooter>
+        <PrintCertificateButton
+          type="button"
+          onClick={() => setCertificateModalOpen(true)}
+        >
+          <FiPrinter size={18} aria-hidden />
+          Print Certificate
+        </PrintCertificateButton>
+      </PanelFooter>
+      <CertificatePrintModal
+        open={certificateModalOpen}
+        level={naturalTier}
+        onClose={() => setCertificateModalOpen(false)}
+      />
     </Panel>
   );
 };

@@ -83,4 +83,9 @@ export const COLORS = {
 
   /** Header control that opens the right agent-style panel */
   AGENT_PANEL_TRIGGER_BUTTON_BG: '#0a0a0a',
+
+  /** Certificate sheet when printed (readable on paper) */
+  CERTIFICATE_PRINT_PAPER: '#FFFFFF',
+  CERTIFICATE_PRINT_INK: '#0F172A',
+  CERTIFICATE_PRINT_INK_MUTED: '#475569',
 } as const;
