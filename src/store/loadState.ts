@@ -7,7 +7,9 @@ import {
 } from '../utils/promptScoring';
 import type { PassiveZeroPromptQuotaState } from '../utils/operantDelayState';
 import { DEFAULT_PASSIVE_ZERO_PROMPT_QUOTA_STATE } from '../utils/operantDelayState';
+import bundledInitialState from '../data/dummy/initialState.json';
 
+/** Dev-only: Vite serves `src/` as static files. Production static hosts have no `/src/...` route. */
 const CURRENT_STATE_URL = '/src/data/dummy/currentState.json';
 const LOAD_TIMEOUT_MS = 1500;
 
@@ -209,7 +211,56 @@ function normalizeArrayChatShape(chat: Record<string, unknown>) {
   };
 }
 
-/** Load state from currentState.json (served by Vite). Falls back to undefined to use slice defaults. */
+/** Clone and apply the same transforms as a fetched JSON payload (chat shape, ui sanitization, user). */
+function normalizePreloadedStatePayload(raw: Record<string, unknown>): Record<string, unknown> {
+  const data = structuredClone(raw) as Record<string, unknown>;
+  const chat = data.chat as Record<string, unknown> | undefined;
+  if (chat) {
+    const normalizedChat =
+      normalizeArrayChatShape(chat) ?? normalizeLegacyChatShape(chat);
+
+    if (normalizedChat) {
+      data.chat = {
+        ...normalizedChat,
+        activeChatId: getMostRecentChatId(
+          normalizedChat.chatsById as Record<string, { createdAt: string; }>,
+          normalizedChat.chatIds
+        ),
+        sendingMessageChatId: null,
+        sendError: null,
+        lastAddedAssistantMessageId: null,
+      };
+    }
+  }
+  const ui = data.ui as Record<string, unknown> | undefined;
+  if (ui && typeof ui === 'object') {
+    const {
+      operantDelayCompletedAssistantMessageIds: _legacyOperantIds,
+      operantDelayByChatId: _legacyOperantByChatId,
+      ...uiRest
+    } = ui as Record<string, unknown>;
+    void _legacyOperantIds;
+    void _legacyOperantByChatId;
+    data.ui = {
+      ...uiRest,
+      engagementContext: null,
+      copyShareQuizContext: null,
+      passiveZeroPromptQuota: normalizePassiveZeroPromptQuota(
+        (ui as Record<string, unknown>).passiveZeroPromptQuota
+      ),
+      leaderboardPanelTierLevel: normalizeLeaderboardPanelTierLevel(
+        (ui as Record<string, unknown>).leaderboardPanelTierLevel
+      ),
+    };
+  }
+  data.user = normalizePersistedUser((data as Record<string, unknown>).user);
+  return data;
+}
+
+/**
+ * Prefer `currentState.json` via fetch in dev (Vite serves `/src/...`).
+ * In production, that URL 404s — use bundled `initialState.json` so deploys match repo defaults (e.g. dummy points).
+ */
 export async function loadState(): Promise<Record<string, unknown> | undefined> {
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), LOAD_TIMEOUT_MS);
@@ -218,55 +269,16 @@ export async function loadState(): Promise<Record<string, unknown> | undefined> 
       cache: 'no-store',
       signal: controller.signal,
     });
-    if (!res.ok) return undefined;
-    const data = (await res.json()) as Record<string, unknown>;
-    const chat = data?.chat as Record<string, unknown> | undefined;
-    if (chat) {
-      const normalizedChat =
-        normalizeArrayChatShape(chat) ?? normalizeLegacyChatShape(chat);
-
-      if (normalizedChat) {
-        data.chat = {
-          ...normalizedChat,
-          activeChatId: getMostRecentChatId(
-            normalizedChat.chatsById as Record<string, { createdAt: string; }>,
-            normalizedChat.chatIds
-          ),
-          sendingMessageChatId: null,
-          sendError: null,
-          lastAddedAssistantMessageId: null,
-        };
-      }
+    if (res.ok) {
+      const raw = (await res.json()) as Record<string, unknown>;
+      return normalizePreloadedStatePayload(raw);
     }
-    // Never restore engagement context (transient UI state)
-    const ui = data?.ui as Record<string, unknown> | undefined;
-    if (ui && typeof ui === 'object') {
-      const {
-        operantDelayCompletedAssistantMessageIds: _legacyOperantIds,
-        operantDelayByChatId: _legacyOperantByChatId,
-        ...uiRest
-      } = ui as Record<string, unknown>;
-      void _legacyOperantIds;
-      void _legacyOperantByChatId;
-      data.ui = {
-        ...uiRest,
-        engagementContext: null,
-        copyShareQuizContext: null,
-        passiveZeroPromptQuota: normalizePassiveZeroPromptQuota(
-          (ui as Record<string, unknown>).passiveZeroPromptQuota
-        ),
-        leaderboardPanelTierLevel: normalizeLeaderboardPanelTierLevel(
-          (ui as Record<string, unknown>).leaderboardPanelTierLevel
-        ),
-      };
-    }
-    if (data && typeof data === 'object') {
-      data.user = normalizePersistedUser((data as Record<string, unknown>).user);
-    }
-    return data;
   } catch {
-    return undefined;
+    /* network error or missing route */
   } finally {
     window.clearTimeout(timeoutId);
   }
+  return normalizePreloadedStatePayload(
+    bundledInitialState as unknown as Record<string, unknown>
+  );
 }

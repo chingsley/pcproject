@@ -5,11 +5,11 @@
  */
 import heroImage from '../assets/hero.png';
 import viteLogo from '../assets/vite.svg';
-import certExplorer from '../../IMG/01_explorer.png';
-import certThinker from '../../IMG/02_thinker.png';
-import certCreator from '../../IMG/03_creator.png';
-import certLeader from '../../IMG/04_leader.png';
-import certGatekeeper from '../../IMG/05_gatekeeper.png';
+import certExplorer from '../assets/certificates/01_explorer.png';
+import certThinker from '../assets/certificates/02_thinker.png';
+import certCreator from '../assets/certificates/03_creator.png';
+import certLeader from '../assets/certificates/04_leader.png';
+import certGatekeeper from '../assets/certificates/05_gatekeeper.png';
 
 export const IMAGES = {
   HERO: heroImage,
