@@ -174,7 +174,7 @@ const CertificatePrintModal = ({
       }, 0);
       return () => clearTimeout(timer);
     }
-  }, [open]);
+  }, [open, level]);
 
   useEffect(() => {
     if (!open) return;

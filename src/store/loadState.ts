@@ -12,8 +12,8 @@ const LOAD_TIMEOUT_MS = 1500;
 
 function normalizeLeaderboardPanelTierLevel(raw: unknown): LeaderboardPanelTierLevel {
   const n = typeof raw === 'number' ? raw : Number(raw);
-  if (Number.isInteger(n) && n >= 1 && n <= 5) return n as LeaderboardPanelTierLevel;
-  return 1;
+  if (Number.isInteger(n) && n >= 0 && n <= 5) return n as LeaderboardPanelTierLevel;
+  return 0;
 }
 
 function normalizePassiveZeroPromptQuota(raw: unknown): PassiveZeroPromptQuotaState {

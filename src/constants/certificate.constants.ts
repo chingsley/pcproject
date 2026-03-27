@@ -1,10 +1,10 @@
-import type { LeaderboardPanelTierLevel } from './leaderboard.constants';
 import { getLeaderboardPanelTier } from './leaderboard.constants';
 
 /** Default recipient name on certificates until a profile exists. */
 export const CERTIFICATE_DISPLAY_NAME_DEFAULT = 'You';
 
-export type CertificateLevel = LeaderboardPanelTierLevel;
+/** Printable tiers only (first certificate unlocks at 100 points / 1 star). */
+export type CertificateLevel = 1 | 2 | 3 | 4 | 5;
 
 export interface CertificateDefinition {
   level: CertificateLevel;

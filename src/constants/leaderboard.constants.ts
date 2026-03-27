@@ -11,8 +11,12 @@ export interface LeaderboardEntry {
 
 export const CURRENT_USER_ID = 'current-user';
 
-/** Tiers for the right-panel leaderboard level dropdown (1–5). */
+/**
+ * Tiers for the right-panel leaderboard level dropdown (0–5).
+ * Level 0 = before the first star (&lt;100 pts). Levels 1–5 align with stars (100 pts per star).
+ */
 export const LEADERBOARD_PANEL_TIERS = [
+  { level: 0 as const, groupName: 'Beginners', memberName: 'Beginner' },
   { level: 1 as const, groupName: 'Explorers', memberName: 'Explorer' },
   { level: 2 as const, groupName: 'Thinkers', memberName: 'Thinker' },
   { level: 3 as const, groupName: 'Creators', memberName: 'Creator' },
@@ -23,14 +27,15 @@ export const LEADERBOARD_PANEL_TIERS = [
 export type LeaderboardPanelTierLevel = (typeof LEADERBOARD_PANEL_TIERS)[number]['level'];
 
 /**
- * Natural tier from lifetime total points (matches mock band tops in `leaderboard.mock.ts`).
- * Tier 1: ≤100 (Explorers), tier 2: 101–200 (Thinkers), … tier 5: &gt;400 (Gatekeepers).
+ * Natural tier from lifetime total points (matches mock bands in `leaderboard.mock.ts`).
+ * Tier 0: &lt;100 (0 stars, Beginners). Tier 1: 100–199 (1★ Explorer), … tier 5: ≥500 (5★ Gatekeeper).
  */
 export function getNaturalLeaderboardTierForTotalPoints(totalPoints: number): LeaderboardPanelTierLevel {
-  if (totalPoints <= 100) return 1;
-  if (totalPoints <= 200) return 2;
-  if (totalPoints <= 300) return 3;
-  if (totalPoints <= 400) return 4;
+  if (totalPoints < 100) return 0;
+  if (totalPoints < 200) return 1;
+  if (totalPoints < 300) return 2;
+  if (totalPoints < 400) return 3;
+  if (totalPoints < 500) return 4;
   return 5;
 }
 

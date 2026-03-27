@@ -50,7 +50,7 @@ const initialState: UiState = {
     zeroPointCountInWindow: 0,
   },
   rightPanelOpen: false,
-  leaderboardPanelTierLevel: 1,
+  leaderboardPanelTierLevel: 0,
 };
 
 const uiSlice = createSlice({

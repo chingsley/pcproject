@@ -176,9 +176,12 @@ const LeaderboardInline = () => {
   const tierMeta = getLeaderboardPanelTier(selectedTier);
   const viewingOwnTier = naturalTier === selectedTier;
 
-  const bannerText = viewingOwnTier
-    ? `Congrats ${tierMeta.memberName}! You're doing great!`
-    : `${tierMeta.groupName} Leaderboard`;
+  const bannerText =
+    viewingOwnTier && selectedTier === 0
+      ? "You're on the Beginners board — earn 100 points for your first star."
+      : viewingOwnTier
+        ? `Congrats ${tierMeta.memberName}! You're doing great!`
+        : `${tierMeta.groupName} Leaderboard`;
 
   return (
     <LeadearBox>
