@@ -1,19 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { IS_DEMO_MODE } from '../../../constants/buildMode.constants';
 import { COLORS } from '../../../constants/colors.constants';
 import { FONTS } from '../../../constants/fonts.constants';
 import { LAYOUT } from '../../../constants/layout.constants';
 import { SPACING } from '../../../constants/spacing.constants';
-import { useAppSelector } from '../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { resetPassiveZeroPromptQuota } from '../../../store/slices/uiSlice';
 import {
   formatDurationCompact,
   getOperantQuotaDisplayState,
 } from '../../../utils/operantQuotaDisplay';
 
 const Strip = styled.div`
-   max-width: ${LAYOUT.INPUT_BOX_WIDTH};
+  max-width: ${LAYOUT.INPUT_BOX_WIDTH};
   align-self: flex-start;
-  margin-bottom: 0.5rem;
+  margin-bottom: ${SPACING.BUTTON_PADDING_Y};
   padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
   border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
   border-radius: ${SPACING.RADIUS_SMALLER};
@@ -23,7 +25,7 @@ const Strip = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  // gap: ${SPACING.BUTTON_PADDING_X};
+  gap: ${SPACING.BUTTON_PADDING_X};
 `;
 
 const Text = styled.span`
@@ -49,7 +51,42 @@ const Badge = styled.span<{ $alert: boolean; }>`
   letter-spacing: 0.02em;
 `;
 
+const RightActions = styled.div`
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: ${SPACING.SHORTCUT_KEY_GAP};
+`;
+
+const ClearQuotaButton = styled.button`
+  flex-shrink: 0;
+  margin: 0;
+  padding: ${SPACING.SHORTCUT_KEY_PADDING_Y} ${SPACING.SHORTCUT_KEY_PADDING_X};
+  border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE_HOVER};
+  border-radius: ${SPACING.RADIUS_SMALLER};
+  background: ${COLORS.SURFACE_OVERLAY_MEDIUM};
+  color: ${COLORS.TEXT_PRIMARY};
+  font-family: ${FONTS.FAMILY.PRIMARY};
+  font-size: ${FONTS.SIZE.SMALL};
+  font-weight: ${FONTS.WEIGHT.MEDIUM};
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    border-color: ${COLORS.STAR_ACCENT};
+    background: ${COLORS.SURFACE_OVERLAY_LIGHT};
+  }
+
+  &:focus-visible {
+    outline: ${SPACING.BORDER_WIDTH} solid ${COLORS.STAR_ACCENT};
+    outline-offset: 0.125rem;
+  }
+`;
+
 const PassiveQuotaStrip = () => {
+  const dispatch = useAppDispatch();
   const passiveZeroPromptQuota = useAppSelector((state) => state.ui.passiveZeroPromptQuota);
   const [nowMs, setNowMs] = useState(() => Date.now());
 
@@ -75,7 +112,19 @@ const PassiveQuotaStrip = () => {
   return (
     <Strip role="status" aria-live="polite" aria-atomic="true">
       <Text>{bodyText}</Text>
-      <Badge $alert={quotaState.delayActive}>{badgeText}</Badge>{/* DO NOT REMOVE THIS BADGE FEATURE */}
+      <RightActions>
+        {IS_DEMO_MODE && (
+          <ClearQuotaButton
+            type="button"
+            onClick={() => dispatch(resetPassiveZeroPromptQuota())}
+            aria-label="Clear passive prompt quota (demo only)"
+          >
+            Clear
+          </ClearQuotaButton>
+        )}
+        <Badge $alert={quotaState.delayActive}>{badgeText}</Badge>
+        {/* DO NOT REMOVE THIS BADGE FEATURE */}
+      </RightActions>
     </Strip>
   );
 };

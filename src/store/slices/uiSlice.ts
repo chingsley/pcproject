@@ -4,7 +4,10 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { LeaderboardPanelTierLevel } from '../../constants/leaderboard.constants';
 import type { EngagementType } from '../../utils/engagementPrompt';
 import type { PassiveZeroPromptQuotaState } from '../../utils/operantDelayState';
-import { applyPassiveZeroQuotaAfterZeroPointMessage } from '../../utils/operantDelayState';
+import {
+  applyPassiveZeroQuotaAfterZeroPointMessage,
+  DEFAULT_PASSIVE_ZERO_PROMPT_QUOTA_STATE,
+} from '../../utils/operantDelayState';
 
 interface UiState {
   sidebarOpen: boolean;
@@ -113,6 +116,9 @@ const uiSlice = createSlice({
         now
       );
     },
+    resetPassiveZeroPromptQuota: (state) => {
+      state.passiveZeroPromptQuota = { ...DEFAULT_PASSIVE_ZERO_PROMPT_QUOTA_STATE };
+    },
     toggleRightPanel: (state) => {
       state.rightPanelOpen = !state.rightPanelOpen;
     },
@@ -135,6 +141,7 @@ export const {
   clearCopyShareQuizContext,
   markQuizPassed,
   recordMainAssistantOperantScore,
+  resetPassiveZeroPromptQuota,
   toggleRightPanel,
   setRightPanelOpen,
   setLeaderboardPanelTierLevel,

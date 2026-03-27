@@ -178,7 +178,7 @@ const LeaderboardInline = () => {
 
   const bannerText =
     viewingOwnTier && selectedTier === 0
-      ? "You're on the Beginners board — earn 100 points for your first star."
+      ? "Beginners board. Earn 100 points for your first star."
       : viewingOwnTier
         ? `Congrats ${tierMeta.memberName}! You're doing great!`
         : `${tierMeta.groupName} Leaderboard`;
