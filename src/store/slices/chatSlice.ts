@@ -13,6 +13,7 @@ import {
   markQuizPassed,
   recordMainAssistantOperantScore,
 } from './uiSlice';
+import type { RootState } from '../index';
 import { QUIZ_BONUS_POINTS } from '../../constants/engagement.constants';
 
 interface ChatState {
@@ -99,7 +100,7 @@ export const sendMessage = createAsyncThunk(
       const assistantMessageId = `msg_${Date.now() + 1}_${Math.random().toString(36).substr(2, 9)}`;
 
       const nowMs = Date.now();
-      const prevQuota = getState().ui.passiveZeroPromptQuota;
+      const prevQuota = (getState() as RootState).ui.passiveZeroPromptQuota;
       const applyOperantDelay = shouldApplyOperantDelayForMessage(
         prevQuota,
         normalizedScoring.promptPoint,

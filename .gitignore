@@ -34,3 +34,5 @@ theory
 keeps
 prompts_drafts
 scripts
+.vercel
+.env*.local
