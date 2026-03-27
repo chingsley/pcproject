@@ -29,6 +29,8 @@ export const LAYOUT = {
   RIGHT_PANEL_WIDTH: '22rem', // ~352px at 16px base
   /** Duration for expand/collapse reveals (e.g. AIFactBlock) */
   REVEAL_TRANSITION_DURATION: '0.38s',
+  /** Max width for main-view login form card */
+  LOGIN_FORM_MAX_WIDTH: '22rem',
   /** Certificate print modal above right panel (`z-index: 950`) */
   CERTIFICATE_PRINT_MODAL_Z_INDEX: '1200',
   CERTIFICATE_PRINT_MODAL_MAX_WIDTH: '28rem',

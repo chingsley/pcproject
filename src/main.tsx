@@ -16,6 +16,7 @@ async function bootstrap() {
   if (import.meta.env.DEV) {
     let previousUiRef = store.getState().ui;
     let previousChatRef = store.getState().chat;
+    let previousUserRef = store.getState().user;
     let lastSavedPayload = '';
     let pendingPayload: string | null = null;
     let debounceTimer: number | null = null;
@@ -48,11 +49,16 @@ async function bootstrap() {
 
     store.subscribe(() => {
       const state = store.getState();
-      if (state.ui === previousUiRef && state.chat === previousChatRef) {
+      if (
+        state.ui === previousUiRef &&
+        state.chat === previousChatRef &&
+        state.user === previousUserRef
+      ) {
         return;
       }
       previousUiRef = state.ui;
       previousChatRef = state.chat;
+      previousUserRef = state.user;
 
       const payload = serializePersistedState(state);
       if (payload === lastSavedPayload || payload === pendingPayload) return;

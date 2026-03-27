@@ -9,7 +9,10 @@ import {
 } from '../../../constants/leaderboard.constants';
 import { useAppSelector } from '../../../store/hooks';
 import { selectLeaderboardWithUser, selectTotalPoints } from '../../../store/selectors/chatSelectors';
-import type { LeaderboardEntry } from '../../../constants/leaderboard.constants';
+import type {
+  LeaderboardEntry,
+  LeaderboardPanelTierLevel,
+} from '../../../constants/leaderboard.constants';
 import { drawBorder } from '../../../utils/playground';
 
 const LeadearBox = styled.div`
@@ -116,14 +119,29 @@ const PointsCell = styled.span`
   // color: ${COLORS.LOADER_FILL};
 `;
 
-const YourRankBanner = styled.div`
+function leaderboardBannerGradient(tier: LeaderboardPanelTierLevel): string {
+  switch (tier) {
+    case 0:
+      return `linear-gradient(90deg, ${COLORS.PRIMARY_BLUE_LIGHT} 0%, ${COLORS.PRIMARY_BLUE} 100%)`;
+    case 1:
+      return `linear-gradient(90deg, ${COLORS.LEADERBOARD_BANNER_EXPLORER_START} 0%, ${COLORS.LEADERBOARD_BANNER_EXPLORER_END} 100%)`;
+    case 2:
+      return `linear-gradient(90deg, ${COLORS.LEADERBOARD_BANNER_THINKER_START} 0%, ${COLORS.LEADERBOARD_BANNER_THINKER_END} 100%)`;
+    case 3:
+      return `linear-gradient(90deg, ${COLORS.LEADERBOARD_BANNER_CREATOR_START} 0%, ${COLORS.LEADERBOARD_BANNER_CREATOR_END} 100%)`;
+    case 4:
+      return `linear-gradient(90deg, ${COLORS.LEADERBOARD_BANNER_LEADER_START} 0%, ${COLORS.LEADERBOARD_BANNER_LEADER_END} 100%)`;
+    case 5:
+      return `linear-gradient(90deg, ${COLORS.LEADERBOARD_BANNER_GATEKEEPER_START} 0%, ${COLORS.LEADERBOARD_BANNER_GATEKEEPER_END} 100%)`;
+    default:
+      return `linear-gradient(90deg, ${COLORS.PRIMARY_BLUE_LIGHT} 0%, ${COLORS.PRIMARY_BLUE} 100%)`;
+  }
+}
+
+const YourRankBanner = styled.div<{ $tier: LeaderboardPanelTierLevel; }>`
   margin-bottom: ${SPACING.BUTTON_PADDING_X};
   padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
-  background: linear-gradient(
-    90deg,
-    ${COLORS.PRIMARY_BLUE_LIGHT} 0%,
-    ${COLORS.PRIMARY_BLUE} 100%
-  );
+  background: ${(p) => leaderboardBannerGradient(p.$tier)};
   border-radius: ${SPACING.RADIUS_SMALLER};
   border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
   font-family: ${FONTS.FAMILY.PRIMARY};
@@ -186,7 +204,7 @@ const LeaderboardInline = () => {
   return (
     <LeadearBox>
       <ScrollArea>
-        <YourRankBanner>{bannerText}</YourRankBanner>
+        <YourRankBanner $tier={selectedTier}>{bannerText}</YourRankBanner>
         {leaderboard.map((entry, idx) => (
           <EntryItem key={entry.id} entry={entry} rank={idx + 1} />
         ))}

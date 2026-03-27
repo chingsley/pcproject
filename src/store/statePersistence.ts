@@ -29,6 +29,9 @@ export function toPersistedState(state: RootState) {
       chats,
       messages,
     },
+    user: {
+      session: state.user.session,
+    },
   };
 }
 

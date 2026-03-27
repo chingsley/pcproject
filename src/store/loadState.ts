@@ -1,5 +1,6 @@
 import type { LeaderboardPanelTierLevel } from '../constants/leaderboard.constants';
 import type { Message } from '../types/chat';
+import type { UserSession } from './slices/userSlice';
 import {
   getPromptCategoryFromPoint,
   getFallbackFeedback,
@@ -14,6 +15,27 @@ function normalizeLeaderboardPanelTierLevel(raw: unknown): LeaderboardPanelTierL
   const n = typeof raw === 'number' ? raw : Number(raw);
   if (Number.isInteger(n) && n >= 0 && n <= 5) return n as LeaderboardPanelTierLevel;
   return 0;
+}
+
+function normalizePersistedUser(raw: unknown): { session: UserSession | null } {
+  if (!raw || typeof raw !== 'object') {
+    return { session: null };
+  }
+  const u = raw as Record<string, unknown>;
+  if (u.session === null) {
+    return { session: null };
+  }
+  if (!u.session || typeof u.session !== 'object') {
+    return { session: null };
+  }
+  const s = u.session as Record<string, unknown>;
+  const id = typeof s.id === 'string' ? s.id : '';
+  const email = typeof s.email === 'string' ? s.email : '';
+  const signedInAt = typeof s.signedInAt === 'string' ? s.signedInAt : '';
+  if (!id || !signedInAt) {
+    return { session: null };
+  }
+  return { session: { id, email, signedInAt } };
 }
 
 function normalizePassiveZeroPromptQuota(raw: unknown): PassiveZeroPromptQuotaState {
@@ -237,6 +259,9 @@ export async function loadState(): Promise<Record<string, unknown> | undefined> 
           (ui as Record<string, unknown>).leaderboardPanelTierLevel
         ),
       };
+    }
+    if (data && typeof data === 'object') {
+      data.user = normalizePersistedUser((data as Record<string, unknown>).user);
     }
     return data;
   } catch {

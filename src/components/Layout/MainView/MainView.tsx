@@ -5,15 +5,20 @@ import { FONTS } from '../../../constants/fonts.constants';
 import { LAYOUT } from '../../../constants/layout.constants';
 import { SPACING } from '../../../constants/spacing.constants';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { clearLastAddedAssistantMessageId } from '../../../store/slices/chatSlice';
-import { toggleSidebar, setRightPanelOpen } from '../../../store/slices/uiSlice';
+import {
+  clearActiveChatId,
+  clearLastAddedAssistantMessageId,
+} from '../../../store/slices/chatSlice';
+import { toggleSidebar, setRightPanelOpen, clearEngagementContext } from '../../../store/slices/uiSlice';
+import { selectIsAuthenticated } from '../../../store/selectors/userSelectors';
 import InputBox from './InputBox/InputBox';
 import MessageList from './MessageList/MessageList';
 import RightAgentPanel from './RightAgentPanel/RightAgentPanel';
 import AIFactBlock from './AIFactBlock/AIFactBlock';
 import PassiveQuotaStrip from './PassiveQuotaStrip';
+import MainLoginForm from './MainLoginForm';
 import { drawBorder } from '../../../utils/playground';
-import { FiAward, FiShare } from 'react-icons/fi';
+import { FiAward, FiLogIn, FiShare } from 'react-icons/fi';
 
 const PLACEHOLDER_ENTRANCE_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
@@ -214,12 +219,17 @@ const LeaderboardButton = styled.button`
   ${headerActionStyles}
 `;
 
+const LoginButton = styled.button`
+  ${headerActionStyles}
+`;
+
 interface MainViewProps {
   sidebarOpen: boolean;
 }
 
 const MainView = ({ sidebarOpen }: MainViewProps) => {
   const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const rightPanelOpen = useAppSelector((state) => state.ui.rightPanelOpen);
   const activeChatId = useAppSelector((state) => state.chat.activeChatId);
   const messageIds = useAppSelector((state) =>
@@ -229,6 +239,11 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
 
   const handleToggle = () => {
     dispatch(toggleSidebar());
+  };
+
+  const handleShowLogin = () => {
+    dispatch(clearActiveChatId());
+    dispatch(clearEngagementContext());
   };
 
   const scrollToBottom = useCallback(() => {
@@ -249,36 +264,60 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
 
   return (
     <>
-      <MainContainer $sidebarOpen={sidebarOpen} $rightPanelOpen={rightPanelOpen}>
+      <MainContainer
+        $sidebarOpen={sidebarOpen}
+        $rightPanelOpen={isAuthenticated && rightPanelOpen}
+      >
         <HeaderContainer>
           <HeaderTitle>Active Research</HeaderTitle>
-          <HeaderActions>
-            <ShareButton>
-              <FiShare aria-hidden />
-              Share
-            </ShareButton>
-            <LeaderboardButton
-              type="button"
-              aria-label="Open leaderboard in side panel"
-              onClick={() => dispatch(setRightPanelOpen(true))}
-            >
-              <FiAward aria-hidden />
-              Leaderboard
-            </LeaderboardButton>
-          </HeaderActions>
+          {isAuthenticated ? (
+            <HeaderActions>
+              <ShareButton>
+                <FiShare aria-hidden />
+                Share
+              </ShareButton>
+              <LeaderboardButton
+                type="button"
+                aria-label="Open leaderboard in side panel"
+                onClick={() => dispatch(setRightPanelOpen(true))}
+              >
+                <FiAward aria-hidden />
+                Leaderboard
+              </LeaderboardButton>
+            </HeaderActions>
+          ) : (
+            <HeaderActions>
+              <LoginButton
+                type="button"
+                aria-label="Show sign in"
+                onClick={handleShowLogin}
+              >
+                <FiLogIn aria-hidden />
+                Log in
+              </LoginButton>
+            </HeaderActions>
+          )}
         </HeaderContainer>
         <ToggleButton onClick={handleToggle}>☰</ToggleButton>
-        {!activeChatId ? (
+        {!isAuthenticated ? (
           <PlaceholderRoot>
             <PlaceholderContent>
-              <h1 className="header">Think clearly. Engage deeply. Stay in charge.</h1>
-              <div className="underline"></div>
-              {/* <p className="subheader">
+              <MainLoginForm />
+            </PlaceholderContent>
+          </PlaceholderRoot>
+        ) : !activeChatId ? (
+          <PlaceholderRoot>
+            <>
+              <PlaceholderContent>
+                <h1 className="header">Think clearly. Engage deeply. Stay in charge.</h1>
+                <div className="underline"></div>
+                {/* <p className="subheader">
                 Produce work that remains recognisably and confidently your own. Every prompt counts!
               </p> */}
-              <InputBox />
-            </PlaceholderContent>
-            <AIFactBlock />
+                <InputBox />
+              </PlaceholderContent>
+              <AIFactBlock />
+            </>
           </PlaceholderRoot>
         ) : (
           <>
@@ -297,7 +336,7 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
           </>
         )}
       </MainContainer>
-      <RightAgentPanel />
+      {isAuthenticated ? <RightAgentPanel /> : null}
     </>
   );
 };

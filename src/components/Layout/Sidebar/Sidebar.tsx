@@ -1,7 +1,9 @@
 import styled from 'styled-components';
 import { COLORS } from '../../../constants/colors.constants';
+import { FONTS } from '../../../constants/fonts.constants';
 import { LAYOUT } from '../../../constants/layout.constants';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { selectIsAuthenticated } from '../../../store/selectors/userSelectors';
 import { setActiveChatId, clearActiveChatId } from '../../../store/slices/chatSlice';
 import { clearEngagementContext } from '../../../store/slices/uiSlice';
 import { selectChatsWithPoints } from '../../../store/selectors/chatSelectors';
@@ -60,13 +62,29 @@ const MiddleSection = styled.div`
 `;
 
 const BottomSection = styled.div`
+  margin-top: auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   min-height: 28rem;
   border: ${drawBorder('yellow')};
 `;
 
+const BottomSectionMain = styled.div`
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+`;
+
+const SidebarSignInMessage = styled.p`
+  margin: 0;
+  max-width: 100%;
+  font-family: ${FONTS.FAMILY.PRIMARY};
+  font-size: ${FONTS.SIZE.MEDIUM};
+  font-weight: ${FONTS.WEIGHT.NORMAL};
+  color: ${COLORS.MUTED_WHITE};
+  line-height: 1.5;
+`;
 
 interface SidebarProps {
   isOpen: boolean;
@@ -76,6 +94,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
   const dispatch = useAppDispatch();
   const chats = useAppSelector(selectChatsWithPoints);
   const activeChatId = useAppSelector((state) => state.chat.activeChatId);
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
   const handleNewChat = () => {
     dispatch(clearActiveChatId());
@@ -92,19 +111,30 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
         <TopSection>
           <Header />
           <NewChat onClick={handleNewChat} />
-          <Points />
+          {isAuthenticated ? <Points /> : null}
         </TopSection>
 
         <MiddleSection>
-          <StarsProgress />
+          {isAuthenticated ? (
+            <StarsProgress />
+          ) : (
+            <SidebarSignInMessage>
+              Sign in to get started. Once you&apos;re signed in, you can access your points and
+              recent chats here.
+            </SidebarSignInMessage>
+          )}
         </MiddleSection>
 
         <BottomSection>
-          <ChatSection
-            chats={chats}
-            activeChatId={activeChatId}
-            onSelectChat={handleSelectChat}
-          />
+          <BottomSectionMain>
+            {isAuthenticated ? (
+              <ChatSection
+                chats={chats}
+                activeChatId={activeChatId}
+                onSelectChat={handleSelectChat}
+              />
+            ) : null}
+          </BottomSectionMain>
           <SidebarFooter />
         </BottomSection>
       </SidebarContent>

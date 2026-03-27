@@ -136,7 +136,7 @@ const PanelFooter = styled.div`
   flex-shrink: 0;
   padding: ${SPACING.BUTTON_PADDING_Y} ${LAYOUT.LAYOUT_CONTENT_PADDING};
   border-top: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
-  background: ${COLORS.SIDEBAR_BG};
+  // background: ${COLORS.SIDEBAR_BG};
 `;
 
 const PrintCertificateButton = styled.button`
@@ -148,7 +148,8 @@ const PrintCertificateButton = styled.button`
   padding: ${SPACING.BUTTON_PADDING_Y} ${SPACING.BUTTON_PADDING_X};
   border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
   border-radius: ${SPACING.RADIUS_SMALLER};
-  background: ${COLORS.SURFACE_OVERLAY_LIGHT};
+  // background: ${COLORS.SURFACE_OVERLAY_LIGHT};
+  background: none;
   color: ${COLORS.TEXT_PRIMARY};
   cursor: pointer;
   font-family: ${FONTS.FAMILY.PRIMARY};

@@ -1,14 +1,15 @@
 /**
- * Image assets: all non-icon images from src/assets/ must be imported here
- * and exported. Use IMAGES.* in components; do not import from assets directly.
+ * Image assets: import non-icon images here and export on `IMAGES`.
+ * Use IMAGES.* in components; do not import asset paths directly in components.
+ * Certificate art: project `IMG/` (01_explorer … 05_gatekeeper → levels 1–5).
  */
 import heroImage from '../assets/hero.png';
 import viteLogo from '../assets/vite.svg';
-import certExplorer from '../assets/certificates/cert_explorer.png';
-import certThinker from '../assets/certificates/cert_thinker.png';
-import certCreator from '../assets/certificates/cert_creator.png';
-import certLeader from '../assets/certificates/cert_leader.png';
-import certGatekeeper from '../assets/certificates/cert_gatekeeper.png';
+import certExplorer from '../../IMG/01_explorer.png';
+import certThinker from '../../IMG/02_thinker.png';
+import certCreator from '../../IMG/03_creator.png';
+import certLeader from '../../IMG/04_leader.png';
+import certGatekeeper from '../../IMG/05_gatekeeper.png';
 
 export const IMAGES = {
   HERO: heroImage,

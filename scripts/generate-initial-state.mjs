@@ -108,6 +108,9 @@ const initialState = {
       },
     ],
   },
+  user: {
+    session: null,
+  },
 };
 
 writeFileSync(outputPath, JSON.stringify(initialState, null, 2), 'utf-8');

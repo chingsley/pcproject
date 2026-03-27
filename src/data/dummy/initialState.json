@@ -88,7 +88,214 @@
         "promptPoint": 5,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
+      },
+      {
+        "id": "msg_dummy_5_user",
+        "chatId": "chat_dummy_002",
+        "role": "user",
+        "content": "What is an action in Redux?",
+        "timestamp": "2025-03-11T14:32:00.000Z"
+      },
+      {
+        "id": "msg_dummy_5_assistant",
+        "chatId": "chat_dummy_002",
+        "role": "assistant",
+        "content": "An action is a plain object describing what happened, usually with a `type` string and optional `payload`. Reducers read actions to compute the next state.",
+        "timestamp": "2025-03-11T14:32:12.000Z",
+        "promptPoint": 5,
+        "promptCategory": "active",
+        "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
+      },
+      {
+        "id": "msg_dummy_6_user",
+        "chatId": "chat_dummy_002",
+        "role": "user",
+        "content": "How does configureStore differ from createStore?",
+        "timestamp": "2025-03-11T14:33:00.000Z"
+      },
+      {
+        "id": "msg_dummy_6_assistant",
+        "chatId": "chat_dummy_002",
+        "role": "assistant",
+        "content": "`configureStore` from Redux Toolkit sets up the store with good defaults, enables Redux DevTools, and wires `redux-thunk` without extra boilerplate.",
+        "timestamp": "2025-03-11T14:33:14.000Z",
+        "promptPoint": 5,
+        "promptCategory": "active",
+        "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
+      },
+      {
+        "id": "msg_dummy_7_user",
+        "chatId": "chat_dummy_002",
+        "role": "user",
+        "content": "When should I use useSelector vs passing props?",
+        "timestamp": "2025-03-11T14:34:00.000Z"
+      },
+      {
+        "id": "msg_dummy_7_assistant",
+        "chatId": "chat_dummy_002",
+        "role": "assistant",
+        "content": "Use `useSelector` when a component needs Redux state it cannot receive cleanly from parents. Prefer props when the data is already local to a subtree.",
+        "timestamp": "2025-03-11T14:34:11.000Z",
+        "promptPoint": 5,
+        "promptCategory": "active",
+        "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
+      },
+      {
+        "id": "msg_dummy_8_user",
+        "chatId": "chat_dummy_002",
+        "role": "user",
+        "content": "What is immer in Redux Toolkit?",
+        "timestamp": "2025-03-11T14:35:00.000Z"
+      },
+      {
+        "id": "msg_dummy_8_assistant",
+        "chatId": "chat_dummy_002",
+        "role": "assistant",
+        "content": "Immer lets you write reducers that look like mutating code; RTK uses it inside `createSlice` so you can assign to `state` directly while keeping updates immutable.",
+        "timestamp": "2025-03-11T14:35:13.000Z",
+        "promptPoint": 5,
+        "promptCategory": "active",
+        "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
+      },
+      {
+        "id": "msg_dummy_9_user",
+        "chatId": "chat_dummy_002",
+        "role": "user",
+        "content": "How do I type useDispatch and useSelector with TypeScript?",
+        "timestamp": "2025-03-11T14:36:00.000Z"
+      },
+      {
+        "id": "msg_dummy_9_assistant",
+        "chatId": "chat_dummy_002",
+        "role": "assistant",
+        "content": "Define `RootState` and `AppDispatch` from your store, then create typed hooks: `useAppDispatch` and `useAppSelector` with those types so dispatch and state are fully typed.",
+        "timestamp": "2025-03-11T14:36:15.000Z",
+        "promptPoint": 5,
+        "promptCategory": "active",
+        "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
+      },
+      {
+        "id": "msg_dummy_10_user",
+        "chatId": "chat_dummy_002",
+        "role": "user",
+        "content": "What is createAsyncThunk for?",
+        "timestamp": "2025-03-11T14:37:00.000Z"
+      },
+      {
+        "id": "msg_dummy_10_assistant",
+        "chatId": "chat_dummy_002",
+        "role": "assistant",
+        "content": "`createAsyncThunk` generates thunk actions for async work; RTK dispatches pending/fulfilled/rejected actions you handle in `extraReducers` to load data and surface errors.",
+        "timestamp": "2025-03-11T14:37:12.000Z",
+        "promptPoint": 5,
+        "promptCategory": "active",
+        "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
+      },
+      {
+        "id": "msg_dummy_11_user",
+        "chatId": "chat_dummy_002",
+        "role": "user",
+        "content": "How does normalization help with lists in Redux?",
+        "timestamp": "2025-03-11T14:38:00.000Z"
+      },
+      {
+        "id": "msg_dummy_11_assistant",
+        "chatId": "chat_dummy_002",
+        "role": "assistant",
+        "content": "Storing entities by id (e.g. `entities[id]`) avoids duplicates and makes updates O(1). Derive ordered ids separately for rendering lists.",
+        "timestamp": "2025-03-11T14:38:10.000Z",
+        "promptPoint": 5,
+        "promptCategory": "active",
+        "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
+      },
+      {
+        "id": "msg_dummy_12_user",
+        "chatId": "chat_dummy_002",
+        "role": "user",
+        "content": "Should middleware run before or after the reducer?",
+        "timestamp": "2025-03-11T14:39:00.000Z"
+      },
+      {
+        "id": "msg_dummy_12_assistant",
+        "chatId": "chat_dummy_002",
+        "role": "assistant",
+        "content": "Middleware sits between dispatch and the reducer: it can inspect actions, run side effects, and dispatch further actions before the reducer runs.",
+        "timestamp": "2025-03-11T14:39:14.000Z",
+        "promptPoint": 5,
+        "promptCategory": "active",
+        "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
+      },
+      {
+        "id": "msg_dummy_13_user",
+        "chatId": "chat_dummy_002",
+        "role": "user",
+        "content": "What is the purpose of reselect?",
+        "timestamp": "2025-03-11T14:40:00.000Z"
+      },
+      {
+        "id": "msg_dummy_13_assistant",
+        "chatId": "chat_dummy_002",
+        "role": "assistant",
+        "content": "Reselect builds memoized selectors so derived data recomputes only when inputs change, which cuts unnecessary re-renders and work in connected components.",
+        "timestamp": "2025-03-11T14:40:11.000Z",
+        "promptPoint": 5,
+        "promptCategory": "active",
+        "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
+      },
+      {
+        "id": "msg_dummy_14_user",
+        "chatId": "chat_dummy_002",
+        "role": "user",
+        "content": "How do I reset Redux state on logout?",
+        "timestamp": "2025-03-11T14:41:00.000Z"
+      },
+      {
+        "id": "msg_dummy_14_assistant",
+        "chatId": "chat_dummy_002",
+        "role": "assistant",
+        "content": "Dispatch a root reset action handled by reducers returning `initialState`, or replace the store for tests; RTK apps often use a combined reducer that listens for `logout` type.",
+        "timestamp": "2025-03-11T14:41:13.000Z",
+        "promptPoint": 5,
+        "promptCategory": "active",
+        "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
+      },
+      {
+        "id": "msg_dummy_15_user",
+        "chatId": "chat_dummy_002",
+        "role": "user",
+        "content": "Can I use Redux with React Server Components?",
+        "timestamp": "2025-03-11T14:42:00.000Z"
+      },
+      {
+        "id": "msg_dummy_15_assistant",
+        "chatId": "chat_dummy_002",
+        "role": "assistant",
+        "content": "Redux is client-side; use it in client components. Fetch on the server in RSC, then hydrate client islands that subscribe to the store for interactive UI.",
+        "timestamp": "2025-03-11T14:42:12.000Z",
+        "promptPoint": 5,
+        "promptCategory": "active",
+        "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
+      },
+      {
+        "id": "msg_dummy_16_user",
+        "chatId": "chat_dummy_002",
+        "role": "user",
+        "content": "Any tips for debugging unexpected re-renders?",
+        "timestamp": "2025-03-11T14:43:00.000Z"
+      },
+      {
+        "id": "msg_dummy_16_assistant",
+        "chatId": "chat_dummy_002",
+        "role": "assistant",
+        "content": "Use React DevTools Profiler, log selector outputs, and ensure `useSelector` selects minimal state. Split components so only subscribers re-render when their slice changes.",
+        "timestamp": "2025-03-11T14:43:15.000Z",
+        "promptPoint": 5,
+        "promptCategory": "active",
+        "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       }
     ]
+  },
+  "user": {
+    "session": null
   }
 }
