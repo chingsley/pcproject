@@ -12,7 +12,10 @@ const LoginCard = styled.div`
   width: 100%;
   width: 60%;
   height: 60%;
-  padding: 5rem;
+  padding-left: 5rem;
+  padding-right: 5rem;
+  padding-bottom: 5rem;
+  padding-top: 3rem;
   border-radius: ${SPACING.RADIUS_SMALL};
   border: ${SPACING.BORDER_WIDTH} solid ${COLORS.BORDER_SUBTLE};
   background: ${COLORS.PRIMARY_BLUE};
@@ -112,10 +115,21 @@ const SubmitButton = styled.button`
   }
 `;
 
+const DemoAccountInfo = styled.p`
+
+  font-family: ${FONTS.FAMILY.PRIMARY};
+  font-size: ${FONTS.SIZE.MEDIUM};
+  font-weight: ${FONTS.WEIGHT.MEDIUM};
+  color: ${COLORS.TEXT_PRIMARY_MUTED};
+  text-align: center;
+  padding-bottom: 3rem;
+  border: ${drawBorder('red')};
+`;
+
 const MainLoginForm = () => {
   const dispatch = useAppDispatch();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('test@test.com');
+  const [password, setPassword] = useState('password');
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -125,6 +139,7 @@ const MainLoginForm = () => {
 
   return (
     <LoginCard>
+      <DemoAccountInfo>This is a demo version. just click the sign in button to login.</DemoAccountInfo>
       <Title id="main-login-title">Sign in</Title>
       <Form onSubmit={handleSubmit} aria-labelledby="main-login-title">
         <Field>
