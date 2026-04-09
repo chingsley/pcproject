@@ -269,7 +269,7 @@ const MainView = ({ sidebarOpen }: MainViewProps) => {
         $rightPanelOpen={isAuthenticated && rightPanelOpen}
       >
         <HeaderContainer>
-          <HeaderTitle>Active Research</HeaderTitle>
+          <HeaderTitle></HeaderTitle>
           {isAuthenticated ? (
             <HeaderActions>
               <ShareButton>

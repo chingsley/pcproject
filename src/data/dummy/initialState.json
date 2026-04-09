@@ -34,7 +34,7 @@
         "role": "assistant",
         "content": "React is a JavaScript library for building user interfaces, particularly single-page applications. You should use it for component-based UIs, strong ecosystem, and React Native for mobile.",
         "timestamp": "2025-03-10T10:00:15.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },
@@ -51,7 +51,7 @@
         "role": "assistant",
         "content": "You can create a component with a function: `function MyComponent() { return <div>Hello</div>; }` or as an arrow function. Export it and use it as `<MyComponent />`.",
         "timestamp": "2025-03-10T10:01:20.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },
@@ -68,7 +68,7 @@
         "role": "assistant",
         "content": "React state is local to a component (useState) and passed down via props. Redux is a global store: one place for app state, predictable updates with actions/reducers, and easy to access from any component.",
         "timestamp": "2025-03-11T14:30:25.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },
@@ -85,7 +85,7 @@
         "role": "assistant",
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Use createSlice from Redux Toolkit.",
         "timestamp": "2025-03-11T14:31:18.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },
@@ -102,7 +102,7 @@
         "role": "assistant",
         "content": "An action is a plain object describing what happened, usually with a `type` string and optional `payload`. Reducers read actions to compute the next state.",
         "timestamp": "2025-03-11T14:32:12.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },
@@ -119,7 +119,7 @@
         "role": "assistant",
         "content": "`configureStore` from Redux Toolkit sets up the store with good defaults, enables Redux DevTools, and wires `redux-thunk` without extra boilerplate.",
         "timestamp": "2025-03-11T14:33:14.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },
@@ -136,7 +136,7 @@
         "role": "assistant",
         "content": "Use `useSelector` when a component needs Redux state it cannot receive cleanly from parents. Prefer props when the data is already local to a subtree.",
         "timestamp": "2025-03-11T14:34:11.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },
@@ -153,7 +153,7 @@
         "role": "assistant",
         "content": "Immer lets you write reducers that look like mutating code; RTK uses it inside `createSlice` so you can assign to `state` directly while keeping updates immutable.",
         "timestamp": "2025-03-11T14:35:13.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },
@@ -170,7 +170,7 @@
         "role": "assistant",
         "content": "Define `RootState` and `AppDispatch` from your store, then create typed hooks: `useAppDispatch` and `useAppSelector` with those types so dispatch and state are fully typed.",
         "timestamp": "2025-03-11T14:36:15.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },
@@ -187,7 +187,7 @@
         "role": "assistant",
         "content": "`createAsyncThunk` generates thunk actions for async work; RTK dispatches pending/fulfilled/rejected actions you handle in `extraReducers` to load data and surface errors.",
         "timestamp": "2025-03-11T14:37:12.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },
@@ -204,7 +204,7 @@
         "role": "assistant",
         "content": "Storing entities by id (e.g. `entities[id]`) avoids duplicates and makes updates O(1). Derive ordered ids separately for rendering lists.",
         "timestamp": "2025-03-11T14:38:10.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },
@@ -221,7 +221,7 @@
         "role": "assistant",
         "content": "Middleware sits between dispatch and the reducer: it can inspect actions, run side effects, and dispatch further actions before the reducer runs.",
         "timestamp": "2025-03-11T14:39:14.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },
@@ -238,7 +238,7 @@
         "role": "assistant",
         "content": "Reselect builds memoized selectors so derived data recomputes only when inputs change, which cuts unnecessary re-renders and work in connected components.",
         "timestamp": "2025-03-11T14:40:11.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },
@@ -255,7 +255,7 @@
         "role": "assistant",
         "content": "Dispatch a root reset action handled by reducers returning `initialState`, or replace the store for tests; RTK apps often use a combined reducer that listens for `logout` type.",
         "timestamp": "2025-03-11T14:41:13.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },
@@ -272,7 +272,7 @@
         "role": "assistant",
         "content": "Redux is client-side; use it in client components. Fetch on the server in RSC, then hydrate client islands that subscribe to the store for interactive UI.",
         "timestamp": "2025-03-11T14:42:12.000Z",
-        "promptPoint": 5,
+        "promptPoint": 6,
         "promptCategory": "active",
         "promptFeedback": "Strong prompt: you are using AI as a thinking partner."
       },

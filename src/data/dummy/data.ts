@@ -50,7 +50,7 @@ const messagesById: Record<string, Message> = {
     content:
       'React is a JavaScript library for building user interfaces, particularly single-page applications. You should use it for component-based UIs, strong ecosystem, and React Native for mobile.',
     timestamp: '2025-03-10T10:00:15.000Z',
-    promptPoint: 5,
+    promptPoint: 24,
     promptCategory: 'active' as const,
     promptFeedback: 'Strong prompt: you are using AI as a thinking partner.',
   },
@@ -68,7 +68,7 @@ const messagesById: Record<string, Message> = {
     content:
       'You can create a component with a function: `function MyComponent() { return <div>Hello</div>; }` or as an arrow function. Export it and use it as `<MyComponent />`.',
     timestamp: '2025-03-10T10:01:20.000Z',
-    promptPoint: 5,
+    promptPoint: 24,
     promptCategory: 'active' as const,
     promptFeedback: 'Strong prompt: you are using AI as a thinking partner.',
   },
@@ -86,7 +86,7 @@ const messagesById: Record<string, Message> = {
     content:
       'React state is local to a component (useState) and passed down via props. Redux is a global store: one place for app state, predictable updates with actions/reducers, and easy to access from any component.',
     timestamp: '2025-03-11T14:30:25.000Z',
-    promptPoint: 5,
+    promptPoint: 24,
     promptCategory: 'active' as const,
     promptFeedback: 'Strong prompt: you are using AI as a thinking partner.',
   },
@@ -113,7 +113,7 @@ Sed justo ligula, molestie a malesuada ut, scelerisque pretium nisl. Etiam id ti
 Suspendisse sed quam non odio commodo ultrices. Cras eu suscipit dolor, nec ultricies sapien. Donec blandit, lectus nec placerat hendrerit, est sapien venenatis ligula, at posuere mauris elit sit amet elit. Vivamus et felis vel felis malesuada ullamcorper. Curabitur dictum odio felis, in scelerisque urna bibendum id. Duis magna quam, posuere at tincidunt sit amet, commodo nec diam. Mauris erat neque, vestibulum vel nisi vel, dignissim feugiat velit. Integer sed rutrum massa. Curabitur dapibus, odio non ornare pellentesque, massa lacus aliquam mi, in porttitor dui quam et velit. Aenean urna lacus, vulputate et lorem nec, vulputate posuere nunc. Duis sagittis leo eu tortor pharetra volutpat. Quisque in est erat. Aliquam at leo ut arcu placerat congue.
       `,
     timestamp: '2025-03-11T14:31:18.000Z',
-    promptPoint: 5,
+    promptPoint: 23,
     promptCategory: 'active' as const,
     promptFeedback: 'Strong prompt: you are using AI as a thinking partner.',
   },

@@ -8,6 +8,7 @@ import {
   type DemoEngagementCase,
   type DemoPromptCase,
 } from '../../data/demo/demoData';
+import { SIMULATED_API_LATENCY_MS } from '../../constants/simulation.constants';
 
 function normalizeText(input: string): string {
   return input.trim().toLowerCase().replace(/\s+/g, ' ');
@@ -164,7 +165,7 @@ export const simulatedAIChatProvider: ChatApiProvider = {
           promptFeedback: scoring.promptFeedback,
           timestamp: new Date().toISOString(),
         });
-      }, 2000); // simulate ~2s API latency
+      }, SIMULATED_API_LATENCY_MS); // simulate ~2s API latency
     });
   },
 };

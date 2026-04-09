@@ -1,0 +1,1 @@
+export const SIMULATED_API_LATENCY_MS = 500;
